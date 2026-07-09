@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vignette 1 — Demand Signals: Salesforce → SAP</title>
+<style>
+  :root {
+    --surface-1: #fcfcfb;
+    --surface-2: #f9f9f7;
+    --text-primary: #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted: #898781;
+    --gridline: #e1e0d9;
+    --baseline: #c3c2b7;
+    --border: rgba(11,11,11,0.10);
+
+    /* Confidence-tier colors — ordinal sequential (blue ramp, steps 250→550) */
+    --tier-opportunity: #86b6ef;   /* step 250 — lowest confidence */
+    --tier-order:       #3987e5;   /* step 400 */
+    --tier-agreement:   #1c5cab;   /* step 550 — highest confidence */
+
+    /* SAP accent */
+    --sap-accent: #1baf7a;         /* series-2 aqua */
+    --sap-light:  #d4f5ea;
+
+    --gap: 2px;
+    --radius-bar: 4px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--surface-2);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    color: var(--text-primary);
+    padding: 40px 32px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* ── Header ─────────────────────────────────────────────────── */
+  .vignette-header {
+    margin-bottom: 32px;
+  }
+  .vignette-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+  .vignette-title {
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+  .vignette-subtitle {
+    font-size: 14px;
+    color: var(--text-secondary);
+    max-width: 720px;
+    line-height: 1.5;
+  }
+
+  /* ── Layout ──────────────────────────────────────────────────── */
+  .layout-grid {
+    display: grid;
+    grid-template-columns: 1fr 64px 1fr;
+    gap: 0;
+    align-items: start;
+    margin-bottom: 24px;
+  }
+
+  .panel {
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+  }
+  .panel-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+  .panel-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 18px;
+  }
+
+  /* ── Arrow connector ─────────────────────────────────────────── */
+  .connector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-top: 80px;
+    gap: 4px;
+  }
+  .connector-line {
+    width: 2px;
+    height: 48px;
+    background: var(--sap-accent);
+    border-radius: 1px;
+  }
+  .connector-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--sap-accent);
+    white-space: nowrap;
+    writing-mode: horizontal-tb;
+    transform: none;
+  }
+  .arrow-head {
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 9px solid var(--sap-accent);
+  }
+
+  /* ── Signal tiers (left panel) ───────────────────────────────── */
+  .signal-tier {
+    margin-bottom: 14px;
+    position: relative;
+  }
+  .signal-tier:last-child { margin-bottom: 0; }
+
+  .tier-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .tier-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    border: 2px solid var(--surface-1);
+    box-shadow: 0 0 0 1.5px var(--border);
+  }
+  .tier-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  .tier-confidence {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-left: auto;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* bar track */
+  .bar-track {
+    height: 20px;
+    background: var(--gridline);
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 3px 4px 4px 3px;
+    transition: width 0.6s cubic-bezier(.4,0,.2,1);
+    position: relative;
+  }
+  .bar-value {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .tier-meta {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+
+  /* confidence badge */
+  .conf-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 99px;
+    margin-top: 5px;
+  }
+  .conf-low    { background: #e8f1fc; color: #1c5cab; }
+  .conf-medium { background: #d4e8fb; color: #1c5cab; }
+  .conf-high   { background: #1c5cab; color: #fff; }
+
+  /* divider between tiers */
+  .tier-divider {
+    height: 1px;
+    background: var(--gridline);
+    margin: 14px 0;
+  }
+
+  /* ── SAP panel (right) ───────────────────────────────────────── */
+  .sap-module {
+    background: #f0faf5;
+    border: 1px solid #b3e8d0;
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+  }
+  .sap-module:last-child { margin-bottom: 0; }
+
+  .sap-module-name {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: #0a6b49;
+    margin-bottom: 4px;
+  }
+  .sap-module-desc {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.45;
+  }
+  .sap-module-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 8px;
+  }
+  .sap-tag {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 3px;
+    background: #1baf7a1a;
+    color: #0a6b49;
+    border: 1px solid #b3e8d0;
+  }
+
+  /* ── Timeline / Flow below ───────────────────────────────────── */
+  .flow-section {
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    margin-top: 0;
+  }
+
+  .flow-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 20px;
+  }
+
+  .flow-track {
+    position: relative;
+    padding-left: 0;
+  }
+
+  /* horizontal timeline */
+  .timeline {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    position: relative;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 12.5%;
+    right: 12.5%;
+    height: 2px;
+    background: linear-gradient(to right, var(--tier-opportunity), var(--tier-order), var(--tier-agreement), var(--sap-accent));
+    z-index: 0;
+  }
+
+  .tl-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 0 8px;
+    position: relative;
+    z-index: 1;
+  }
+  .tl-node {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    margin-bottom: 10px;
+    border: 2px solid var(--surface-1);
+    box-shadow: 0 0 0 2px var(--border);
+  }
+  .tl-step-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 3px;
+    line-height: 1.3;
+  }
+  .tl-step-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+    line-height: 1.3;
+  }
+  .tl-conf {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    margin-top: 5px;
+    padding: 2px 6px;
+    border-radius: 99px;
+  }
+
+  /* ── KPI Row ─────────────────────────────────────────────────── */
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .kpi-tile {
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 20px;
+  }
+  .kpi-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 500;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .kpi-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .kpi-delta {
+    font-size: 12px;
+    color: #006300;
+    font-weight: 600;
+  }
+  .kpi-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  /* ── Legend ──────────────────────────────────────────────────── */
+  .legend {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--gridline);
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+  .legend-swatch {
+    width: 14px;
+    height: 8px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  /* tooltip */
+  .tooltip {
+    position: fixed;
+    background: var(--text-primary);
+    color: #fff;
+    font-size: 12px;
+    padding: 8px 12px;
+    border-radius: 5px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+    z-index: 100;
+    max-width: 220px;
+    line-height: 1.5;
+  }
+  .tooltip.visible { opacity: 1; }
+  .tooltip strong { color: #fff; display: block; margin-bottom: 2px; }
+  .tooltip span { color: #c3c2b7; }
+
+  .clickable { cursor: pointer; }
+  .clickable:hover .bar-fill { filter: brightness(1.08); }
+  .clickable:hover .sap-module { border-color: var(--sap-accent); }
+</style>
+</head>
+<body>
+
+<div class="vignette-header">
+  <div class="vignette-label">Vignette 1 of 2</div>
+  <div class="vignette-title">Demand Signals: Salesforce Manufacturing Cloud → SAP</div>
+  <div class="vignette-subtitle">Salesforce aggregates three demand signals at increasing levels of commercial confidence — Opportunities, Sales Orders, and Sales Agreement run-rate — and transmits a unified demand package to SAP for materials and procurement planning.</div>
+</div>
+
+<!-- KPI row -->
+<div class="kpi-row">
+  <div class="kpi-tile">
+    <div class="kpi-label">Total Demand Signal (12-mo)</div>
+    <div class="kpi-value">$184.6M</div>
+    <div class="kpi-delta">↑ 12% vs prior period</div>
+  </div>
+  <div class="kpi-tile">
+    <div class="kpi-label">High-Confidence (Agreement + Order)</div>
+    <div class="kpi-value">$131.2M</div>
+    <div class="kpi-sub">71% of total pipeline</div>
+  </div>
+  <div class="kpi-tile">
+    <div class="kpi-label">Last SAP Sync</div>
+    <div class="kpi-value" style="font-size:20px;padding-top:4px;">2 hrs ago</div>
+    <div class="kpi-sub">Next: automated, 6-hr cadence</div>
+  </div>
+</div>
+
+<!-- Main 3-column layout -->
+<div class="layout-grid">
+
+  <!-- LEFT: Salesforce signal sources -->
+  <div class="panel">
+    <div class="panel-label">Salesforce Manufacturing Cloud</div>
+    <div class="panel-title">Demand Signal Sources</div>
+
+    <!-- Tier 3: Sales Agreements -->
+    <div class="signal-tier clickable" data-tip-title="Sales Agreements (Run-Rate)" data-tip-body="Contractually committed volumes — highest planning confidence. Drives firm purchase orders in SAP MM.">
+      <div class="tier-header">
+        <div class="tier-dot" style="background:var(--tier-agreement)"></div>
+        <div class="tier-name">Sales Agreements</div>
+        <div class="tier-confidence">Run-rate</div>
+      </div>
+      <div class="bar-track">
+        <div class="bar-fill" style="background:var(--tier-agreement); width:82%">
+          <span class="bar-value">$74.8M</span>
+        </div>
+      </div>
+      <div class="tier-meta">Contracted volumes · renewal schedules · committed quantities</div>
+      <span class="conf-badge conf-high">● High confidence</span>
+    </div>
+
+    <div class="tier-divider"></div>
+
+    <!-- Tier 2: Entered Orders -->
+    <div class="signal-tier clickable" data-tip-title="Entered Sales Orders (OMS)" data-tip-body="Confirmed customer orders in Salesforce Order Management. Signals firm short-term demand into SAP PP/DS and MM.">
+      <div class="tier-header">
+        <div class="tier-dot" style="background:var(--tier-order)"></div>
+        <div class="tier-name">Entered Sales Orders</div>
+        <div class="tier-confidence">OMS</div>
+      </div>
+      <div class="bar-track">
+        <div class="bar-fill" style="background:var(--tier-order); width:62%">
+          <span class="bar-value">$56.4M</span>
+        </div>
+      </div>
+      <div class="tier-meta">Confirmed orders · ship dates · line-item quantities</div>
+      <span class="conf-badge conf-medium">● Medium–high confidence</span>
+    </div>
+
+    <div class="tier-divider"></div>
+
+    <!-- Tier 1: Opportunities -->
+    <div class="signal-tier clickable" data-tip-title="Sales Opportunities (CRM)" data-tip-body="Weighted pipeline from Salesforce CRM. Informs SAP long-range planning (APO/IBP) and capacity reservation — not firm procurement.">
+      <div class="tier-header">
+        <div class="tier-dot" style="background:var(--tier-opportunity)"></div>
+        <div class="tier-name">Sales Opportunities</div>
+        <div class="tier-confidence">CRM pipeline</div>
+      </div>
+      <div class="bar-track">
+        <div class="bar-fill" style="background:var(--tier-opportunity); width:59%">
+          <span class="bar-value">$53.4M</span>
+        </div>
+      </div>
+      <div class="tier-meta">Probability-weighted · stage-gated · rolling 18-month horizon</div>
+      <span class="conf-badge conf-low">● Lower confidence</span>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item"><div class="legend-swatch" style="background:var(--tier-agreement)"></div>Sales Agreement</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:var(--tier-order)"></div>Entered Order</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:var(--tier-opportunity)"></div>Opportunity</div>
+    </div>
+  </div>
+
+  <!-- CENTER: connector arrow -->
+  <div class="connector">
+    <div class="connector-label" style="writing-mode:vertical-rl; transform:rotate(180deg); font-size:9px; letter-spacing:0.1em; color:var(--sap-accent);">API / MID SERVER</div>
+    <div class="connector-line" style="height:120px; background: linear-gradient(to bottom, var(--tier-agreement), var(--sap-accent));"></div>
+    <div class="arrow-head"></div>
+    <div style="font-size:10px; color:var(--text-muted); text-align:center; margin-top:6px; line-height:1.4;">Real-time<br>& batch sync</div>
+  </div>
+
+  <!-- RIGHT: SAP modules -->
+  <div class="panel">
+    <div class="panel-label">SAP</div>
+    <div class="panel-title">Planning & Procurement Destinations</div>
+
+    <div class="sap-module clickable" data-tip-title="SAP IBP / APO — Long-Range Planning" data-tip-body="Receives opportunity pipeline. Used for capacity planning, rough-cut material requirements, and supplier capacity reservation over 6–18 month horizon.">
+      <div class="sap-module-name">IBP / APO — Demand Planning</div>
+      <div class="sap-module-desc">Receives probability-weighted opportunity volumes for long-range capacity and supply network planning.</div>
+      <div class="sap-module-tags">
+        <span class="sap-tag">Opportunities</span>
+        <span class="sap-tag">6–18 mo horizon</span>
+        <span class="sap-tag">Rough-cut capacity</span>
+      </div>
+    </div>
+
+    <div class="sap-module clickable" data-tip-title="SAP PP/DS — Production Planning" data-tip-body="Confirmed orders drive detailed scheduling. Salesforce order line items map to planned orders, triggering MRP runs for sub-assemblies and components.">
+      <div class="sap-module-name">PP / DS — Production Planning</div>
+      <div class="sap-module-desc">Entered sales orders trigger MRP runs, planned orders, and detailed scheduling for near-term manufacturing.</div>
+      <div class="sap-module-tags">
+        <span class="sap-tag">Sales Orders</span>
+        <span class="sap-tag">0–90 day horizon</span>
+        <span class="sap-tag">MRP / scheduling</span>
+      </div>
+    </div>
+
+    <div class="sap-module clickable" data-tip-title="SAP MM — Materials Management / Procurement" data-tip-body="Sales agreement run-rate drives firm purchase order creation. Committed volumes enable blanket POs and vendor scheduling agreements, reducing material risk.">
+      <div class="sap-module-name">MM — Materials Management</div>
+      <div class="sap-module-desc">Agreement run-rates drive firm purchase orders, blanket POs, and vendor scheduling agreements for committed volumes.</div>
+      <div class="sap-module-tags">
+        <span class="sap-tag">Sales Agreements</span>
+        <span class="sap-tag">Firm POs</span>
+        <span class="sap-tag">Vendor scheduling</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Flow / timeline -->
+<div class="flow-section">
+  <div class="flow-title">Confidence Escalation — How signals flow from pipeline to procurement</div>
+  <div class="timeline">
+    <div class="tl-step">
+      <div class="tl-node" style="background:#e8f1fc;">🎯</div>
+      <div class="tl-step-name">Opportunity<br>Created</div>
+      <div class="tl-step-sub">CRM pipeline<br>stage-gated</div>
+      <div class="tl-conf" style="background:#e8f1fc; color:#1c5cab;">~30–60% confidence</div>
+    </div>
+    <div class="tl-step">
+      <div class="tl-node" style="background:#d4e8fb;">📋</div>
+      <div class="tl-step-name">Sales Order<br>Entered</div>
+      <div class="tl-step-sub">OMS confirmed<br>ship dates set</div>
+      <div class="tl-conf" style="background:#d4e8fb; color:#256abf;">~80% confidence</div>
+    </div>
+    <div class="tl-step">
+      <div class="tl-node" style="background:#1c5cab; color:#fff;">🤝</div>
+      <div class="tl-step-name">Agreement<br>Activated</div>
+      <div class="tl-step-sub">Run-rate locked<br>quantities committed</div>
+      <div class="tl-conf" style="background:#1c5cab; color:#fff;">~95%+ confidence</div>
+    </div>
+    <div class="tl-step">
+      <div class="tl-node" style="background:#d4f5ea;">⚙️</div>
+      <div class="tl-step-name">SAP Demand<br>Received</div>
+      <div class="tl-step-sub">MRP / PO creation<br>supplier notified</div>
+      <div class="tl-conf" style="background:#0a6b49; color:#fff;">Procurement action</div>
+    </div>
+  </div>
+</div>
+
+<!-- Tooltip -->
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+  const tooltip = document.getElementById('tooltip');
+
+  document.querySelectorAll('[data-tip-title]').forEach(el => {
+    el.addEventListener('mouseenter', e => {
+      tooltip.innerHTML = '<strong>' + el.dataset.tipTitle + '</strong><span>' + el.dataset.tipBody + '</span>';
+      tooltip.classList.add('visible');
+    });
+    el.addEventListener('mousemove', e => {
+      let x = e.clientX + 14, y = e.clientY + 14;
+      if (x + 240 > window.innerWidth) x = e.clientX - 254;
+      if (y + 80 > window.innerHeight) y = e.clientY - 80;
+      tooltip.style.left = x + 'px';
+      tooltip.style.top = y + 'px';
+    });
+    el.addEventListener('mouseleave', () => tooltip.classList.remove('visible'));
+  });
+</script>
+</body>
+</html>

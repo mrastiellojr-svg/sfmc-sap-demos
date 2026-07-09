@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vignette 2 — Order Actuals: SAP → Salesforce Manufacturing Cloud</title>
+<style>
+  :root {
+    --surface-1: #fcfcfb;
+    --surface-2: #f9f9f7;
+    --text-primary: #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted: #898781;
+    --gridline: #e1e0d9;
+    --baseline: #c3c2b7;
+    --border: rgba(11,11,11,0.10);
+
+    /* Series */
+    --s1-committed: #2a78d6;   /* blue — commitment baseline */
+    --s2-actuals:   #1baf7a;   /* aqua — actuals/shipped */
+    --s3-forecast:  #eda100;   /* yellow — rolling forecast */
+
+    /* Status */
+    --status-good:     #0ca30c;
+    --status-warn:     #fab219;
+    --status-critical: #d03b3b;
+
+    /* SAP source color */
+    --sap-green: #1baf7a;
+    --sap-bg:    #f0faf5;
+    --sap-border: #b3e8d0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--surface-2);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    color: var(--text-primary);
+    padding: 40px 32px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .vignette-header { margin-bottom: 28px; }
+  .vignette-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px;
+  }
+  .vignette-title { font-size: 22px; font-weight: 700; line-height: 1.25; margin-bottom: 8px; }
+  .vignette-subtitle { font-size: 14px; color: var(--text-secondary); max-width: 720px; line-height: 1.5; }
+
+  /* ── KPI Row ─────────────────────────────────────────────────── */
+  .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+  .kpi-tile {
+    background: var(--surface-1); border: 1px solid var(--border);
+    border-radius: 8px; padding: 16px 18px;
+  }
+  .kpi-label { font-size: 10px; color: var(--text-muted); font-weight: 600; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .kpi-value { font-size: 26px; font-weight: 700; line-height: 1; margin-bottom: 3px; }
+  .kpi-sub { font-size: 11px; color: var(--text-muted); }
+  .delta-up   { color: #006300; font-weight: 600; font-size: 12px; }
+  .delta-down { color: var(--status-critical); font-weight: 600; font-size: 12px; }
+  .delta-warn { color: #a07000; font-weight: 600; font-size: 12px; }
+
+  /* ── Main layout ─────────────────────────────────────────────── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .full-col { margin-bottom: 16px; }
+
+  .panel {
+    background: var(--surface-1); border: 1px solid var(--border);
+    border-radius: 8px; padding: 22px;
+  }
+  .panel-label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 3px; }
+  .panel-title { font-size: 14px; font-weight: 700; color: var(--text-primary); margin-bottom: 18px; }
+
+  /* ── Source ingestion list (left) ───────────────────────────── */
+  .source-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px 0; border-bottom: 1px solid var(--gridline);
+    cursor: pointer;
+  }
+  .source-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .source-icon {
+    width: 36px; height: 36px; border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+  .source-info { flex: 1; min-width: 0; }
+  .source-name { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; }
+  .source-desc { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
+  .source-badge {
+    font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 99px; white-space: nowrap;
+    margin-top: 4px; display: inline-block;
+  }
+  .badge-green  { background: #d4f5ea; color: #0a6b49; border: 1px solid #b3e8d0; }
+  .badge-blue   { background: #e8f1fc; color: #1c5cab; border: 1px solid #b3d5f8; }
+  .badge-orange { background: #fdf0d4; color: #7a5000; border: 1px solid #f5d88a; }
+  .source-vol { font-size: 12px; font-weight: 700; color: var(--text-primary); white-space: nowrap; }
+
+  /* ── Performance bar chart ───────────────────────────────────── */
+  .chart-area { position: relative; margin-top: 4px; }
+
+  .month-row {
+    display: grid; grid-template-columns: 52px 1fr 1fr 64px;
+    align-items: center; gap: 8px; margin-bottom: 8px; cursor: pointer;
+  }
+  .month-row:hover .bar-a, .month-row:hover .bar-b { filter: brightness(1.07); }
+
+  .month-label { font-size: 11px; color: var(--text-muted); font-variant-numeric: tabular-nums; text-align: right; }
+
+  .bar-group { display: flex; flex-direction: column; gap: 2px; }
+
+  .bar-slim {
+    height: 10px; border-radius: 2px 3px 3px 2px; position: relative;
+    transition: width 0.5s cubic-bezier(.4,0,.2,1);
+  }
+  .bar-slim.bar-a { background: var(--s1-committed); opacity: 0.35; }
+  .bar-slim.bar-b { background: var(--s2-actuals); }
+
+  .bar-pct {
+    font-size: 11px; font-weight: 700; font-variant-numeric: tabular-nums;
+    text-align: left; padding-left: 4px;
+  }
+  .pct-over  { color: #006300; }
+  .pct-near  { color: var(--text-secondary); }
+  .pct-under { color: var(--status-critical); }
+
+  /* x-axis ticks */
+  .x-axis { display: flex; justify-content: space-between; padding: 4px 0 0 60px; margin-bottom: 2px; }
+  .x-tick { font-size: 10px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+
+  .legend { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--gridline); }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-secondary); }
+  .legend-swatch { width: 14px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+
+  /* ── Attainment gauge row ─────────────────────────────────────── */
+  .gauge-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+  .gauge-tile {
+    background: var(--surface-1); border: 1px solid var(--border);
+    border-radius: 8px; padding: 16px 18px;
+  }
+  .gauge-account { font-size: 12px; font-weight: 700; color: var(--text-primary); margin-bottom: 2px; }
+  .gauge-product { font-size: 11px; color: var(--text-muted); margin-bottom: 10px; }
+  .gauge-track {
+    height: 10px; background: var(--gridline); border-radius: 5px; overflow: visible;
+    position: relative; margin-bottom: 6px;
+  }
+  .gauge-fill {
+    height: 100%; border-radius: 5px 0 0 5px;
+    position: relative; transition: width 0.6s ease;
+  }
+  .gauge-fill.full  { border-radius: 5px; }
+  .gauge-numbers { display: flex; justify-content: space-between; align-items: baseline; }
+  .gauge-actual   { font-size: 13px; font-weight: 700; color: var(--text-primary); }
+  .gauge-target   { font-size: 11px; color: var(--text-muted); }
+  .gauge-pct { font-size: 11px; font-weight: 700; }
+
+  /* ── Flow connector row ──────────────────────────────────────── */
+  .flow-row {
+    background: var(--surface-1); border: 1px solid var(--border);
+    border-radius: 8px; padding: 20px 24px; margin-bottom: 16px;
+  }
+  .flow-row-title { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 16px; }
+
+  .channel-flow {
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    gap: 0; align-items: center; text-align: center;
+  }
+  .cf-source {
+    background: var(--sap-bg); border: 1px solid var(--sap-border);
+    border-radius: 6px; padding: 10px 8px;
+  }
+  .cf-source-name { font-size: 11px; font-weight: 700; color: #0a6b49; text-transform: uppercase; letter-spacing: 0.06em; }
+  .cf-source-vol { font-size: 12px; font-weight: 700; color: var(--text-primary); margin-top: 2px; }
+  .cf-source-sub { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+
+  .cf-arrow {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+  }
+  .cf-arrow-line { height: 2px; width: 100%; background: linear-gradient(to right, var(--sap-green), var(--s1-committed)); border-radius: 1px; }
+  .cf-arrow-head { width: 0; height: 0; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-left: 8px solid var(--s1-committed); }
+  .cf-arrow-label { font-size: 9px; color: var(--text-muted); letter-spacing: 0.04em; text-transform: uppercase; }
+
+  .cf-dest {
+    background: #eff5fd; border: 1px solid #b3d5f8;
+    border-radius: 6px; padding: 10px 8px;
+  }
+  .cf-dest-name { font-size: 11px; font-weight: 700; color: #1c5cab; text-transform: uppercase; letter-spacing: 0.06em; }
+  .cf-dest-sub { font-size: 10px; color: var(--text-muted); margin-top: 2px; line-height: 1.4; }
+
+  /* tooltip */
+  .tooltip {
+    position: fixed; background: var(--text-primary); color: #fff;
+    font-size: 12px; padding: 8px 12px; border-radius: 5px;
+    pointer-events: none; opacity: 0; transition: opacity 0.15s;
+    z-index: 100; max-width: 240px; line-height: 1.5;
+  }
+  .tooltip.visible { opacity: 1; }
+  .tooltip strong { color: #fff; display: block; margin-bottom: 2px; }
+  .tooltip span { color: #c3c2b7; }
+
+  /* crosshair line */
+  .chart-wrap { position: relative; }
+  #crosshair {
+    position: absolute; left: 0; top: 0; width: 1px;
+    background: var(--text-muted); opacity: 0; pointer-events: none;
+    z-index: 5; transition: opacity 0.1s;
+  }
+</style>
+</head>
+<body>
+
+<div class="vignette-header">
+  <div class="vignette-label">Vignette 2 of 2</div>
+  <div class="vignette-title">Order Actuals: SAP Order Channels → Salesforce Manufacturing Cloud</div>
+  <div class="vignette-subtitle">Incoming orders across SAP channels (EDI, Customer Portal, Direct Entry, Distribution) are integrated back into Salesforce Manufacturing Cloud, so the commercial team can track actual performance against Sales Agreement commitments and account-based forecasts in real time.</div>
+</div>
+
+<!-- KPI row -->
+<div class="kpi-row">
+  <div class="kpi-tile">
+    <div class="kpi-label">YTD Revenue (Actual)</div>
+    <div class="kpi-value">$88.3M</div>
+    <div class="delta-up">↑ 7.4% vs agreement</div>
+  </div>
+  <div class="kpi-tile">
+    <div class="kpi-label">Agreement Attainment</div>
+    <div class="kpi-value">107%</div>
+    <div class="kpi-sub">vs. $82.5M committed</div>
+  </div>
+  <div class="kpi-tile">
+    <div class="kpi-label">Forecast vs. Actual Gap</div>
+    <div class="kpi-value" style="color:var(--status-warn)">−$4.2M</div>
+    <div class="delta-warn">↓ 2 accounts at risk</div>
+  </div>
+  <div class="kpi-tile">
+    <div class="kpi-label">Orders Synced (30d)</div>
+    <div class="kpi-value">1,847</div>
+    <div class="kpi-sub">Across 4 SAP channels</div>
+  </div>
+</div>
+
+<!-- SAP channel → SF flow -->
+<div class="flow-row">
+  <div class="flow-row-title">SAP Order Channels → Salesforce Manufacturing Cloud Integration</div>
+  <div class="channel-flow">
+    <div class="cf-source" style="cursor:pointer;" data-tip-title="SAP EDI Channel" data-tip-body="Inbound EDI 850/ORDERS from trading partners and distributors. Auto-matched to Sales Agreement line items by customer + material number.">
+      <div class="cf-source-name">EDI</div>
+      <div class="cf-source-vol">$34.1M</div>
+      <div class="cf-source-sub">Distributors / trading partners</div>
+    </div>
+    <div class="cf-arrow">
+      <div class="cf-arrow-label">synced</div>
+      <div style="display:flex;align-items:center;width:100%;">
+        <div class="cf-arrow-line"></div>
+        <div class="cf-arrow-head"></div>
+      </div>
+    </div>
+    <div class="cf-dest" style="grid-row: span 1; cursor:pointer;" data-tip-title="Salesforce Manufacturing Cloud" data-tip-body="All SAP order actuals are written back to the Account-Based Forecast and matched against active Sales Agreement schedules. The commercial team sees attainment, gaps, and variance in real time.">
+      <div class="cf-dest-name">Mfg Cloud</div>
+      <div class="cf-dest-sub">Sales Agreement Actuals · Account Forecast · Performance vs. Commitment</div>
+    </div>
+    <div style="display:none"></div>
+    <div style="display:none"></div>
+  </div>
+  <!-- Row 2 -->
+  <div class="channel-flow" style="margin-top:10px;">
+    <div class="cf-source" style="cursor:pointer;" data-tip-title="Customer Portal (SAP Commerce)" data-tip-body="Self-service orders placed through SAP Commerce or Ariba. Written back to Salesforce with order date, product, qty — matched to open opportunity or agreement.">
+      <div class="cf-source-name">Customer Portal</div>
+      <div class="cf-source-vol">$21.7M</div>
+      <div class="cf-source-sub">SAP Commerce / Ariba</div>
+    </div>
+    <div class="cf-arrow">
+      <div class="cf-arrow-label">synced</div>
+      <div style="display:flex;align-items:center;width:100%;">
+        <div class="cf-arrow-line"></div>
+        <div class="cf-arrow-head"></div>
+      </div>
+    </div>
+    <div class="cf-source" style="cursor:pointer;" data-tip-title="Direct Sales / Manual Entry" data-tip-body="Inside-sales or CSR-entered orders in SAP SD. Cross-referenced against the active Sales Agreement; any order outside agreement scope surfaces as an exception.">
+      <div class="cf-source-name">Direct Entry</div>
+      <div class="cf-source-vol">$18.6M</div>
+      <div class="cf-source-sub">Inside sales / CSR (SAP SD)</div>
+    </div>
+    <div class="cf-arrow">
+      <div class="cf-arrow-label">synced</div>
+      <div style="display:flex;align-items:center;width:100%;">
+        <div class="cf-arrow-line"></div>
+        <div class="cf-arrow-head"></div>
+      </div>
+    </div>
+    <div class="cf-source" style="cursor:pointer;" data-tip-title="Distribution / Field Service Orders" data-tip-body="Replenishment and field service orders from regional DCs and service depots. Aggregated to account level before write-back to avoid line-item noise in Salesforce.">
+      <div class="cf-source-name">Distribution</div>
+      <div class="cf-source-vol">$13.9M</div>
+      <div class="cf-source-sub">DC replenishment / field service</div>
+    </div>
+  </div>
+</div>
+
+<!-- Two-col: performance chart + account attainment -->
+<div class="two-col">
+
+  <!-- Monthly performance chart -->
+  <div class="panel">
+    <div class="panel-label">Salesforce Manufacturing Cloud</div>
+    <div class="panel-title">Monthly Actuals vs. Agreement Commitment</div>
+
+    <div class="chart-wrap" id="chartWrap">
+      <!-- month rows -->
+      <div class="month-row" data-month="Jan" data-committed="12.4" data-actual="11.8" data-pct="95">
+        <div class="month-label">Jan</div>
+        <div class="bar-group" style="flex:1">
+          <div class="bar-slim bar-a" style="width:82%"></div>
+          <div class="bar-slim bar-b" style="width:78%"></div>
+        </div>
+        <div class="bar-pct pct-near">95%</div>
+      </div>
+      <div class="month-row" data-month="Feb" data-committed="12.4" data-actual="12.9" data-pct="104">
+        <div class="month-label">Feb</div>
+        <div class="bar-group" style="flex:1">
+          <div class="bar-slim bar-a" style="width:82%"></div>
+          <div class="bar-slim bar-b" style="width:85%"></div>
+        </div>
+        <div class="bar-pct pct-over">104%</div>
+      </div>
+      <div class="month-row" data-month="Mar" data-committed="13.8" data-actual="14.6" data-pct="106">
+        <div class="month-label">Mar</div>
+        <div class="bar-group" style="flex:1">
+          <div class="bar-slim bar-a" style="width:91%"></div>
+          <div class="bar-slim bar-b" style="width:96%"></div>
+        </div>
+        <div class="bar-pct pct-over">106%</div>
+      </div>
+      <div class="month-row" data-month="Apr" data-committed="14.2" data-actual="15.1" data-pct="106">
+        <div class="month-label">Apr</div>
+        <div class="bar-group" style="flex:1">
+          <div class="bar-slim bar-a" style="width:94%"></div>
+          <div class="bar-slim bar-b" style="width:100%"></div>
+        </div>
+        <div class="bar-pct pct-over">106%</div>
+      </div>
+      <div class="month-row" data-month="May" data-committed="14.2" data-actual="13.4" data-pct="94">
+        <div class="month-label">May</div>
+        <div class="bar-group" style="flex:1">
+          <div class="bar-slim bar-a" style="width:94%"></div>
+          <div class="bar-slim bar-b" style="width:88%"></div>
+        </div>
+        <div class="bar-pct pct-under">94%</div>
+      </div>
+      <div class="month-row" data-month="Jun" data-committed="15.5" data-actual="20.5" data-pct="132">
+        <div class="month-label">Jun</div>
+        <div class="bar-group" style="flex:1">
+          <div class="bar-slim bar-a" style="width:100%"></div>
+          <div class="bar-slim bar-b" style="width:100%; background:var(--status-good); opacity:0.8;"></div>
+        </div>
+        <div class="bar-pct pct-over">132% ↑</div>
+      </div>
+    </div>
+
+    <div class="x-axis">
+      <span class="x-tick">$0</span>
+      <span class="x-tick">$5M</span>
+      <span class="x-tick">$10M</span>
+      <span class="x-tick">$15M+</span>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item"><div class="legend-swatch" style="background:var(--s1-committed);opacity:0.35;"></div>Agreement Commitment</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:var(--s2-actuals);"></div>Actual Orders (SAP)</div>
+    </div>
+  </div>
+
+  <!-- Account attainment -->
+  <div class="panel">
+    <div class="panel-label">Account-Based Forecast Tracking</div>
+    <div class="panel-title">Agreement Attainment by Account</div>
+
+    <!-- Acme -->
+    <div style="margin-bottom:16px; cursor:pointer;" data-tip-title="Acme Industrial — Hydraulics" data-tip-body="Overperforming agreement by 14%. Commercial team should assess whether to expand the agreement schedule or manage as upside.">
+      <div class="gauge-account">Acme Industrial</div>
+      <div class="gauge-product">Hydraulic Components · 12-mo agreement</div>
+      <div class="gauge-track">
+        <div class="gauge-fill full" style="width:100%;background:var(--status-good);opacity:0.85;"></div>
+      </div>
+      <div class="gauge-numbers">
+        <div class="gauge-actual">$24.3M <span style="font-size:11px;color:var(--text-muted)">actual</span></div>
+        <div class="gauge-pct" style="color:#006300">114% <span style="font-size:10px;font-weight:400">of $21.3M target</span></div>
+      </div>
+    </div>
+
+    <!-- Vertex -->
+    <div style="margin-bottom:16px; cursor:pointer;" data-tip-title="Vertex Manufacturing — Precision Parts" data-tip-body="On track at 98%. Minor shortfall of $180K — within normal order timing tolerance. No action required.">
+      <div class="gauge-account">Vertex Manufacturing</div>
+      <div class="gauge-product">Precision Parts · 6-mo agreement</div>
+      <div class="gauge-track">
+        <div class="gauge-fill" style="width:98%;background:var(--s1-committed);"></div>
+      </div>
+      <div class="gauge-numbers">
+        <div class="gauge-actual">$17.6M <span style="font-size:11px;color:var(--text-muted)">actual</span></div>
+        <div class="gauge-pct" style="color:var(--text-secondary)">98% <span style="font-size:10px;font-weight:400">of $18.0M target</span></div>
+      </div>
+    </div>
+
+    <!-- Meridian -->
+    <div style="margin-bottom:16px; cursor:pointer;" data-tip-title="Meridian Aerospace — Fasteners" data-tip-body="At risk — 78% attainment. $3.3M shortfall against agreement. Likely tied to the program delay flagged in opportunity stage. Commercial review recommended.">
+      <div class="gauge-account">Meridian Aerospace</div>
+      <div class="gauge-product">Structural Fasteners · 18-mo agreement</div>
+      <div class="gauge-track">
+        <div class="gauge-fill" style="width:78%;background:var(--status-critical);opacity:0.75;"></div>
+      </div>
+      <div class="gauge-numbers">
+        <div class="gauge-actual">$11.7M <span style="font-size:11px;color:var(--text-muted)">actual</span></div>
+        <div class="gauge-pct" style="color:var(--status-critical)">78% <span style="font-size:10px;font-weight:400">of $15.0M target ⚠</span></div>
+      </div>
+    </div>
+
+    <!-- Atlas -->
+    <div style="margin-bottom:0; cursor:pointer;" data-tip-title="Atlas Energy Systems — Sensors" data-tip-body="New agreement — only 2 months in. 87% pace projects to full-year attainment of ~104%. On track.">
+      <div class="gauge-account">Atlas Energy Systems</div>
+      <div class="gauge-product">Sensor Assemblies · new agreement (2 of 12 mo)</div>
+      <div class="gauge-track">
+        <div class="gauge-fill" style="width:17%;background:var(--s2-actuals);"></div>
+      </div>
+      <div class="gauge-numbers">
+        <div class="gauge-actual">$4.8M <span style="font-size:11px;color:var(--text-muted)">actual</span></div>
+        <div class="gauge-pct" style="color:var(--text-secondary)">17% <span style="font-size:10px;font-weight:400">of $28.2M annual · on pace ↗</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Integration detail table -->
+<div class="panel full-col">
+  <div class="panel-label">Integration Detail</div>
+  <div class="panel-title">How SAP orders map back to Salesforce Manufacturing Cloud records</div>
+  <table style="width:100%;border-collapse:collapse;font-size:12px;">
+    <thead>
+      <tr style="border-bottom:2px solid var(--gridline);">
+        <th style="text-align:left;padding:8px 12px 8px 0;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.06em;font-size:10px;">SAP Order Channel</th>
+        <th style="text-align:left;padding:8px 12px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.06em;font-size:10px;">Match Logic</th>
+        <th style="text-align:left;padding:8px 12px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.06em;font-size:10px;">SF Record Updated</th>
+        <th style="text-align:left;padding:8px 12px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.06em;font-size:10px;">Frequency</th>
+        <th style="text-align:right;padding:8px 0 8px 12px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.06em;font-size:10px;">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom:1px solid var(--gridline);">
+        <td style="padding:10px 12px 10px 0;font-weight:600;">EDI (850/ORDERS)</td>
+        <td style="padding:10px 12px;color:var(--text-secondary);">Sold-to party + material # → Agreement line</td>
+        <td style="padding:10px 12px;color:var(--text-secondary);">Sales Agreement Actuals, Account Forecast</td>
+        <td style="padding:10px 12px;color:var(--text-secondary);">Real-time (event)</td>
+        <td style="padding:10px 0 10px 12px;text-align:right;"><span style="background:#d4f5ea;color:#0a6b49;padding:2px 7px;border-radius:99px;font-weight:700;font-size:10px;">Active</span></td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--gridline);">
+        <td style="padding:10px 12px 10px 0;font-weight:600;">Customer Portal</td>
+        <td style="padding:10px 12px;color:var(--text-secondary);">Customer account ID + product family → Opportunity or Agreement</td>
+        <td style="padding:10px 12px;color:var(--text-secondary);">Sales Agreement Actuals, Opportunity Stage</td>
+        <td style="padding:10px 12px;color:var(--text-secondary);">Every 15 min (batch)</td>
+        <td style="padding:10px 0 10px 12px;text-align:right;"><span style="background:#d4f5ea;color:#0a6b49;padding:2px 7px;border-radius:99px;font-weight:700;font-size:10px;">Active</span></td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--gridline);">
+        <td style="padding:10px 12px 10px 0;font-weight:600;">Direct Entry (SAP SD)</td>
+        <td style="padding:10px 12px;color:var(--text-secondary);">Sales doc → external reference → Agreement schedule</td>
+        <td style="padding:10px 12px;color:var(--text-secondary);">Sales Agreement Actuals, Revenue Schedule</td>
+        <td style="padding:10px 12px;color:var(--text-secondary);">Every 6 hr (scheduled)</td>
+        <td style="padding:10px 0 10px 12px;text-align:right;"><span style="background:#d4f5ea;color:#0a6b49;padding:2px 7px;border-radius:99px;font-weight:700;font-size:10px;">Active</span></td>
+      </tr>
+      <tr>
+        <td style="padding:10px 12px 10px 0;font-weight:600;">Distribution / DC</td>
+        <td style="padding:10px 12px;color:var(--text-secondary);">Aggregated by account + period → Account-Based Forecast</td>
+        <td style="padding:10px 12px;color:var(--text-secondary);">Account-Based Forecast (Actuals row)</td>
+        <td style="padding:10px 12px;color:var(--text-secondary);">Daily (end-of-day)</td>
+        <td style="padding:10px 0 10px 12px;text-align:right;"><span style="background:#fdf0d4;color:#7a5000;padding:2px 7px;border-radius:99px;font-weight:700;font-size:10px;">In review</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Tooltip -->
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+  const tooltip = document.getElementById('tooltip');
+
+  document.querySelectorAll('[data-tip-title]').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      tooltip.innerHTML = '<strong>' + el.dataset.tipTitle + '</strong><span>' + el.dataset.tipBody + '</span>';
+      tooltip.classList.add('visible');
+    });
+    el.addEventListener('mousemove', e => {
+      let x = e.clientX + 14, y = e.clientY + 14;
+      if (x + 260 > window.innerWidth) x = e.clientX - 274;
+      if (y + 90 > window.innerHeight) y = e.clientY - 90;
+      tooltip.style.left = x + 'px';
+      tooltip.style.top = y + 'px';
+    });
+    el.addEventListener('mouseleave', () => tooltip.classList.remove('visible'));
+  });
+
+  // Month row hover tooltips
+  document.querySelectorAll('.month-row').forEach(row => {
+    row.addEventListener('mouseenter', () => {
+      const m = row.dataset.month, c = row.dataset.committed, a = row.dataset.actual, p = row.dataset.pct;
+      tooltip.innerHTML = '<strong>' + m + ' Performance</strong>' +
+        '<span>Agreement: $' + c + 'M committed<br>Actuals: $' + a + 'M invoiced<br>Attainment: ' + p + '%</span>';
+      tooltip.classList.add('visible');
+    });
+    row.addEventListener('mousemove', e => {
+      let x = e.clientX + 14, y = e.clientY + 14;
+      if (x + 200 > window.innerWidth) x = e.clientX - 214;
+      tooltip.style.left = x + 'px';
+      tooltip.style.top = y + 'px';
+    });
+    row.addEventListener('mouseleave', () => tooltip.classList.remove('visible'));
+  });
+</script>
+</body>
+</html>
