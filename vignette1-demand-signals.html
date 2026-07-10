@@ -3,618 +3,693 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vignette 1 — Demand Signals: Salesforce → SAP</title>
+<title>Sales Agreement: Acme Industrial FY2026 — Salesforce</title>
 <style>
-  :root {
-    --surface-1: #fcfcfb;
-    --surface-2: #f9f9f7;
-    --text-primary: #0b0b0b;
-    --text-secondary: #52514e;
-    --text-muted: #898781;
-    --gridline: #e1e0d9;
-    --baseline: #c3c2b7;
-    --border: rgba(11,11,11,0.10);
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Salesforce Sans',Arial,sans-serif;background:#F3F2F2;color:#181818;font-size:13px;line-height:1.4;min-height:100vh;}
 
-    /* Confidence-tier colors — ordinal sequential (blue ramp, steps 250→550) */
-    --tier-opportunity: #86b6ef;   /* step 250 — lowest confidence */
-    --tier-order:       #3987e5;   /* step 400 */
-    --tier-agreement:   #1c5cab;   /* step 550 — highest confidence */
+/* ── Global Nav ── */
+.gn{height:52px;background:#1B1B1B;display:flex;align-items:center;padding:0 12px;gap:0;position:sticky;top:0;z-index:300;border-bottom:1px solid #333;}
+.gn-logo{display:flex;align-items:center;gap:0;padding:0 8px;cursor:pointer;}
+.gn-logo svg{width:24px;height:24px;}
+.gn-waffle{width:40px;height:52px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:rgba(255,255,255,0.7);}
+.gn-waffle:hover{color:#fff;}
+.gn-divider{width:1px;height:24px;background:rgba(255,255,255,0.15);margin:0 4px;}
+.gn-app{color:rgba(255,255,255,0.9);font-size:14px;font-weight:700;padding:0 12px;cursor:pointer;white-space:nowrap;}
+.gn-search{flex:1;max-width:480px;margin:0 16px;position:relative;}
+.gn-search input{width:100%;height:32px;background:rgba(255,255,255,0.14);border:1px solid rgba(255,255,255,0.18);border-radius:4px;color:#fff;padding:0 12px 0 34px;font-size:13px;outline:none;}
+.gn-search input::placeholder{color:rgba(255,255,255,0.5);}
+.gn-search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,0.5);font-size:14px;pointer-events:none;}
+.gn-right{display:flex;align-items:center;gap:4px;margin-left:auto;}
+.gn-icon-btn{width:40px;height:40px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.7);cursor:pointer;border-radius:50%;font-size:16px;}
+.gn-icon-btn:hover{background:rgba(255,255,255,0.1);color:#fff;}
+.gn-avatar{width:32px;height:32px;border-radius:50%;background:#0176D3;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;cursor:pointer;}
 
-    /* SAP accent */
-    --sap-accent: #1baf7a;         /* series-2 aqua */
-    --sap-light:  #d4f5ea;
+/* ── App Nav ── */
+.an{height:44px;background:#032D60;display:flex;align-items:stretch;padding:0 16px;overflow-x:auto;scrollbar-width:none;}
+.an::-webkit-scrollbar{display:none;}
+.an-item{display:flex;align-items:center;padding:0 14px;color:rgba(255,255,255,0.75);font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;transition:color 0.15s;}
+.an-item:hover{color:#fff;}
+.an-item.active{color:#fff;border-bottom-color:#fff;font-weight:700;}
 
-    --gap: 2px;
-    --radius-bar: 4px;
-  }
+/* ── Path ── */
+.path-wrap{background:#fff;border-bottom:1px solid #DDDBDA;padding:0 24px;}
+.path{display:flex;align-items:stretch;gap:0;overflow:hidden;height:40px;}
+.path-step{display:flex;align-items:center;gap:6px;padding:0 16px 0 24px;font-size:12px;font-weight:600;color:#706E6B;position:relative;cursor:pointer;clip-path:polygon(0 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 0 100%, 10px 50%);}
+.path-step:first-child{clip-path:polygon(0 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 0 100%);}
+.path-step:hover{background:#F3F2F2;}
+.path-step.done{background:#EEF6EC;color:#2E844A;}
+.path-step.done:hover{background:#D8F0DF;}
+.path-step.current{background:#0176D3;color:#fff;}
+.path-step.current:hover{background:#014486;}
+.path-dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0;}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+/* ── Record Header ── */
+.rh{background:#fff;border-bottom:1px solid #DDDBDA;padding:16px 24px 0;}
+.rh-breadcrumb{font-size:11px;color:#706E6B;margin-bottom:8px;}
+.rh-breadcrumb a{color:#0176D3;text-decoration:none;cursor:pointer;}
+.rh-breadcrumb a:hover{text-decoration:underline;}
+.rh-top{display:flex;align-items:flex-start;gap:16px;margin-bottom:12px;}
+.rh-icon{width:48px;height:48px;border-radius:6px;background:#0176D3;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.rh-icon svg{width:24px;height:24px;fill:#fff;}
+.rh-meta{flex:1;min-width:0;}
+.rh-type{font-size:11px;color:#706E6B;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:2px;}
+.rh-name{font-size:20px;font-weight:700;color:#181818;line-height:1.2;}
+.rh-actions{display:flex;gap:8px;align-items:center;flex-shrink:0;}
+.btn{display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:600;padding:0 16px;height:32px;border-radius:4px;border:none;cursor:pointer;transition:background 0.15s,box-shadow 0.15s;white-space:nowrap;}
+.btn:focus{outline:2px solid #0176D3;outline-offset:2px;}
+.btn-brand{background:#0176D3;color:#fff;}
+.btn-brand:hover{background:#014486;}
+.btn-neutral{background:#fff;color:#181818;border:1px solid #DDDBDA;box-shadow:0 1px 1px rgba(0,0,0,0.06);}
+.btn-neutral:hover{background:#F3F2F2;}
+.btn-success{background:#2E844A;color:#fff;}
+.btn-success:hover{background:#1D5C32;}
 
-  body {
-    background: var(--surface-2);
-    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-    color: var(--text-primary);
-    padding: 40px 32px;
-    max-width: 1100px;
-    margin: 0 auto;
-  }
+/* ── Highlights panel ── */
+.hp{display:grid;grid-template-columns:repeat(5,1fr);gap:0;border-top:1px solid #F3F2F2;padding:12px 0 0;}
+.hp-field{padding:8px 12px 12px;border-right:1px solid #F3F2F2;}
+.hp-field:last-child{border-right:none;}
+.hp-label{font-size:11px;color:#706E6B;font-weight:500;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hp-value{font-size:14px;font-weight:700;color:#181818;}
+.hp-value.link{color:#0176D3;cursor:pointer;}
+.hp-value.link:hover{text-decoration:underline;}
+.hp-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;}
+.badge-green{background:#EEF6EC;color:#2E844A;border:1px solid #BAE0C4;}
+.badge-blue{background:#EBF5FB;color:#014486;border:1px solid #A8C8E8;}
+.badge-warn{background:#FEF7EC;color:#A55000;border:1px solid #F5D08A;}
+.badge-gray{background:#F3F2F2;color:#3E3E3C;border:1px solid #DDDBDA;}
 
-  /* ── Header ─────────────────────────────────────────────────── */
-  .vignette-header {
-    margin-bottom: 32px;
-  }
-  .vignette-label {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    margin-bottom: 6px;
-  }
-  .vignette-title {
-    font-size: 22px;
-    font-weight: 700;
-    line-height: 1.25;
-    color: var(--text-primary);
-    margin-bottom: 8px;
-  }
-  .vignette-subtitle {
-    font-size: 14px;
-    color: var(--text-secondary);
-    max-width: 720px;
-    line-height: 1.5;
-  }
+/* ── Tab Bar ── */
+.tb{background:#fff;border-bottom:1px solid #DDDBDA;display:flex;padding:0 24px;overflow-x:auto;scrollbar-width:none;}
+.tb::-webkit-scrollbar{display:none;}
+.tb-item{font-size:13px;font-weight:500;color:#706E6B;padding:10px 16px;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:color 0.15s;}
+.tb-item:hover{color:#181818;}
+.tb-item.active{color:#0176D3;border-bottom-color:#0176D3;font-weight:700;}
+.tb-count{display:inline-flex;align-items:center;justify-content:center;background:#F3F2F2;color:#706E6B;font-size:10px;font-weight:700;min-width:18px;height:18px;border-radius:9px;padding:0 5px;margin-left:5px;}
 
-  /* ── Layout ──────────────────────────────────────────────────── */
-  .layout-grid {
-    display: grid;
-    grid-template-columns: 1fr 64px 1fr;
-    gap: 0;
-    align-items: start;
-    margin-bottom: 24px;
-  }
+/* ── Page body ── */
+.pb{padding:16px 24px;display:grid;grid-template-columns:1fr 320px;gap:16px;align-items:start;max-width:1400px;margin:0 auto;}
 
-  .panel {
-    background: var(--surface-1);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 24px;
-  }
-  .panel-label {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    margin-bottom: 4px;
-  }
-  .panel-title {
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: 18px;
-  }
+/* ── Cards ── */
+.card{background:#fff;border-radius:4px;box-shadow:0 2px 2px rgba(0,0,0,0.08),0 0 0 1px rgba(0,0,0,0.06);overflow:hidden;margin-bottom:16px;}
+.card:last-child{margin-bottom:0;}
+.ch{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid #F3F2F2;}
+.ch-title{font-size:13px;font-weight:700;color:#181818;}
+.ch-actions{display:flex;gap:6px;align-items:center;}
+.ch-link{font-size:12px;color:#0176D3;cursor:pointer;font-weight:500;}
+.ch-link:hover{text-decoration:underline;}
+.cb{padding:16px;}
 
-  /* ── Arrow connector ─────────────────────────────────────────── */
-  .connector {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding-top: 80px;
-    gap: 4px;
-  }
-  .connector-line {
-    width: 2px;
-    height: 48px;
-    background: var(--sap-accent);
-    border-radius: 1px;
-  }
-  .connector-label {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
-    color: var(--sap-accent);
-    white-space: nowrap;
-    writing-mode: horizontal-tb;
-    transform: none;
-  }
-  .arrow-head {
-    width: 0;
-    height: 0;
-    border-left: 6px solid transparent;
-    border-right: 6px solid transparent;
-    border-top: 9px solid var(--sap-accent);
-  }
+/* ── Signal rows ── */
+.sig{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid #F3F2F2;cursor:pointer;transition:background 0.12s;border-radius:3px;}
+.sig:last-child{border-bottom:none;padding-bottom:0;}
+.sig:hover{background:#F8F7F6;margin:0 -8px;padding-left:8px;padding-right:8px;}
+.sig-ico{width:36px;height:36px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.sig-body{flex:1;min-width:0;}
+.sig-row1{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
+.sig-name{font-size:13px;font-weight:700;color:#181818;}
+.sig-track{height:6px;background:#F3F2F2;border-radius:3px;margin-bottom:4px;overflow:hidden;}
+.sig-fill{height:100%;border-radius:3px;transition:width 1.4s cubic-bezier(.4,0,.2,1);}
+.sig-foot{display:flex;align-items:center;justify-content:space-between;}
+.sig-amt{font-size:14px;font-weight:700;color:#181818;}
+.sig-sub{font-size:11px;color:#706E6B;}
+.sig-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px;}
+.tag{font-size:10px;font-weight:600;padding:2px 7px;border-radius:3px;background:#F3F2F2;color:#3E3E3C;border:1px solid #DDDBDA;}
+.tag-sap{background:#E8F4FE;color:#014486;border:1px solid #A8C8E8;}
 
-  /* ── Signal tiers (left panel) ───────────────────────────────── */
-  .signal-tier {
-    margin-bottom: 14px;
-    position: relative;
-  }
-  .signal-tier:last-child { margin-bottom: 0; }
+/* ── SAP destination cards ── */
+.sap-dest{background:#F5FAFF;border:1px solid #A8D4F8;border-radius:4px;padding:12px;margin-bottom:10px;cursor:pointer;transition:border-color 0.15s,background 0.15s;}
+.sap-dest:last-child{margin-bottom:0;}
+.sap-dest:hover{background:#EBF5FB;border-color:#0176D3;}
+.sap-dest.lit{border-color:#0176D3;background:#EBF5FB;box-shadow:0 0 0 3px rgba(1,118,211,0.12);}
+.sap-dest-header{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.sap-dest-logo{width:28px;height:28px;background:#014486;border-radius:4px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px;font-weight:800;letter-spacing:-0.02em;flex-shrink:0;}
+.sap-dest-name{font-size:12px;font-weight:700;color:#014486;text-transform:uppercase;letter-spacing:0.05em;}
+.sap-dest-desc{font-size:12px;color:#3E3E3C;line-height:1.45;margin-bottom:6px;}
+.sap-dest-tags{display:flex;flex-wrap:wrap;gap:4px;}
+.sap-dest-tag{font-size:10px;font-weight:600;padding:2px 7px;border-radius:3px;background:rgba(1,68,134,0.09);color:#014486;border:1px solid rgba(1,68,134,0.18);}
 
-  .tier-header {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 6px;
-  }
-  .tier-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    flex-shrink: 0;
-    border: 2px solid var(--surface-1);
-    box-shadow: 0 0 0 1.5px var(--border);
-  }
-  .tier-name {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-primary);
-  }
-  .tier-confidence {
-    font-size: 11px;
-    color: var(--text-muted);
-    margin-left: auto;
-    font-variant-numeric: tabular-nums;
-  }
+/* ── Connector (middle) ── */
+.conn-col{display:flex;flex-direction:column;align-items:center;padding-top:80px;gap:0;}
+.conn-label{font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#A8A29D;writing-mode:vertical-rl;transform:rotate(180deg);margin-bottom:6px;}
+.conn-pipe{width:4px;height:80px;background:#DDDBDA;border-radius:2px;position:relative;overflow:hidden;}
+.conn-spark{position:absolute;top:-20px;left:0;width:4px;height:20px;border-radius:2px;background:linear-gradient(to bottom,transparent,#0176D3,transparent);animation:spark 1.8s ease-in-out infinite;}
+@keyframes spark{0%{top:-20px;opacity:0;}15%{opacity:1;}85%{opacity:1;}100%{top:calc(100% + 20px);opacity:0;}}
+.conn-arrow{width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:10px solid #0176D3;}
+.conn-note{font-size:10px;color:#A8A29D;text-align:center;margin-top:6px;line-height:1.4;}
 
-  /* bar track */
-  .bar-track {
-    height: 20px;
-    background: var(--gridline);
-    border-radius: 3px;
-    overflow: hidden;
-    position: relative;
-  }
-  .bar-fill {
-    height: 100%;
-    border-radius: 3px 4px 4px 3px;
-    transition: width 0.6s cubic-bezier(.4,0,.2,1);
-    position: relative;
-  }
-  .bar-value {
-    position: absolute;
-    right: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 11px;
-    font-weight: 600;
-    color: #fff;
-    font-variant-numeric: tabular-nums;
-  }
+/* ── 3-col layout for main content ── */
+.main-3{display:grid;grid-template-columns:1fr 52px 1fr;gap:0;margin-bottom:16px;}
 
-  .tier-meta {
-    font-size: 11px;
-    color: var(--text-muted);
-    margin-top: 4px;
-    line-height: 1.4;
-  }
+/* ── Timeline ── */
+.tl{display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative;padding:0 8px;}
+.tl::before{content:'';position:absolute;top:18px;left:calc(12.5% + 4px);right:calc(12.5% + 4px);height:2px;background:linear-gradient(to right,#86b6ef,#3987E5,#0176D3,#2E844A);z-index:0;}
+.tl-step{display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 4px;position:relative;z-index:1;}
+.tl-node{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;margin-bottom:8px;border:3px solid #fff;box-shadow:0 0 0 1px #DDDBDA;z-index:2;position:relative;}
+.tl-name{font-size:11px;font-weight:700;color:#181818;margin-bottom:2px;line-height:1.3;}
+.tl-sub{font-size:10px;color:#A8A29D;line-height:1.3;margin-bottom:4px;}
+.tl-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:99px;}
 
-  /* confidence badge */
-  .conf-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 11px;
-    font-weight: 600;
-    padding: 2px 7px;
-    border-radius: 99px;
-    margin-top: 5px;
-  }
-  .conf-low    { background: #e8f1fc; color: #1c5cab; }
-  .conf-medium { background: #d4e8fb; color: #1c5cab; }
-  .conf-high   { background: #1c5cab; color: #fff; }
+/* ── Right sidebar ── */
+.sidebar{}
+.detail-field{padding:8px 0;border-bottom:1px solid #F3F2F2;}
+.detail-field:last-child{border-bottom:none;}
+.df-label{font-size:11px;color:#706E6B;font-weight:500;margin-bottom:2px;}
+.df-value{font-size:13px;color:#181818;font-weight:500;}
+.df-value.link{color:#0176D3;cursor:pointer;}
 
-  /* divider between tiers */
-  .tier-divider {
-    height: 1px;
-    background: var(--gridline);
-    margin: 14px 0;
-  }
+/* ── Live feed ── */
+.feed-item{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid #F3F2F2;animation:fadeIn 0.4s ease;}
+.feed-item:last-child{border-bottom:none;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
+.feed-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.feed-text{font-size:12px;color:#3E3E3C;line-height:1.45;}
+.feed-time{font-size:10px;color:#A8A29D;margin-top:2px;}
+.feed-strong{font-weight:700;color:#181818;}
 
-  /* ── SAP panel (right) ───────────────────────────────────────── */
-  .sap-module {
-    background: #f0faf5;
-    border: 1px solid #b3e8d0;
-    border-radius: 6px;
-    padding: 14px 16px;
-    margin-bottom: 12px;
-  }
-  .sap-module:last-child { margin-bottom: 0; }
+/* ── Toast ── */
+.toast-wrap{position:fixed;bottom:20px;right:20px;z-index:999;display:flex;flex-direction:column;gap:8px;pointer-events:none;}
+.toast{background:#fff;border-radius:4px;box-shadow:0 4px 12px rgba(0,0,0,0.2),0 0 0 1px #DDDBDA;padding:10px 14px;display:flex;align-items:flex-start;gap:10px;min-width:300px;max-width:380px;pointer-events:all;transform:translateX(120%);opacity:0;transition:transform 0.3s cubic-bezier(.4,0,.2,1),opacity 0.3s;}
+.toast.in{transform:translateX(0);opacity:1;}
+.toast-stripe{width:4px;border-radius:2px;flex-shrink:0;align-self:stretch;}
+.toast-stripe.success{background:#2E844A;}
+.toast-stripe.info{background:#0176D3;}
+.toast-stripe.warn{background:#DD7A01;}
+.toast-body-wrap{flex:1;}
+.toast-title{font-size:13px;font-weight:700;color:#181818;margin-bottom:1px;}
+.toast-msg{font-size:12px;color:#3E3E3C;}
+.toast-close{font-size:16px;color:#A8A29D;cursor:pointer;align-self:flex-start;line-height:1;padding:0 0 0 4px;}
+.toast-close:hover{color:#181818;}
 
-  .sap-module-name {
-    font-size: 12px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    color: #0a6b49;
-    margin-bottom: 4px;
-  }
-  .sap-module-desc {
-    font-size: 12px;
-    color: var(--text-secondary);
-    line-height: 1.45;
-  }
-  .sap-module-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-    margin-top: 8px;
-  }
-  .sap-tag {
-    font-size: 10px;
-    font-weight: 600;
-    padding: 2px 7px;
-    border-radius: 3px;
-    background: #1baf7a1a;
-    color: #0a6b49;
-    border: 1px solid #b3e8d0;
-  }
+/* ── Tooltip ── */
+.tt{position:fixed;background:#16213A;color:#fff;font-size:12px;padding:8px 12px;border-radius:4px;pointer-events:none;opacity:0;transition:opacity 0.15s;z-index:500;max-width:260px;line-height:1.5;box-shadow:0 4px 12px rgba(0,0,0,0.3);}
+.tt.on{opacity:1;}
+.tt-title{font-weight:700;display:block;margin-bottom:2px;}
+.tt-body{color:#A8C8E8;font-size:11px;}
 
-  /* ── Timeline / Flow below ───────────────────────────────────── */
-  .flow-section {
-    background: var(--surface-1);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 24px;
-    margin-top: 0;
-  }
-
-  .flow-title {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    margin-bottom: 20px;
-  }
-
-  .flow-track {
-    position: relative;
-    padding-left: 0;
-  }
-
-  /* horizontal timeline */
-  .timeline {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0;
-    position: relative;
-  }
-
-  .timeline::before {
-    content: '';
-    position: absolute;
-    top: 20px;
-    left: 12.5%;
-    right: 12.5%;
-    height: 2px;
-    background: linear-gradient(to right, var(--tier-opportunity), var(--tier-order), var(--tier-agreement), var(--sap-accent));
-    z-index: 0;
-  }
-
-  .tl-step {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding: 0 8px;
-    position: relative;
-    z-index: 1;
-  }
-  .tl-node {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    margin-bottom: 10px;
-    border: 2px solid var(--surface-1);
-    box-shadow: 0 0 0 2px var(--border);
-  }
-  .tl-step-name {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: 3px;
-    line-height: 1.3;
-  }
-  .tl-step-sub {
-    font-size: 11px;
-    color: var(--text-muted);
-    line-height: 1.3;
-  }
-  .tl-conf {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    margin-top: 5px;
-    padding: 2px 6px;
-    border-radius: 99px;
-  }
-
-  /* ── KPI Row ─────────────────────────────────────────────────── */
-  .kpi-row {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    margin-bottom: 24px;
-  }
-  .kpi-tile {
-    background: var(--surface-1);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 18px 20px;
-  }
-  .kpi-label {
-    font-size: 11px;
-    color: var(--text-muted);
-    font-weight: 500;
-    margin-bottom: 6px;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-  }
-  .kpi-value {
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--text-primary);
-    line-height: 1;
-    margin-bottom: 4px;
-  }
-  .kpi-delta {
-    font-size: 12px;
-    color: #006300;
-    font-weight: 600;
-  }
-  .kpi-sub {
-    font-size: 11px;
-    color: var(--text-muted);
-  }
-
-  /* ── Legend ──────────────────────────────────────────────────── */
-  .legend {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    flex-wrap: wrap;
-    margin-top: 16px;
-    padding-top: 16px;
-    border-top: 1px solid var(--gridline);
-  }
-  .legend-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 12px;
-    color: var(--text-secondary);
-  }
-  .legend-swatch {
-    width: 14px;
-    height: 8px;
-    border-radius: 2px;
-    flex-shrink: 0;
-  }
-
-  /* tooltip */
-  .tooltip {
-    position: fixed;
-    background: var(--text-primary);
-    color: #fff;
-    font-size: 12px;
-    padding: 8px 12px;
-    border-radius: 5px;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.15s;
-    z-index: 100;
-    max-width: 220px;
-    line-height: 1.5;
-  }
-  .tooltip.visible { opacity: 1; }
-  .tooltip strong { color: #fff; display: block; margin-bottom: 2px; }
-  .tooltip span { color: #c3c2b7; }
-
-  .clickable { cursor: pointer; }
-  .clickable:hover .bar-fill { filter: brightness(1.08); }
-  .clickable:hover .sap-module { border-color: var(--sap-accent); }
+/* ── Utility ── */
+.sf-green{color:#2E844A;font-weight:700;}
+.sf-blue{color:#0176D3;font-weight:700;}
+.sf-warn{color:#A55000;font-weight:700;}
+.flex{display:flex;align-items:center;gap:8px;}
 </style>
 </head>
 <body>
 
-<div class="vignette-header">
-  <div class="vignette-label">Vignette 1 of 2</div>
-  <div class="vignette-title">Demand Signals: Salesforce Manufacturing Cloud → SAP</div>
-  <div class="vignette-subtitle">Salesforce aggregates three demand signals at increasing levels of commercial confidence — Opportunities, Sales Orders, and Sales Agreement run-rate — and transmits a unified demand package to SAP for materials and procurement planning.</div>
-</div>
-
-<!-- KPI row -->
-<div class="kpi-row">
-  <div class="kpi-tile">
-    <div class="kpi-label">Total Demand Signal (12-mo)</div>
-    <div class="kpi-value">$184.6M</div>
-    <div class="kpi-delta">↑ 12% vs prior period</div>
+<!-- Global Nav -->
+<div class="gn">
+  <div class="gn-waffle">&#9783;</div>
+  <div class="gn-logo">
+    <svg viewBox="0 0 32 32"><rect width="32" height="32" rx="6" fill="#0176D3"/><path d="M16 5C12.1 5 8.8 7.4 7.4 10.8C6.5 10.3 5.5 10 4.5 10C1.5 10-0.5 12.5-0.5 15.5S1.5 21 4.5 21H27.5C30.5 21 32.5 18.5 32.5 15.5S30.5 10 27.5 10C27 10 26.5 10.1 26 10.2C24.6 7.1 21.5 5 16 5Z" fill="white"/></svg>
   </div>
-  <div class="kpi-tile">
-    <div class="kpi-label">High-Confidence (Agreement + Order)</div>
-    <div class="kpi-value">$131.2M</div>
-    <div class="kpi-sub">71% of total pipeline</div>
+  <div class="gn-divider"></div>
+  <div class="gn-app">Manufacturing Cloud</div>
+  <div class="gn-search">
+    <span class="gn-search-icon">⌕</span>
+    <input type="text" placeholder="Search Salesforce…">
   </div>
-  <div class="kpi-tile">
-    <div class="kpi-label">Last SAP Sync</div>
-    <div class="kpi-value" style="font-size:20px;padding-top:4px;">2 hrs ago</div>
-    <div class="kpi-sub">Next: automated, 6-hr cadence</div>
+  <div class="gn-right">
+    <div class="gn-icon-btn" title="Home">⌂</div>
+    <div class="gn-icon-btn" title="Notifications">🔔</div>
+    <div class="gn-icon-btn" title="Help">?</div>
+    <div class="gn-icon-btn" title="Setup">⚙</div>
+    <div class="gn-avatar">MR</div>
   </div>
 </div>
 
-<!-- Main 3-column layout -->
-<div class="layout-grid">
+<!-- App Nav -->
+<div class="an">
+  <div class="an-item">Home</div>
+  <div class="an-item">Accounts</div>
+  <div class="an-item active">Sales Agreements</div>
+  <div class="an-item">Opportunities</div>
+  <div class="an-item">Orders</div>
+  <div class="an-item">Account Forecasts</div>
+  <div class="an-item">SAP Integration</div>
+  <div class="an-item">Reports</div>
+</div>
 
-  <!-- LEFT: Salesforce signal sources -->
-  <div class="panel">
-    <div class="panel-label">Salesforce Manufacturing Cloud</div>
-    <div class="panel-title">Demand Signal Sources</div>
+<!-- Path -->
+<div class="path-wrap">
+  <div class="path">
+    <div class="path-step done"><div class="path-dot"></div> Draft</div>
+    <div class="path-step done"><div class="path-dot"></div> In Review</div>
+    <div class="path-step done"><div class="path-dot"></div> Approved</div>
+    <div class="path-step current"><div class="path-dot"></div> Active</div>
+    <div class="path-step"><div class="path-dot"></div> Renewed</div>
+    <div class="path-step"><div class="path-dot"></div> Expired</div>
+  </div>
+</div>
 
-    <!-- Tier 3: Sales Agreements -->
-    <div class="signal-tier clickable" data-tip-title="Sales Agreements (Run-Rate)" data-tip-body="Contractually committed volumes — highest planning confidence. Drives firm purchase orders in SAP MM.">
-      <div class="tier-header">
-        <div class="tier-dot" style="background:var(--tier-agreement)"></div>
-        <div class="tier-name">Sales Agreements</div>
-        <div class="tier-confidence">Run-rate</div>
-      </div>
-      <div class="bar-track">
-        <div class="bar-fill" style="background:var(--tier-agreement); width:82%">
-          <span class="bar-value">$74.8M</span>
+<!-- Record Header -->
+<div class="rh">
+  <div class="rh-breadcrumb">
+    <a>Sales Agreements</a> / Acme Industrial — Hydraulic Components FY2026
+  </div>
+  <div class="rh-top">
+    <div class="rh-icon">
+      <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+    </div>
+    <div class="rh-meta">
+      <div class="rh-type">Sales Agreement</div>
+      <div class="rh-name">Acme Industrial — Hydraulic Components FY2026</div>
+    </div>
+    <div class="rh-actions">
+      <button class="btn btn-neutral" onclick="openRenew()">Clone</button>
+      <button class="btn btn-neutral" onclick="openRenew()">Edit</button>
+      <button class="btn btn-success" id="syncBtn" onclick="doSync()">⇅ Send to SAP</button>
+    </div>
+  </div>
+
+  <!-- Highlights Panel -->
+  <div class="hp">
+    <div class="hp-field">
+      <div class="hp-label">Account Name</div>
+      <div class="hp-value link">Acme Industrial</div>
+    </div>
+    <div class="hp-field">
+      <div class="hp-label">Agreement Status</div>
+      <div class="hp-value"><span class="hp-badge badge-green">● Active</span></div>
+    </div>
+    <div class="hp-field">
+      <div class="hp-label">Committed Revenue</div>
+      <div class="hp-value">$21.3M</div>
+    </div>
+    <div class="hp-field">
+      <div class="hp-label">Start / End Date</div>
+      <div class="hp-value">Jan 1 – Dec 31, 2026</div>
+    </div>
+    <div class="hp-field">
+      <div class="hp-label">SAP Sync Status</div>
+      <div class="hp-value"><span class="hp-badge badge-blue" id="syncBadge">● Synced</span></div>
+    </div>
+  </div>
+
+  <!-- Tab Bar -->
+  <div class="tb">
+    <div class="tb-item active">Demand Signals</div>
+    <div class="tb-item">Agreement Lines <span class="tb-count">14</span></div>
+    <div class="tb-item">Orders <span class="tb-count">38</span></div>
+    <div class="tb-item">Actuals &amp; Forecast</div>
+    <div class="tb-item">SAP Integration Log</div>
+    <div class="tb-item">Activity</div>
+  </div>
+</div>
+
+<!-- Page Body -->
+<div class="pb">
+
+  <!-- LEFT MAIN -->
+  <div>
+
+    <!-- Demand signal header card -->
+    <div class="card">
+      <div class="ch">
+        <div class="ch-title">Demand Signals → SAP</div>
+        <div class="ch-actions">
+          <span style="font-size:11px;color:#706E6B;">Total 12-mo pipeline:</span>
+          <span style="font-size:14px;font-weight:700;color:#181818;">$184.6M</span>
+          <span class="hp-badge badge-green" style="font-size:11px;">↑ 12% YoY</span>
         </div>
       </div>
-      <div class="tier-meta">Contracted volumes · renewal schedules · committed quantities</div>
-      <span class="conf-badge conf-high">● High confidence</span>
-    </div>
+      <div class="cb" style="padding-bottom:8px;">
 
-    <div class="tier-divider"></div>
+        <!-- Three-col: SF sources | pipe | SAP targets -->
+        <div class="main-3">
 
-    <!-- Tier 2: Entered Orders -->
-    <div class="signal-tier clickable" data-tip-title="Entered Sales Orders (OMS)" data-tip-body="Confirmed customer orders in Salesforce Order Management. Signals firm short-term demand into SAP PP/DS and MM.">
-      <div class="tier-header">
-        <div class="tier-dot" style="background:var(--tier-order)"></div>
-        <div class="tier-name">Entered Sales Orders</div>
-        <div class="tier-confidence">OMS</div>
-      </div>
-      <div class="bar-track">
-        <div class="bar-fill" style="background:var(--tier-order); width:62%">
-          <span class="bar-value">$56.4M</span>
+          <!-- SF sources -->
+          <div>
+            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:#706E6B;margin-bottom:10px;">Salesforce Sources</div>
+
+            <div class="sig" id="sig1"
+              data-t="Sales Agreement Run-Rate"
+              data-b="Contractually committed volumes — highest procurement confidence. Drives firm blanket POs and vendor scheduling agreements in SAP MM/PP. Updated whenever an agreement line quantity or price is modified.">
+              <div class="sig-ico" style="background:#EEF6EC;">🤝</div>
+              <div class="sig-body">
+                <div class="sig-row1">
+                  <span class="sig-name">Sales Agreements</span>
+                  <span class="hp-badge badge-green" style="font-size:10px;">● High</span>
+                </div>
+                <div class="sig-track"><div class="sig-fill" id="sf1" style="background:#0176D3;width:0;"></div></div>
+                <div class="sig-foot">
+                  <span class="sig-amt">$74.8M</span>
+                  <span class="sig-sub">Run-rate · committed volumes</span>
+                </div>
+                <div class="sig-tags">
+                  <span class="tag tag-sap">→ SAP MM</span>
+                  <span class="tag tag-sap">→ SAP PP/DS</span>
+                  <span class="tag">Firm POs</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="sig" id="sig2"
+              data-t="Entered Sales Orders (OMS)"
+              data-b="Confirmed customer orders in Salesforce Order Management. Firm short-term demand — triggers MRP runs and planned orders in SAP PP/DS within 0–90 day horizon.">
+              <div class="sig-ico" style="background:#EBF5FB;">📋</div>
+              <div class="sig-body">
+                <div class="sig-row1">
+                  <span class="sig-name">Entered Sales Orders</span>
+                  <span class="hp-badge badge-blue" style="font-size:10px;">● Med–High</span>
+                </div>
+                <div class="sig-track"><div class="sig-fill" id="sf2" style="background:#3987E5;width:0;"></div></div>
+                <div class="sig-foot">
+                  <span class="sig-amt">$56.4M</span>
+                  <span class="sig-sub">Confirmed · ship dates set</span>
+                </div>
+                <div class="sig-tags">
+                  <span class="tag tag-sap">→ SAP PP/DS</span>
+                  <span class="tag">MRP trigger</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="sig" id="sig3"
+              data-t="Sales Opportunities (CRM Pipeline)"
+              data-b="Probability-weighted pipeline from Salesforce CRM. Informs SAP IBP / APO for rough-cut capacity planning over 6–18 months. Not used for firm procurement — signals potential demand only.">
+              <div class="sig-ico" style="background:#F9F0FF;">🎯</div>
+              <div class="sig-body">
+                <div class="sig-row1">
+                  <span class="sig-name">Sales Opportunities</span>
+                  <span class="hp-badge badge-gray" style="font-size:10px;">● Lower</span>
+                </div>
+                <div class="sig-track"><div class="sig-fill" id="sf3" style="background:#86b6ef;width:0;"></div></div>
+                <div class="sig-foot">
+                  <span class="sig-amt">$53.4M</span>
+                  <span class="sig-sub">Prob-weighted · 18-mo horizon</span>
+                </div>
+                <div class="sig-tags">
+                  <span class="tag tag-sap">→ SAP IBP / APO</span>
+                  <span class="tag">Rough-cut capacity</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Animated pipe -->
+          <div class="conn-col">
+            <div class="conn-label">MID Server</div>
+            <div class="conn-pipe"><div class="conn-spark"></div></div>
+            <div class="conn-arrow"></div>
+            <div class="conn-note">API<br>sync</div>
+          </div>
+
+          <!-- SAP destinations -->
+          <div>
+            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:#706E6B;margin-bottom:10px;">SAP Destinations</div>
+
+            <div class="sap-dest" id="sd1"
+              data-t="SAP MM — Materials Management"
+              data-b="Sales Agreement committed volumes create firm purchase orders and blanket POs. Vendor scheduling agreements are generated for run-rate items, locking in supply and pricing.">
+              <div class="sap-dest-header">
+                <div class="sap-dest-logo">MM</div>
+                <div class="sap-dest-name">MM — Materials Management</div>
+              </div>
+              <div class="sap-dest-desc">Agreement run-rates create firm POs, blanket orders, and vendor scheduling agreements.</div>
+              <div class="sap-dest-tags">
+                <span class="sap-dest-tag">Agreements in</span>
+                <span class="sap-dest-tag">Firm POs out</span>
+                <span class="sap-dest-tag">Blanket POs</span>
+              </div>
+            </div>
+
+            <div class="sap-dest" id="sd2"
+              data-t="SAP PP/DS — Production Planning"
+              data-b="Confirmed sales orders trigger MRP runs. Salesforce order line items map to planned production orders and detailed shop-floor schedules for the 0–90 day window.">
+              <div class="sap-dest-header">
+                <div class="sap-dest-logo">PP</div>
+                <div class="sap-dest-name">PP/DS — Production Planning</div>
+              </div>
+              <div class="sap-dest-desc">Entered orders trigger MRP, create planned production orders, and drive detailed scheduling.</div>
+              <div class="sap-dest-tags">
+                <span class="sap-dest-tag">Orders in</span>
+                <span class="sap-dest-tag">MRP run</span>
+                <span class="sap-dest-tag">0–90 day</span>
+              </div>
+            </div>
+
+            <div class="sap-dest" id="sd3"
+              data-t="SAP IBP / APO — Demand Planning"
+              data-b="Probability-weighted opportunity pipeline feeds long-range demand planning. Enables rough-cut capacity checks and early supplier reservation over 6–18 month horizon before orders are firm.">
+              <div class="sap-dest-header">
+                <div class="sap-dest-logo">IBP</div>
+                <div class="sap-dest-name">IBP / APO — Demand Planning</div>
+              </div>
+              <div class="sap-dest-desc">Opportunity pipeline drives long-range capacity planning and supply network design.</div>
+              <div class="sap-dest-tags">
+                <span class="sap-dest-tag">Opps in</span>
+                <span class="sap-dest-tag">6–18 mo horizon</span>
+                <span class="sap-dest-tag">Rough-cut</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="tier-meta">Confirmed orders · ship dates · line-item quantities</div>
-      <span class="conf-badge conf-medium">● Medium–high confidence</span>
     </div>
 
-    <div class="tier-divider"></div>
-
-    <!-- Tier 1: Opportunities -->
-    <div class="signal-tier clickable" data-tip-title="Sales Opportunities (CRM)" data-tip-body="Weighted pipeline from Salesforce CRM. Informs SAP long-range planning (APO/IBP) and capacity reservation — not firm procurement.">
-      <div class="tier-header">
-        <div class="tier-dot" style="background:var(--tier-opportunity)"></div>
-        <div class="tier-name">Sales Opportunities</div>
-        <div class="tier-confidence">CRM pipeline</div>
-      </div>
-      <div class="bar-track">
-        <div class="bar-fill" style="background:var(--tier-opportunity); width:59%">
-          <span class="bar-value">$53.4M</span>
+    <!-- Confidence escalation -->
+    <div class="card">
+      <div class="ch"><div class="ch-title">Confidence Escalation — Pipeline to Procurement</div></div>
+      <div class="cb">
+        <div class="tl">
+          <div class="tl-step">
+            <div class="tl-node" style="background:#F0EEFF;">🎯</div>
+            <div class="tl-name">Opportunity<br>Created</div>
+            <div class="tl-sub">Stage-gated<br>CRM entry</div>
+            <div class="tl-badge" style="background:#F3F2F2;color:#706E6B;">30–60%</div>
+          </div>
+          <div class="tl-step">
+            <div class="tl-node" style="background:#EBF5FB;">📋</div>
+            <div class="tl-name">Sales Order<br>Entered</div>
+            <div class="tl-sub">OMS confirmed<br>ship date set</div>
+            <div class="tl-badge" style="background:#EBF5FB;color:#014486;">~80%</div>
+          </div>
+          <div class="tl-step">
+            <div class="tl-node" style="background:#0176D3;">🤝</div>
+            <div class="tl-name">Agreement<br>Activated</div>
+            <div class="tl-sub">Run-rate locked<br>qty committed</div>
+            <div class="tl-badge" style="background:#0176D3;color:#fff;">95%+</div>
+          </div>
+          <div class="tl-step">
+            <div class="tl-node" style="background:#EEF6EC;">⚙️</div>
+            <div class="tl-name">SAP Demand<br>Received</div>
+            <div class="tl-sub">PO created<br>supplier notified</div>
+            <div class="tl-badge" style="background:#2E844A;color:#fff;">Firm</div>
+          </div>
         </div>
       </div>
-      <div class="tier-meta">Probability-weighted · stage-gated · rolling 18-month horizon</div>
-      <span class="conf-badge conf-low">● Lower confidence</span>
     </div>
 
-    <div class="legend">
-      <div class="legend-item"><div class="legend-swatch" style="background:var(--tier-agreement)"></div>Sales Agreement</div>
-      <div class="legend-item"><div class="legend-swatch" style="background:var(--tier-order)"></div>Entered Order</div>
-      <div class="legend-item"><div class="legend-swatch" style="background:var(--tier-opportunity)"></div>Opportunity</div>
-    </div>
-  </div>
+  </div><!-- /main -->
 
-  <!-- CENTER: connector arrow -->
-  <div class="connector">
-    <div class="connector-label" style="writing-mode:vertical-rl; transform:rotate(180deg); font-size:9px; letter-spacing:0.1em; color:var(--sap-accent);">API / MID SERVER</div>
-    <div class="connector-line" style="height:120px; background: linear-gradient(to bottom, var(--tier-agreement), var(--sap-accent));"></div>
-    <div class="arrow-head"></div>
-    <div style="font-size:10px; color:var(--text-muted); text-align:center; margin-top:6px; line-height:1.4;">Real-time<br>& batch sync</div>
-  </div>
+  <!-- RIGHT SIDEBAR -->
+  <div class="sidebar">
 
-  <!-- RIGHT: SAP modules -->
-  <div class="panel">
-    <div class="panel-label">SAP</div>
-    <div class="panel-title">Planning & Procurement Destinations</div>
-
-    <div class="sap-module clickable" data-tip-title="SAP IBP / APO — Long-Range Planning" data-tip-body="Receives opportunity pipeline. Used for capacity planning, rough-cut material requirements, and supplier capacity reservation over 6–18 month horizon.">
-      <div class="sap-module-name">IBP / APO — Demand Planning</div>
-      <div class="sap-module-desc">Receives probability-weighted opportunity volumes for long-range capacity and supply network planning.</div>
-      <div class="sap-module-tags">
-        <span class="sap-tag">Opportunities</span>
-        <span class="sap-tag">6–18 mo horizon</span>
-        <span class="sap-tag">Rough-cut capacity</span>
+    <!-- Integration status -->
+    <div class="card">
+      <div class="ch"><div class="ch-title">SAP Integration Status</div></div>
+      <div class="cb">
+        <div class="detail-field">
+          <div class="df-label">Connection</div>
+          <div class="df-value flex"><span style="width:8px;height:8px;border-radius:50%;background:#2E844A;display:inline-block;animation:pulse 2s infinite;"></span> Active — MID Server</div>
+        </div>
+        <div class="detail-field">
+          <div class="df-label">Last Sync</div>
+          <div class="df-value" id="lastSync">Today 10:14 AM</div>
+        </div>
+        <div class="detail-field">
+          <div class="df-label">Next Scheduled</div>
+          <div class="df-value">Today 4:14 PM</div>
+        </div>
+        <div class="detail-field">
+          <div class="df-label">Records Synced (30d)</div>
+          <div class="df-value">1,284 demand lines</div>
+        </div>
+        <div class="detail-field">
+          <div class="df-label">SAP System</div>
+          <div class="df-value link">S4H_PROD · ECC 6.0</div>
+        </div>
+        <div style="margin-top:12px;">
+          <button class="btn btn-brand" style="width:100%;justify-content:center;" onclick="doSync()">⇅ Send Demand to SAP Now</button>
+        </div>
       </div>
     </div>
 
-    <div class="sap-module clickable" data-tip-title="SAP PP/DS — Production Planning" data-tip-body="Confirmed orders drive detailed scheduling. Salesforce order line items map to planned orders, triggering MRP runs for sub-assemblies and components.">
-      <div class="sap-module-name">PP / DS — Production Planning</div>
-      <div class="sap-module-desc">Entered sales orders trigger MRP runs, planned orders, and detailed scheduling for near-term manufacturing.</div>
-      <div class="sap-module-tags">
-        <span class="sap-tag">Sales Orders</span>
-        <span class="sap-tag">0–90 day horizon</span>
-        <span class="sap-tag">MRP / scheduling</span>
+    <!-- Live activity feed -->
+    <div class="card">
+      <div class="ch">
+        <div class="ch-title">Live Activity</div>
+        <span class="ch-link" style="cursor:default;"><span style="width:6px;height:6px;border-radius:50%;background:#2E844A;display:inline-block;margin-right:4px;animation:pulse 2s infinite;"></span>Live</span>
+      </div>
+      <div class="cb" id="feedWrap" style="padding:0 16px;">
+        <div class="feed-item">
+          <div class="feed-dot" style="background:#2E844A;"></div>
+          <div>
+            <div class="feed-text"><span class="feed-strong">SAP MM:</span> 6 blanket POs refreshed from agreement run-rate</div>
+            <div class="feed-time">2 min ago</div>
+          </div>
+        </div>
+        <div class="feed-item">
+          <div class="feed-dot" style="background:#0176D3;"></div>
+          <div>
+            <div class="feed-text"><span class="feed-strong">New Order:</span> SO-2026-4821 entered · $142K · triggers MRP</div>
+            <div class="feed-time">18 min ago</div>
+          </div>
+        </div>
+        <div class="feed-item">
+          <div class="feed-dot" style="background:#86b6ef;"></div>
+          <div>
+            <div class="feed-text"><span class="feed-strong">Opportunity updated:</span> Q3 Expansion → Stage 4 · prob 65%</div>
+            <div class="feed-time">44 min ago</div>
+          </div>
+        </div>
+        <div class="feed-item">
+          <div class="feed-dot" style="background:#2E844A;"></div>
+          <div>
+            <div class="feed-text"><span class="feed-strong">SAP IBP:</span> Long-range plan refreshed · $53.4M opp pipeline loaded</div>
+            <div class="feed-time">2 hrs ago</div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="sap-module clickable" data-tip-title="SAP MM — Materials Management / Procurement" data-tip-body="Sales agreement run-rate drives firm purchase order creation. Committed volumes enable blanket POs and vendor scheduling agreements, reducing material risk.">
-      <div class="sap-module-name">MM — Materials Management</div>
-      <div class="sap-module-desc">Agreement run-rates drive firm purchase orders, blanket POs, and vendor scheduling agreements for committed volumes.</div>
-      <div class="sap-module-tags">
-        <span class="sap-tag">Sales Agreements</span>
-        <span class="sap-tag">Firm POs</span>
-        <span class="sap-tag">Vendor scheduling</span>
+    <!-- KPI mini ── -->
+    <div class="card">
+      <div class="ch"><div class="ch-title">Demand Summary</div></div>
+      <div class="cb" style="padding:12px 16px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div>
+            <div class="df-label">Agreements</div>
+            <div style="font-size:18px;font-weight:700;">$74.8M</div>
+            <div style="font-size:10px;color:#2E844A;font-weight:600;">↑ 8% YoY</div>
+          </div>
+          <div>
+            <div class="df-label">Orders (OMS)</div>
+            <div style="font-size:18px;font-weight:700;">$56.4M</div>
+            <div style="font-size:10px;color:#2E844A;font-weight:600;">↑ 14% YoY</div>
+          </div>
+          <div>
+            <div class="df-label">Opportunities</div>
+            <div style="font-size:18px;font-weight:700;">$53.4M</div>
+            <div style="font-size:10px;color:#A8A29D;">18-mo wtd</div>
+          </div>
+          <div>
+            <div class="df-label">SAP POs Created</div>
+            <div style="font-size:18px;font-weight:700;">187</div>
+            <div style="font-size:10px;color:#A8A29D;">This agreement</div>
+          </div>
+        </div>
       </div>
     </div>
 
-  </div>
-</div>
+  </div><!-- /sidebar -->
+</div><!-- /pb -->
 
-<!-- Flow / timeline -->
-<div class="flow-section">
-  <div class="flow-title">Confidence Escalation — How signals flow from pipeline to procurement</div>
-  <div class="timeline">
-    <div class="tl-step">
-      <div class="tl-node" style="background:#e8f1fc;">🎯</div>
-      <div class="tl-step-name">Opportunity<br>Created</div>
-      <div class="tl-step-sub">CRM pipeline<br>stage-gated</div>
-      <div class="tl-conf" style="background:#e8f1fc; color:#1c5cab;">~30–60% confidence</div>
-    </div>
-    <div class="tl-step">
-      <div class="tl-node" style="background:#d4e8fb;">📋</div>
-      <div class="tl-step-name">Sales Order<br>Entered</div>
-      <div class="tl-step-sub">OMS confirmed<br>ship dates set</div>
-      <div class="tl-conf" style="background:#d4e8fb; color:#256abf;">~80% confidence</div>
-    </div>
-    <div class="tl-step">
-      <div class="tl-node" style="background:#1c5cab; color:#fff;">🤝</div>
-      <div class="tl-step-name">Agreement<br>Activated</div>
-      <div class="tl-step-sub">Run-rate locked<br>quantities committed</div>
-      <div class="tl-conf" style="background:#1c5cab; color:#fff;">~95%+ confidence</div>
-    </div>
-    <div class="tl-step">
-      <div class="tl-node" style="background:#d4f5ea;">⚙️</div>
-      <div class="tl-step-name">SAP Demand<br>Received</div>
-      <div class="tl-step-sub">MRP / PO creation<br>supplier notified</div>
-      <div class="tl-conf" style="background:#0a6b49; color:#fff;">Procurement action</div>
-    </div>
-  </div>
-</div>
+<!-- Toasts -->
+<div class="toast-wrap" id="tw"></div>
 
 <!-- Tooltip -->
-<div class="tooltip" id="tooltip"></div>
+<div class="tt" id="tt"></div>
+
+<style>@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.5;transform:scale(0.8);}}</style>
 
 <script>
-  const tooltip = document.getElementById('tooltip');
-
-  document.querySelectorAll('[data-tip-title]').forEach(el => {
-    el.addEventListener('mouseenter', e => {
-      tooltip.innerHTML = '<strong>' + el.dataset.tipTitle + '</strong><span>' + el.dataset.tipBody + '</span>';
-      tooltip.classList.add('visible');
-    });
-    el.addEventListener('mousemove', e => {
-      let x = e.clientX + 14, y = e.clientY + 14;
-      if (x + 240 > window.innerWidth) x = e.clientX - 254;
-      if (y + 80 > window.innerHeight) y = e.clientY - 80;
-      tooltip.style.left = x + 'px';
-      tooltip.style.top = y + 'px';
-    });
-    el.addEventListener('mouseleave', () => tooltip.classList.remove('visible'));
+// Tooltip
+const tt = document.getElementById('tt');
+document.querySelectorAll('[data-t]').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    tt.innerHTML = '<span class="tt-title">' + el.dataset.t + '</span><span class="tt-body">' + el.dataset.b + '</span>';
+    tt.classList.add('on');
   });
+  el.addEventListener('mousemove', e => {
+    let x = e.clientX + 14, y = e.clientY + 14;
+    if (x + 280 > window.innerWidth) x = e.clientX - 284;
+    if (y + 90 > window.innerHeight) y = e.clientY - 90;
+    tt.style.left = x + 'px'; tt.style.top = y + 'px';
+  });
+  el.addEventListener('mouseleave', () => tt.classList.remove('on'));
+});
+
+// Animate bars on load
+window.addEventListener('load', () => {
+  setTimeout(() => document.getElementById('sf1').style.width = '84%', 400);
+  setTimeout(() => document.getElementById('sf2').style.width = '63%', 700);
+  setTimeout(() => document.getElementById('sf3').style.width = '60%', 1000);
+});
+
+// Toast
+function toast(title, msg, type = 'success') {
+  const tw = document.getElementById('tw');
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.innerHTML = `<div class="toast-stripe ${type}"></div><div class="toast-body-wrap"><div class="toast-title">${title}</div><div class="toast-msg">${msg}</div></div><div class="toast-close" onclick="this.closest('.toast').remove()">×</div>`;
+  tw.appendChild(t);
+  requestAnimationFrame(() => requestAnimationFrame(() => t.classList.add('in')));
+  setTimeout(() => { t.classList.remove('in'); setTimeout(() => t.remove(), 350); }, 5000);
+}
+
+// SAP Sync
+function doSync() {
+  const btn = document.getElementById('syncBtn');
+  const badge = document.getElementById('syncBadge');
+  btn.disabled = true;
+  btn.textContent = '⟳ Sending…';
+  badge.textContent = '● Syncing…';
+  badge.className = 'hp-badge badge-warn';
+
+  // Light up SAP cards in sequence
+  ['sd1','sd2','sd3'].forEach((id, i) => {
+    setTimeout(() => {
+      document.querySelectorAll('.sap-dest').forEach(d => d.classList.remove('lit'));
+      document.getElementById(id).classList.add('lit');
+    }, i * 900);
+  });
+
+  setTimeout(() => {
+    document.querySelectorAll('.sap-dest').forEach(d => d.classList.remove('lit'));
+    btn.disabled = false;
+    btn.textContent = '✓ Sent to SAP';
+    btn.className = 'btn btn-neutral';
+    badge.textContent = '● Synced';
+    badge.className = 'hp-badge badge-green';
+    document.getElementById('lastSync').textContent = 'Just now';
+
+    toast('Demand Package Sent', '$184.6M across 3 signal tiers → SAP S/4HANA', 'success');
+    setTimeout(() => toast('SAP MM Updated', '18 blanket POs refreshed from agreement run-rates', 'success'), 1000);
+    setTimeout(() => toast('SAP PP/DS: MRP Triggered', 'Planned orders created for 38 confirmed sales orders', 'info'), 2100);
+    setTimeout(() => toast('SAP IBP Updated', 'Opportunity pipeline ($53.4M) loaded to demand horizon', 'info'), 3200);
+
+    addFeed('SAP sync complete · $184.6M demand package transmitted', '#2E844A');
+    setTimeout(() => btn.textContent = '⇅ Send to SAP', 4000);
+    setTimeout(() => btn.className = 'btn btn-success', 4000);
+  }, 2800);
+}
+
+function addFeed(text, color) {
+  const fw = document.getElementById('feedWrap');
+  const item = document.createElement('div');
+  item.className = 'feed-item';
+  item.innerHTML = `<div class="feed-dot" style="background:${color};"></div><div><div class="feed-text"><span class="feed-strong">Just now:</span> ${text}</div><div class="feed-time">Just now</div></div>`;
+  fw.insertBefore(item, fw.firstChild);
+}
+
+// Live feed trickle
+const liveEvents = [
+  ['SO-2026-4839 entered · $98K · Hydraulic Valve assemblies', '#0176D3'],
+  ['SAP PP/DS: MRP run triggered for 3 new orders', '#2E844A'],
+  ['Agreement line quantity updated · +500 units Q4', '#0176D3'],
+  ['Opportunity "Q4 Expansion Phase 2" advanced to Stage 5', '#86b6ef'],
+  ['SAP MM: Vendor scheduling agreement refreshed', '#2E844A'],
+];
+let liveIdx = 0;
+setInterval(() => {
+  const [text, color] = liveEvents[liveIdx % liveEvents.length];
+  addFeed(text, color);
+  liveIdx++;
+  // Trim feed to 6 items
+  const fw = document.getElementById('feedWrap');
+  while (fw.children.length > 6) fw.removeChild(fw.lastChild);
+}, 12000);
 </script>
 </body>
 </html>

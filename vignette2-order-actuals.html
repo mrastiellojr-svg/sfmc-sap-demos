@@ -3,518 +3,665 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vignette 2 — Order Actuals: SAP → Salesforce Manufacturing Cloud</title>
+<title>Account Forecast: Acme Industrial FY2026 — Salesforce</title>
 <style>
-  :root {
-    --surface-1: #fcfcfb;
-    --surface-2: #f9f9f7;
-    --text-primary: #0b0b0b;
-    --text-secondary: #52514e;
-    --text-muted: #898781;
-    --gridline: #e1e0d9;
-    --baseline: #c3c2b7;
-    --border: rgba(11,11,11,0.10);
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Salesforce Sans',Arial,sans-serif;background:#F3F2F2;color:#181818;font-size:13px;line-height:1.4;min-height:100vh;}
 
-    /* Series */
-    --s1-committed: #2a78d6;   /* blue — commitment baseline */
-    --s2-actuals:   #1baf7a;   /* aqua — actuals/shipped */
-    --s3-forecast:  #eda100;   /* yellow — rolling forecast */
+/* ── Global Nav ── */
+.gn{height:52px;background:#1B1B1B;display:flex;align-items:center;padding:0 12px;gap:0;position:sticky;top:0;z-index:300;border-bottom:1px solid #333;}
+.gn-waffle{width:40px;height:52px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:rgba(255,255,255,0.7);font-size:20px;}
+.gn-waffle:hover{color:#fff;}
+.gn-logo{display:flex;align-items:center;gap:0;padding:0 4px;cursor:pointer;}
+.gn-logo svg{width:24px;height:24px;}
+.gn-divider{width:1px;height:24px;background:rgba(255,255,255,0.15);margin:0 4px;}
+.gn-app{color:rgba(255,255,255,0.9);font-size:14px;font-weight:700;padding:0 12px;}
+.gn-search{flex:1;max-width:480px;margin:0 16px;position:relative;}
+.gn-search input{width:100%;height:32px;background:rgba(255,255,255,0.14);border:1px solid rgba(255,255,255,0.18);border-radius:4px;color:#fff;padding:0 12px 0 34px;font-size:13px;outline:none;}
+.gn-search input::placeholder{color:rgba(255,255,255,0.5);}
+.gn-search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,0.5);font-size:14px;pointer-events:none;}
+.gn-right{display:flex;align-items:center;gap:4px;margin-left:auto;}
+.gn-icon-btn{width:40px;height:40px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.7);cursor:pointer;border-radius:50%;font-size:16px;}
+.gn-icon-btn:hover{background:rgba(255,255,255,0.1);color:#fff;}
+.gn-avatar{width:32px;height:32px;border-radius:50%;background:#0176D3;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;}
 
-    /* Status */
-    --status-good:     #0ca30c;
-    --status-warn:     #fab219;
-    --status-critical: #d03b3b;
+/* ── App Nav ── */
+.an{height:44px;background:#032D60;display:flex;align-items:stretch;padding:0 16px;overflow-x:auto;scrollbar-width:none;}
+.an::-webkit-scrollbar{display:none;}
+.an-item{display:flex;align-items:center;padding:0 14px;color:rgba(255,255,255,0.75);font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;transition:color 0.15s;}
+.an-item:hover{color:#fff;}
+.an-item.active{color:#fff;border-bottom-color:#fff;font-weight:700;}
 
-    /* SAP source color */
-    --sap-green: #1baf7a;
-    --sap-bg:    #f0faf5;
-    --sap-border: #b3e8d0;
-  }
+/* ── Record header ── */
+.rh{background:#fff;border-bottom:1px solid #DDDBDA;padding:16px 24px 0;}
+.rh-breadcrumb{font-size:11px;color:#706E6B;margin-bottom:8px;}
+.rh-breadcrumb a{color:#0176D3;text-decoration:none;cursor:pointer;}
+.rh-breadcrumb a:hover{text-decoration:underline;}
+.rh-top{display:flex;align-items:flex-start;gap:14px;margin-bottom:12px;}
+.rh-icon{width:48px;height:48px;border-radius:6px;background:#2E844A;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px;}
+.rh-meta{flex:1;min-width:0;}
+.rh-type{font-size:11px;color:#706E6B;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:2px;}
+.rh-name{font-size:20px;font-weight:700;color:#181818;}
+.rh-actions{display:flex;gap:8px;align-items:center;flex-shrink:0;}
+.btn{display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:600;padding:0 16px;height:32px;border-radius:4px;border:none;cursor:pointer;transition:background 0.15s;white-space:nowrap;}
+.btn-brand{background:#0176D3;color:#fff;}
+.btn-brand:hover{background:#014486;}
+.btn-neutral{background:#fff;color:#181818;border:1px solid #DDDBDA;box-shadow:0 1px 1px rgba(0,0,0,0.06);}
+.btn-neutral:hover{background:#F3F2F2;}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+/* ── Highlights panel ── */
+.hp{display:grid;grid-template-columns:repeat(5,1fr);gap:0;border-top:1px solid #F3F2F2;padding:12px 0 0;}
+.hp-field{padding:8px 12px 12px;border-right:1px solid #F3F2F2;}
+.hp-field:last-child{border-right:none;}
+.hp-label{font-size:11px;color:#706E6B;font-weight:500;margin-bottom:3px;}
+.hp-value{font-size:14px;font-weight:700;color:#181818;}
+.hp-value.link{color:#0176D3;cursor:pointer;}
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;}
+.b-green{background:#EEF6EC;color:#2E844A;border:1px solid #BAE0C4;}
+.b-blue{background:#EBF5FB;color:#014486;border:1px solid #A8C8E8;}
+.b-warn{background:#FEF7EC;color:#A55000;border:1px solid #F5D08A;}
+.b-red{background:#FDECEA;color:#8C0A0A;border:1px solid #F0A8A8;}
+.b-gray{background:#F3F2F2;color:#3E3E3C;border:1px solid #DDDBDA;}
 
-  body {
-    background: var(--surface-2);
-    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-    color: var(--text-primary);
-    padding: 40px 32px;
-    max-width: 1100px;
-    margin: 0 auto;
-  }
+/* ── Tab bar ── */
+.tb{background:#fff;border-bottom:1px solid #DDDBDA;display:flex;padding:0 24px;overflow-x:auto;scrollbar-width:none;}
+.tb::-webkit-scrollbar{display:none;}
+.tb-item{font-size:13px;font-weight:500;color:#706E6B;padding:10px 16px;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:color 0.15s;}
+.tb-item:hover{color:#181818;}
+.tb-item.active{color:#0176D3;border-bottom-color:#0176D3;font-weight:700;}
+.tb-ct{display:inline-flex;align-items:center;justify-content:center;background:#F3F2F2;color:#706E6B;font-size:10px;font-weight:700;min-width:18px;height:18px;border-radius:9px;padding:0 5px;margin-left:5px;}
 
-  .vignette-header { margin-bottom: 28px; }
-  .vignette-label {
-    font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
-    text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px;
-  }
-  .vignette-title { font-size: 22px; font-weight: 700; line-height: 1.25; margin-bottom: 8px; }
-  .vignette-subtitle { font-size: 14px; color: var(--text-secondary); max-width: 720px; line-height: 1.5; }
+/* ── Page body ── */
+.pb{padding:16px 24px;display:grid;grid-template-columns:1fr 300px;gap:16px;align-items:start;max-width:1400px;margin:0 auto;}
 
-  /* ── KPI Row ─────────────────────────────────────────────────── */
-  .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
-  .kpi-tile {
-    background: var(--surface-1); border: 1px solid var(--border);
-    border-radius: 8px; padding: 16px 18px;
-  }
-  .kpi-label { font-size: 10px; color: var(--text-muted); font-weight: 600; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.06em; }
-  .kpi-value { font-size: 26px; font-weight: 700; line-height: 1; margin-bottom: 3px; }
-  .kpi-sub { font-size: 11px; color: var(--text-muted); }
-  .delta-up   { color: #006300; font-weight: 600; font-size: 12px; }
-  .delta-down { color: var(--status-critical); font-weight: 600; font-size: 12px; }
-  .delta-warn { color: #a07000; font-weight: 600; font-size: 12px; }
+/* ── Card ── */
+.card{background:#fff;border-radius:4px;box-shadow:0 2px 2px rgba(0,0,0,0.08),0 0 0 1px rgba(0,0,0,0.06);overflow:hidden;margin-bottom:16px;}
+.card:last-child{margin-bottom:0;}
+.ch{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid #F3F2F2;}
+.ch-title{font-size:13px;font-weight:700;color:#181818;}
+.ch-link{font-size:12px;color:#0176D3;cursor:pointer;font-weight:500;}
+.ch-link:hover{text-decoration:underline;}
+.cb{padding:16px;}
 
-  /* ── Main layout ─────────────────────────────────────────────── */
-  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-  .full-col { margin-bottom: 16px; }
+/* ── KPI tiles ── */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-bottom:1px solid #F3F2F2;}
+.kpi{padding:14px 16px;border-right:1px solid #F3F2F2;}
+.kpi:last-child{border-right:none;}
+.kpi-label{font-size:11px;color:#706E6B;font-weight:500;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;}
+.kpi-val{font-size:22px;font-weight:700;color:#181818;line-height:1;margin-bottom:3px;}
+.kpi-sub{font-size:11px;}
 
-  .panel {
-    background: var(--surface-1); border: 1px solid var(--border);
-    border-radius: 8px; padding: 22px;
-  }
-  .panel-label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 3px; }
-  .panel-title { font-size: 14px; font-weight: 700; color: var(--text-primary); margin-bottom: 18px; }
+/* ── Channel flow ── */
+.ch-flow{display:grid;grid-template-columns:1fr 36px 1fr 36px 1fr 36px 1fr 36px 1fr;align-items:center;gap:0;padding:0 0 4px;}
+.ch-src{background:#F5FAFF;border:1px solid #A8D4F8;border-radius:4px;padding:10px 8px;text-align:center;cursor:pointer;transition:border-color 0.15s,background 0.15s;}
+.ch-src:hover{background:#EBF5FB;border-color:#0176D3;}
+.ch-src.pulse-in{animation:chPulse 0.6s ease;}
+@keyframes chPulse{0%{background:#EBF5FB;border-color:#0176D3;}100%{background:#F5FAFF;border-color:#A8D4F8;}}
+.ch-src-name{font-size:11px;font-weight:700;color:#014486;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:2px;}
+.ch-src-vol{font-size:13px;font-weight:700;color:#181818;}
+.ch-src-sub{font-size:10px;color:#A8A29D;margin-top:2px;}
+.ch-arrow{display:flex;flex-direction:column;align-items:center;gap:2px;}
+.ch-arr-line{width:100%;height:2px;background:linear-gradient(to right,#A8D4F8,#0176D3);}
+.ch-arr-head{width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:8px solid #0176D3;}
+.ch-arr-label{font-size:9px;color:#A8A29D;letter-spacing:0.04em;white-space:nowrap;}
+.ch-dest{background:#EBF5FB;border:1px solid #0176D3;border-radius:4px;padding:10px 8px;text-align:center;}
+.ch-dest-name{font-size:11px;font-weight:700;color:#014486;text-transform:uppercase;letter-spacing:0.05em;}
+.ch-dest-sub{font-size:10px;color:#706E6B;margin-top:3px;line-height:1.4;}
 
-  /* ── Source ingestion list (left) ───────────────────────────── */
-  .source-item {
-    display: flex; align-items: flex-start; gap: 12px;
-    padding: 12px 0; border-bottom: 1px solid var(--gridline);
-    cursor: pointer;
-  }
-  .source-item:last-child { border-bottom: none; padding-bottom: 0; }
-  .source-icon {
-    width: 36px; height: 36px; border-radius: 7px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px; flex-shrink: 0;
-  }
-  .source-info { flex: 1; min-width: 0; }
-  .source-name { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; }
-  .source-desc { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
-  .source-badge {
-    font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 99px; white-space: nowrap;
-    margin-top: 4px; display: inline-block;
-  }
-  .badge-green  { background: #d4f5ea; color: #0a6b49; border: 1px solid #b3e8d0; }
-  .badge-blue   { background: #e8f1fc; color: #1c5cab; border: 1px solid #b3d5f8; }
-  .badge-orange { background: #fdf0d4; color: #7a5000; border: 1px solid #f5d88a; }
-  .source-vol { font-size: 12px; font-weight: 700; color: var(--text-primary); white-space: nowrap; }
+/* ── Bar chart ── */
+.barchart{padding:0;}
+.bar-row{display:grid;grid-template-columns:52px 1fr 52px;align-items:center;gap:8px;margin-bottom:9px;cursor:pointer;border-radius:3px;padding:3px 4px;transition:background 0.12s;}
+.bar-row:hover{background:#F8F7F6;}
+.bar-row:last-child{margin-bottom:0;}
+.bar-mon{font-size:11px;color:#706E6B;text-align:right;font-variant-numeric:tabular-nums;}
+.bar-group{display:flex;flex-direction:column;gap:3px;}
+.bslim{height:9px;border-radius:3px;transition:width 1.2s cubic-bezier(.4,0,.2,1);}
+.bslim-comm{background:#0176D3;opacity:0.3;}
+.bslim-act{background:#2E844A;}
+.bslim-proj{background:#DD7A01;opacity:0.5;}
+.bar-pct{font-size:11px;font-weight:700;font-variant-numeric:tabular-nums;}
+.pct-over{color:#2E844A;}
+.pct-ok{color:#706E6B;}
+.pct-risk{color:#BA0517;}
+.bar-xaxis{display:flex;justify-content:space-between;padding:4px 0 0 60px;margin-bottom:2px;}
+.bar-xtick{font-size:10px;color:#A8A29D;}
+.bar-legend{display:flex;gap:16px;padding-top:12px;border-top:1px solid #F3F2F2;margin-top:6px;}
+.bl-item{display:flex;align-items:center;gap:5px;font-size:12px;color:#3E3E3C;}
+.bl-sw{width:14px;height:7px;border-radius:2px;flex-shrink:0;}
 
-  /* ── Performance bar chart ───────────────────────────────────── */
-  .chart-area { position: relative; margin-top: 4px; }
+/* ── Account attainment ── */
+.acct{padding:12px 0;border-bottom:1px solid #F3F2F2;cursor:pointer;}
+.acct:last-child{border-bottom:none;padding-bottom:0;}
+.acct:hover{background:#F8F7F6;margin:0 -8px;padding-left:8px;padding-right:8px;border-radius:3px;}
+.acct-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+.acct-name{font-size:13px;font-weight:700;color:#181818;}
+.acct-prd{font-size:11px;color:#A8A29D;margin-bottom:6px;}
+.acct-track{height:8px;background:#F3F2F2;border-radius:4px;margin-bottom:4px;overflow:hidden;position:relative;}
+.acct-fill{height:100%;border-radius:4px;transition:width 1.2s cubic-bezier(.4,0,.2,1);}
+.acct-nums{display:flex;justify-content:space-between;align-items:baseline;}
+.acct-actual{font-size:13px;font-weight:700;color:#181818;}
+.acct-pct{font-size:12px;font-weight:700;}
 
-  .month-row {
-    display: grid; grid-template-columns: 52px 1fr 1fr 64px;
-    align-items: center; gap: 8px; margin-bottom: 8px; cursor: pointer;
-  }
-  .month-row:hover .bar-a, .month-row:hover .bar-b { filter: brightness(1.07); }
+/* ── Integration table ── */
+table{width:100%;border-collapse:collapse;font-size:12px;}
+th{text-align:left;padding:8px 10px;color:#706E6B;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;font-size:10px;border-bottom:2px solid #DDDBDA;}
+td{padding:9px 10px;border-bottom:1px solid #F3F2F2;color:#3E3E3C;vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#F8F7F6;}
 
-  .month-label { font-size: 11px; color: var(--text-muted); font-variant-numeric: tabular-nums; text-align: right; }
+/* ── Feed ── */
+.feed-item{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid #F3F2F2;animation:fi 0.4s ease;}
+.feed-item:last-child{border-bottom:none;}
+@keyframes fi{from{opacity:0;transform:translateY(-5px);}to{opacity:1;transform:translateY(0);}}
+.fd{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.ft{font-size:12px;color:#3E3E3C;line-height:1.45;}
+.ftm{font-size:10px;color:#A8A29D;margin-top:1px;}
+.fs{font-weight:700;color:#181818;}
 
-  .bar-group { display: flex; flex-direction: column; gap: 2px; }
+/* ── Toast ── */
+.tw{position:fixed;bottom:20px;right:20px;z-index:999;display:flex;flex-direction:column;gap:8px;pointer-events:none;}
+.toast{background:#fff;border-radius:4px;box-shadow:0 4px 12px rgba(0,0,0,0.2),0 0 0 1px #DDDBDA;padding:10px 14px;display:flex;align-items:flex-start;gap:10px;min-width:300px;max-width:380px;pointer-events:all;transform:translateX(120%);opacity:0;transition:transform 0.3s cubic-bezier(.4,0,.2,1),opacity 0.3s;}
+.toast.in{transform:translateX(0);opacity:1;}
+.toast-stripe{width:4px;border-radius:2px;flex-shrink:0;align-self:stretch;}
+.toast-stripe.s{background:#2E844A;}
+.toast-stripe.i{background:#0176D3;}
+.toast-stripe.w{background:#BA0517;}
+.toast-bw{flex:1;}
+.toast-t{font-size:13px;font-weight:700;color:#181818;margin-bottom:1px;}
+.toast-m{font-size:12px;color:#3E3E3C;}
+.toast-x{font-size:16px;color:#A8A29D;cursor:pointer;line-height:1;}
+.toast-x:hover{color:#181818;}
 
-  .bar-slim {
-    height: 10px; border-radius: 2px 3px 3px 2px; position: relative;
-    transition: width 0.5s cubic-bezier(.4,0,.2,1);
-  }
-  .bar-slim.bar-a { background: var(--s1-committed); opacity: 0.35; }
-  .bar-slim.bar-b { background: var(--s2-actuals); }
+/* ── Tooltip ── */
+.tt{position:fixed;background:#16213A;color:#fff;font-size:12px;padding:8px 12px;border-radius:4px;pointer-events:none;opacity:0;transition:opacity 0.15s;z-index:500;max-width:260px;line-height:1.5;}
+.tt.on{opacity:1;}
+.tt-t{font-weight:700;display:block;margin-bottom:2px;}
+.tt-b{color:#A8C8E8;font-size:11px;}
 
-  .bar-pct {
-    font-size: 11px; font-weight: 700; font-variant-numeric: tabular-nums;
-    text-align: left; padding-left: 4px;
-  }
-  .pct-over  { color: #006300; }
-  .pct-near  { color: var(--text-secondary); }
-  .pct-under { color: var(--status-critical); }
-
-  /* x-axis ticks */
-  .x-axis { display: flex; justify-content: space-between; padding: 4px 0 0 60px; margin-bottom: 2px; }
-  .x-tick { font-size: 10px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
-
-  .legend { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--gridline); }
-  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-secondary); }
-  .legend-swatch { width: 14px; height: 8px; border-radius: 2px; flex-shrink: 0; }
-
-  /* ── Attainment gauge row ─────────────────────────────────────── */
-  .gauge-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
-  .gauge-tile {
-    background: var(--surface-1); border: 1px solid var(--border);
-    border-radius: 8px; padding: 16px 18px;
-  }
-  .gauge-account { font-size: 12px; font-weight: 700; color: var(--text-primary); margin-bottom: 2px; }
-  .gauge-product { font-size: 11px; color: var(--text-muted); margin-bottom: 10px; }
-  .gauge-track {
-    height: 10px; background: var(--gridline); border-radius: 5px; overflow: visible;
-    position: relative; margin-bottom: 6px;
-  }
-  .gauge-fill {
-    height: 100%; border-radius: 5px 0 0 5px;
-    position: relative; transition: width 0.6s ease;
-  }
-  .gauge-fill.full  { border-radius: 5px; }
-  .gauge-numbers { display: flex; justify-content: space-between; align-items: baseline; }
-  .gauge-actual   { font-size: 13px; font-weight: 700; color: var(--text-primary); }
-  .gauge-target   { font-size: 11px; color: var(--text-muted); }
-  .gauge-pct { font-size: 11px; font-weight: 700; }
-
-  /* ── Flow connector row ──────────────────────────────────────── */
-  .flow-row {
-    background: var(--surface-1); border: 1px solid var(--border);
-    border-radius: 8px; padding: 20px 24px; margin-bottom: 16px;
-  }
-  .flow-row-title { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 16px; }
-
-  .channel-flow {
-    display: grid; grid-template-columns: repeat(5, 1fr);
-    gap: 0; align-items: center; text-align: center;
-  }
-  .cf-source {
-    background: var(--sap-bg); border: 1px solid var(--sap-border);
-    border-radius: 6px; padding: 10px 8px;
-  }
-  .cf-source-name { font-size: 11px; font-weight: 700; color: #0a6b49; text-transform: uppercase; letter-spacing: 0.06em; }
-  .cf-source-vol { font-size: 12px; font-weight: 700; color: var(--text-primary); margin-top: 2px; }
-  .cf-source-sub { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
-
-  .cf-arrow {
-    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
-  }
-  .cf-arrow-line { height: 2px; width: 100%; background: linear-gradient(to right, var(--sap-green), var(--s1-committed)); border-radius: 1px; }
-  .cf-arrow-head { width: 0; height: 0; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-left: 8px solid var(--s1-committed); }
-  .cf-arrow-label { font-size: 9px; color: var(--text-muted); letter-spacing: 0.04em; text-transform: uppercase; }
-
-  .cf-dest {
-    background: #eff5fd; border: 1px solid #b3d5f8;
-    border-radius: 6px; padding: 10px 8px;
-  }
-  .cf-dest-name { font-size: 11px; font-weight: 700; color: #1c5cab; text-transform: uppercase; letter-spacing: 0.06em; }
-  .cf-dest-sub { font-size: 10px; color: var(--text-muted); margin-top: 2px; line-height: 1.4; }
-
-  /* tooltip */
-  .tooltip {
-    position: fixed; background: var(--text-primary); color: #fff;
-    font-size: 12px; padding: 8px 12px; border-radius: 5px;
-    pointer-events: none; opacity: 0; transition: opacity 0.15s;
-    z-index: 100; max-width: 240px; line-height: 1.5;
-  }
-  .tooltip.visible { opacity: 1; }
-  .tooltip strong { color: #fff; display: block; margin-bottom: 2px; }
-  .tooltip span { color: #c3c2b7; }
-
-  /* crosshair line */
-  .chart-wrap { position: relative; }
-  #crosshair {
-    position: absolute; left: 0; top: 0; width: 1px;
-    background: var(--text-muted); opacity: 0; pointer-events: none;
-    z-index: 5; transition: opacity 0.1s;
-  }
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
 </style>
 </head>
 <body>
 
-<div class="vignette-header">
-  <div class="vignette-label">Vignette 2 of 2</div>
-  <div class="vignette-title">Order Actuals: SAP Order Channels → Salesforce Manufacturing Cloud</div>
-  <div class="vignette-subtitle">Incoming orders across SAP channels (EDI, Customer Portal, Direct Entry, Distribution) are integrated back into Salesforce Manufacturing Cloud, so the commercial team can track actual performance against Sales Agreement commitments and account-based forecasts in real time.</div>
-</div>
-
-<!-- KPI row -->
-<div class="kpi-row">
-  <div class="kpi-tile">
-    <div class="kpi-label">YTD Revenue (Actual)</div>
-    <div class="kpi-value">$88.3M</div>
-    <div class="delta-up">↑ 7.4% vs agreement</div>
+<!-- Global Nav -->
+<div class="gn">
+  <div class="gn-waffle">&#9783;</div>
+  <div class="gn-logo"><svg viewBox="0 0 32 32"><rect width="32" height="32" rx="6" fill="#0176D3"/><path d="M16 5C12.1 5 8.8 7.4 7.4 10.8C6.5 10.3 5.5 10 4.5 10C1.5 10-0.5 12.5-0.5 15.5S1.5 21 4.5 21H27.5C30.5 21 32.5 18.5 32.5 15.5S30.5 10 27.5 10C27 10 26.5 10.1 26 10.2C24.6 7.1 21.5 5 16 5Z" fill="white"/></svg></div>
+  <div class="gn-divider"></div>
+  <div class="gn-app">Manufacturing Cloud</div>
+  <div class="gn-search">
+    <span class="gn-search-icon">⌕</span>
+    <input type="text" placeholder="Search Salesforce…">
   </div>
-  <div class="kpi-tile">
-    <div class="kpi-label">Agreement Attainment</div>
-    <div class="kpi-value">107%</div>
-    <div class="kpi-sub">vs. $82.5M committed</div>
-  </div>
-  <div class="kpi-tile">
-    <div class="kpi-label">Forecast vs. Actual Gap</div>
-    <div class="kpi-value" style="color:var(--status-warn)">−$4.2M</div>
-    <div class="delta-warn">↓ 2 accounts at risk</div>
-  </div>
-  <div class="kpi-tile">
-    <div class="kpi-label">Orders Synced (30d)</div>
-    <div class="kpi-value">1,847</div>
-    <div class="kpi-sub">Across 4 SAP channels</div>
+  <div class="gn-right">
+    <div class="gn-icon-btn">⌂</div>
+    <div class="gn-icon-btn">🔔</div>
+    <div class="gn-icon-btn">?</div>
+    <div class="gn-icon-btn">⚙</div>
+    <div class="gn-avatar">MR</div>
   </div>
 </div>
 
-<!-- SAP channel → SF flow -->
-<div class="flow-row">
-  <div class="flow-row-title">SAP Order Channels → Salesforce Manufacturing Cloud Integration</div>
-  <div class="channel-flow">
-    <div class="cf-source" style="cursor:pointer;" data-tip-title="SAP EDI Channel" data-tip-body="Inbound EDI 850/ORDERS from trading partners and distributors. Auto-matched to Sales Agreement line items by customer + material number.">
-      <div class="cf-source-name">EDI</div>
-      <div class="cf-source-vol">$34.1M</div>
-      <div class="cf-source-sub">Distributors / trading partners</div>
+<!-- App Nav -->
+<div class="an">
+  <div class="an-item">Home</div>
+  <div class="an-item">Accounts</div>
+  <div class="an-item">Sales Agreements</div>
+  <div class="an-item">Opportunities</div>
+  <div class="an-item">Orders</div>
+  <div class="an-item active">Account Forecasts</div>
+  <div class="an-item">SAP Integration</div>
+  <div class="an-item">Reports</div>
+</div>
+
+<!-- Record Header -->
+<div class="rh">
+  <div class="rh-breadcrumb"><a>Account Forecasts</a> / Acme Industrial — FY2026 Performance vs. Commitment</div>
+  <div class="rh-top">
+    <div class="rh-icon">📊</div>
+    <div class="rh-meta">
+      <div class="rh-type">Account-Based Forecast</div>
+      <div class="rh-name">Acme Industrial — FY2026 Performance vs. Commitment</div>
     </div>
-    <div class="cf-arrow">
-      <div class="cf-arrow-label">synced</div>
-      <div style="display:flex;align-items:center;width:100%;">
-        <div class="cf-arrow-line"></div>
-        <div class="cf-arrow-head"></div>
-      </div>
+    <div class="rh-actions">
+      <button class="btn btn-neutral">Edit</button>
+      <button class="btn btn-neutral" onclick="simulateOrder()">+ Simulate Order</button>
+      <button class="btn btn-brand" onclick="refreshActuals()">↺ Refresh Actuals</button>
     </div>
-    <div class="cf-dest" style="grid-row: span 1; cursor:pointer;" data-tip-title="Salesforce Manufacturing Cloud" data-tip-body="All SAP order actuals are written back to the Account-Based Forecast and matched against active Sales Agreement schedules. The commercial team sees attainment, gaps, and variance in real time.">
-      <div class="cf-dest-name">Mfg Cloud</div>
-      <div class="cf-dest-sub">Sales Agreement Actuals · Account Forecast · Performance vs. Commitment</div>
-    </div>
-    <div style="display:none"></div>
-    <div style="display:none"></div>
   </div>
-  <!-- Row 2 -->
-  <div class="channel-flow" style="margin-top:10px;">
-    <div class="cf-source" style="cursor:pointer;" data-tip-title="Customer Portal (SAP Commerce)" data-tip-body="Self-service orders placed through SAP Commerce or Ariba. Written back to Salesforce with order date, product, qty — matched to open opportunity or agreement.">
-      <div class="cf-source-name">Customer Portal</div>
-      <div class="cf-source-vol">$21.7M</div>
-      <div class="cf-source-sub">SAP Commerce / Ariba</div>
+  <!-- Highlights -->
+  <div class="hp">
+    <div class="hp-field">
+      <div class="hp-label">Account</div>
+      <div class="hp-value link">Acme Industrial</div>
     </div>
-    <div class="cf-arrow">
-      <div class="cf-arrow-label">synced</div>
-      <div style="display:flex;align-items:center;width:100%;">
-        <div class="cf-arrow-line"></div>
-        <div class="cf-arrow-head"></div>
-      </div>
+    <div class="hp-field">
+      <div class="hp-label">YTD Actuals</div>
+      <div class="hp-value">$88.3M</div>
     </div>
-    <div class="cf-source" style="cursor:pointer;" data-tip-title="Direct Sales / Manual Entry" data-tip-body="Inside-sales or CSR-entered orders in SAP SD. Cross-referenced against the active Sales Agreement; any order outside agreement scope surfaces as an exception.">
-      <div class="cf-source-name">Direct Entry</div>
-      <div class="cf-source-vol">$18.6M</div>
-      <div class="cf-source-sub">Inside sales / CSR (SAP SD)</div>
+    <div class="hp-field">
+      <div class="hp-label">Agreement Attainment</div>
+      <div class="hp-value"><span class="badge b-green">107% ↑</span></div>
     </div>
-    <div class="cf-arrow">
-      <div class="cf-arrow-label">synced</div>
-      <div style="display:flex;align-items:center;width:100%;">
-        <div class="cf-arrow-line"></div>
-        <div class="cf-arrow-head"></div>
-      </div>
+    <div class="hp-field">
+      <div class="hp-label">Accounts at Risk</div>
+      <div class="hp-value"><span class="badge b-red">2 at risk</span></div>
     </div>
-    <div class="cf-source" style="cursor:pointer;" data-tip-title="Distribution / Field Service Orders" data-tip-body="Replenishment and field service orders from regional DCs and service depots. Aggregated to account level before write-back to avoid line-item noise in Salesforce.">
-      <div class="cf-source-name">Distribution</div>
-      <div class="cf-source-vol">$13.9M</div>
-      <div class="cf-source-sub">DC replenishment / field service</div>
+    <div class="hp-field">
+      <div class="hp-label">Last SAP Pull</div>
+      <div class="hp-value" id="lastPull">Today 11:47 AM</div>
     </div>
+  </div>
+  <!-- Tabs -->
+  <div class="tb">
+    <div class="tb-item active">Actuals vs. Commitment</div>
+    <div class="tb-item">Order Channels <span class="tb-ct">4</span></div>
+    <div class="tb-item">Agreement Lines <span class="tb-ct">14</span></div>
+    <div class="tb-item">SAP Integration Log</div>
+    <div class="tb-item">Activity</div>
   </div>
 </div>
 
-<!-- Two-col: performance chart + account attainment -->
-<div class="two-col">
+<!-- Page Body -->
+<div class="pb">
+  <div>
 
-  <!-- Monthly performance chart -->
-  <div class="panel">
-    <div class="panel-label">Salesforce Manufacturing Cloud</div>
-    <div class="panel-title">Monthly Actuals vs. Agreement Commitment</div>
-
-    <div class="chart-wrap" id="chartWrap">
-      <!-- month rows -->
-      <div class="month-row" data-month="Jan" data-committed="12.4" data-actual="11.8" data-pct="95">
-        <div class="month-label">Jan</div>
-        <div class="bar-group" style="flex:1">
-          <div class="bar-slim bar-a" style="width:82%"></div>
-          <div class="bar-slim bar-b" style="width:78%"></div>
+    <!-- KPI row -->
+    <div class="card">
+      <div class="kpi-row">
+        <div class="kpi">
+          <div class="kpi-label">YTD Revenue (Actual)</div>
+          <div class="kpi-val" id="ytdVal">$88.3M</div>
+          <div class="kpi-sub" style="color:#2E844A;font-weight:600;">↑ 7.4% vs agreement</div>
         </div>
-        <div class="bar-pct pct-near">95%</div>
-      </div>
-      <div class="month-row" data-month="Feb" data-committed="12.4" data-actual="12.9" data-pct="104">
-        <div class="month-label">Feb</div>
-        <div class="bar-group" style="flex:1">
-          <div class="bar-slim bar-a" style="width:82%"></div>
-          <div class="bar-slim bar-b" style="width:85%"></div>
+        <div class="kpi">
+          <div class="kpi-label">Agreement Attainment</div>
+          <div class="kpi-val">107%</div>
+          <div class="kpi-sub" style="color:#706E6B;">vs. $82.5M committed</div>
         </div>
-        <div class="bar-pct pct-over">104%</div>
-      </div>
-      <div class="month-row" data-month="Mar" data-committed="13.8" data-actual="14.6" data-pct="106">
-        <div class="month-label">Mar</div>
-        <div class="bar-group" style="flex:1">
-          <div class="bar-slim bar-a" style="width:91%"></div>
-          <div class="bar-slim bar-b" style="width:96%"></div>
+        <div class="kpi">
+          <div class="kpi-label">Forecast Gap</div>
+          <div class="kpi-val" style="color:#A55000;">−$4.2M</div>
+          <div class="kpi-sub" style="color:#A55000;font-weight:600;">2 accounts below target</div>
         </div>
-        <div class="bar-pct pct-over">106%</div>
-      </div>
-      <div class="month-row" data-month="Apr" data-committed="14.2" data-actual="15.1" data-pct="106">
-        <div class="month-label">Apr</div>
-        <div class="bar-group" style="flex:1">
-          <div class="bar-slim bar-a" style="width:94%"></div>
-          <div class="bar-slim bar-b" style="width:100%"></div>
+        <div class="kpi">
+          <div class="kpi-label">Orders Synced (30d)</div>
+          <div class="kpi-val" id="orderCount">1,847</div>
+          <div class="kpi-sub" style="color:#706E6B;">Across 4 SAP channels</div>
         </div>
-        <div class="bar-pct pct-over">106%</div>
-      </div>
-      <div class="month-row" data-month="May" data-committed="14.2" data-actual="13.4" data-pct="94">
-        <div class="month-label">May</div>
-        <div class="bar-group" style="flex:1">
-          <div class="bar-slim bar-a" style="width:94%"></div>
-          <div class="bar-slim bar-b" style="width:88%"></div>
-        </div>
-        <div class="bar-pct pct-under">94%</div>
-      </div>
-      <div class="month-row" data-month="Jun" data-committed="15.5" data-actual="20.5" data-pct="132">
-        <div class="month-label">Jun</div>
-        <div class="bar-group" style="flex:1">
-          <div class="bar-slim bar-a" style="width:100%"></div>
-          <div class="bar-slim bar-b" style="width:100%; background:var(--status-good); opacity:0.8;"></div>
-        </div>
-        <div class="bar-pct pct-over">132% ↑</div>
       </div>
     </div>
 
-    <div class="x-axis">
-      <span class="x-tick">$0</span>
-      <span class="x-tick">$5M</span>
-      <span class="x-tick">$10M</span>
-      <span class="x-tick">$15M+</span>
+    <!-- SAP channel flow -->
+    <div class="card">
+      <div class="ch">
+        <div class="ch-title">SAP Order Channels → Salesforce Manufacturing Cloud</div>
+        <span class="ch-link" style="cursor:default;"><span style="width:6px;height:6px;border-radius:50%;background:#2E844A;display:inline-block;margin-right:4px;animation:pulse 2s infinite;"></span>Live sync active</span>
+      </div>
+      <div class="cb">
+        <div class="ch-flow">
+          <div class="ch-src" id="ch-edi"
+            data-t="SAP EDI Channel (850/ORDERS)"
+            data-b="Inbound EDI 850 and ORDERS.05 messages from distributors and trading partners. Auto-matched to Sales Agreement line items by sold-to party and material number. Real-time event-driven sync.">
+            <div class="ch-src-name">EDI</div>
+            <div class="ch-src-vol">$34.1M</div>
+            <div class="ch-src-sub">Distributors / partners</div>
+          </div>
+          <div class="ch-arrow">
+            <div class="ch-arr-label">synced</div>
+            <div style="display:flex;align-items:center;width:100%;"><div class="ch-arr-line" style="flex:1;"></div><div class="ch-arr-head"></div></div>
+          </div>
+          <div class="ch-src" id="ch-portal"
+            data-t="Customer Portal (SAP Commerce / Ariba)"
+            data-b="Self-service orders placed through SAP Commerce or Ariba Procurement. Written back with order date, product, quantity — matched to open agreement or opportunity. Batch sync every 15 minutes.">
+            <div class="ch-src-name">Customer Portal</div>
+            <div class="ch-src-vol">$21.7M</div>
+            <div class="ch-src-sub">SAP Commerce / Ariba</div>
+          </div>
+          <div class="ch-arrow">
+            <div class="ch-arr-label">synced</div>
+            <div style="display:flex;align-items:center;width:100%;"><div class="ch-arr-line" style="flex:1;"></div><div class="ch-arr-head"></div></div>
+          </div>
+          <div class="ch-src" id="ch-direct"
+            data-t="Direct Sales Entry (SAP SD)"
+            data-b="Inside sales and CSR-entered orders in SAP Sales & Distribution. Cross-referenced against the active Sales Agreement schedule. Orders outside agreement scope surface as exceptions for commercial review.">
+            <div class="ch-src-name">Direct Entry</div>
+            <div class="ch-src-vol">$18.6M</div>
+            <div class="ch-src-sub">Inside sales / CSR</div>
+          </div>
+          <div class="ch-arrow">
+            <div class="ch-arr-label">synced</div>
+            <div style="display:flex;align-items:center;width:100%;"><div class="ch-arr-line" style="flex:1;"></div><div class="ch-arr-head"></div></div>
+          </div>
+          <div class="ch-src" id="ch-dc"
+            data-t="Distribution / DC Replenishment"
+            data-b="Regional DC replenishment and field service orders. Aggregated to account level before write-back to Manufacturing Cloud to avoid line-item noise in the forecast view.">
+            <div class="ch-src-name">Distribution</div>
+            <div class="ch-src-vol">$13.9M</div>
+            <div class="ch-src-sub">DC / field service</div>
+          </div>
+          <div class="ch-arrow">
+            <div class="ch-arr-label">all channels</div>
+            <div style="display:flex;align-items:center;width:100%;"><div class="ch-arr-line" style="flex:1;"></div><div class="ch-arr-head"></div></div>
+          </div>
+          <div class="ch-dest">
+            <div class="ch-dest-name">Mfg Cloud</div>
+            <div class="ch-dest-sub">Agreement Actuals<br>Account Forecast<br>Attainment Tracking</div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="legend">
-      <div class="legend-item"><div class="legend-swatch" style="background:var(--s1-committed);opacity:0.35;"></div>Agreement Commitment</div>
-      <div class="legend-item"><div class="legend-swatch" style="background:var(--s2-actuals);"></div>Actual Orders (SAP)</div>
+    <!-- Bar chart + attainment side by side -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+
+      <!-- Monthly bars -->
+      <div class="card" style="margin-bottom:0;">
+        <div class="ch"><div class="ch-title">Monthly Actuals vs. Commitment</div></div>
+        <div class="cb">
+          <div id="barChart" class="barchart"></div>
+          <div class="bar-xaxis">
+            <span class="bar-xtick">$0</span>
+            <span class="bar-xtick">$5M</span>
+            <span class="bar-xtick">$10M</span>
+            <span class="bar-xtick">$15M+</span>
+          </div>
+          <div class="bar-legend">
+            <div class="bl-item"><div class="bl-sw" style="background:#0176D3;opacity:0.3;"></div>Commitment</div>
+            <div class="bl-item"><div class="bl-sw" style="background:#2E844A;"></div>Actuals (SAP)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Account attainment -->
+      <div class="card" style="margin-bottom:0;">
+        <div class="ch">
+          <div class="ch-title">Attainment by Account</div>
+          <span class="ch-link">View all →</span>
+        </div>
+        <div class="cb" id="attainmentPanel">
+        </div>
+      </div>
+
     </div>
+
+    <!-- Integration detail table -->
+    <div class="card">
+      <div class="ch"><div class="ch-title">Integration Detail — How SAP channels map to Salesforce records</div></div>
+      <div class="cb" style="padding:0 16px 8px;">
+        <table>
+          <thead>
+            <tr>
+              <th>SAP Channel</th>
+              <th>Match Logic</th>
+              <th>SF Record Updated</th>
+              <th>Frequency</th>
+              <th style="text-align:right;">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight:700;">EDI (850/ORDERS)</td>
+              <td>Sold-to party + material # → Agreement line</td>
+              <td>Sales Agreement Actuals, Account Forecast</td>
+              <td>Real-time (event)</td>
+              <td style="text-align:right;"><span class="badge b-green">Active</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:700;">Customer Portal</td>
+              <td>Account ID + product family → Opp or Agreement</td>
+              <td>Agreement Actuals, Opportunity Stage</td>
+              <td>Every 15 min</td>
+              <td style="text-align:right;"><span class="badge b-green">Active</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:700;">Direct Entry (SD)</td>
+              <td>Sales doc ext. ref → Agreement schedule line</td>
+              <td>Agreement Actuals, Revenue Schedule</td>
+              <td>Every 6 hrs</td>
+              <td style="text-align:right;"><span class="badge b-green">Active</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:700;">Distribution / DC</td>
+              <td>Aggregated by account + period → ABF row</td>
+              <td>Account-Based Forecast (Actuals)</td>
+              <td>Daily EOD</td>
+              <td style="text-align:right;"><span class="badge b-warn">In Review</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+
+  <!-- SIDEBAR -->
+  <div>
+
+    <div class="card">
+      <div class="ch">
+        <div class="ch-title">Live Order Feed</div>
+        <span style="font-size:11px;color:#706E6B;"><span style="width:6px;height:6px;border-radius:50%;background:#2E844A;display:inline-block;margin-right:3px;animation:pulse 2s infinite;"></span>Live</span>
+      </div>
+      <div class="cb" id="feedWrap" style="padding:0 16px;"></div>
+    </div>
+
+    <div class="card">
+      <div class="ch"><div class="ch-title">Sync Health</div></div>
+      <div class="cb">
+        <div style="padding:7px 0;border-bottom:1px solid #F3F2F2;">
+          <div style="font-size:11px;color:#706E6B;margin-bottom:2px;">Connection</div>
+          <div style="font-size:13px;font-weight:500;display:flex;align-items:center;gap:6px;"><span style="width:8px;height:8px;border-radius:50%;background:#2E844A;display:inline-block;animation:pulse 2s infinite;"></span> SAP S/4HANA Active</div>
+        </div>
+        <div style="padding:7px 0;border-bottom:1px solid #F3F2F2;">
+          <div style="font-size:11px;color:#706E6B;margin-bottom:2px;">Last Actuals Pull</div>
+          <div style="font-size:13px;font-weight:500;" id="lastPull2">Today 11:47 AM</div>
+        </div>
+        <div style="padding:7px 0;border-bottom:1px solid #F3F2F2;">
+          <div style="font-size:11px;color:#706E6B;margin-bottom:2px;">Records Updated (30d)</div>
+          <div style="font-size:13px;font-weight:500;" id="recCount">1,847 order lines</div>
+        </div>
+        <div style="padding:7px 0;">
+          <div style="font-size:11px;color:#706E6B;margin-bottom:2px;">Exception Queue</div>
+          <div style="font-size:13px;font-weight:500;"><span class="badge b-warn">3 unmatched orders</span></div>
+        </div>
+        <div style="margin-top:12px;">
+          <button class="btn btn-brand" style="width:100%;justify-content:center;" onclick="refreshActuals()">↺ Pull Actuals from SAP</button>
+        </div>
+      </div>
+    </div>
+
   </div>
+</div><!-- /pb -->
 
-  <!-- Account attainment -->
-  <div class="panel">
-    <div class="panel-label">Account-Based Forecast Tracking</div>
-    <div class="panel-title">Agreement Attainment by Account</div>
-
-    <!-- Acme -->
-    <div style="margin-bottom:16px; cursor:pointer;" data-tip-title="Acme Industrial — Hydraulics" data-tip-body="Overperforming agreement by 14%. Commercial team should assess whether to expand the agreement schedule or manage as upside.">
-      <div class="gauge-account">Acme Industrial</div>
-      <div class="gauge-product">Hydraulic Components · 12-mo agreement</div>
-      <div class="gauge-track">
-        <div class="gauge-fill full" style="width:100%;background:var(--status-good);opacity:0.85;"></div>
-      </div>
-      <div class="gauge-numbers">
-        <div class="gauge-actual">$24.3M <span style="font-size:11px;color:var(--text-muted)">actual</span></div>
-        <div class="gauge-pct" style="color:#006300">114% <span style="font-size:10px;font-weight:400">of $21.3M target</span></div>
-      </div>
-    </div>
-
-    <!-- Vertex -->
-    <div style="margin-bottom:16px; cursor:pointer;" data-tip-title="Vertex Manufacturing — Precision Parts" data-tip-body="On track at 98%. Minor shortfall of $180K — within normal order timing tolerance. No action required.">
-      <div class="gauge-account">Vertex Manufacturing</div>
-      <div class="gauge-product">Precision Parts · 6-mo agreement</div>
-      <div class="gauge-track">
-        <div class="gauge-fill" style="width:98%;background:var(--s1-committed);"></div>
-      </div>
-      <div class="gauge-numbers">
-        <div class="gauge-actual">$17.6M <span style="font-size:11px;color:var(--text-muted)">actual</span></div>
-        <div class="gauge-pct" style="color:var(--text-secondary)">98% <span style="font-size:10px;font-weight:400">of $18.0M target</span></div>
-      </div>
-    </div>
-
-    <!-- Meridian -->
-    <div style="margin-bottom:16px; cursor:pointer;" data-tip-title="Meridian Aerospace — Fasteners" data-tip-body="At risk — 78% attainment. $3.3M shortfall against agreement. Likely tied to the program delay flagged in opportunity stage. Commercial review recommended.">
-      <div class="gauge-account">Meridian Aerospace</div>
-      <div class="gauge-product">Structural Fasteners · 18-mo agreement</div>
-      <div class="gauge-track">
-        <div class="gauge-fill" style="width:78%;background:var(--status-critical);opacity:0.75;"></div>
-      </div>
-      <div class="gauge-numbers">
-        <div class="gauge-actual">$11.7M <span style="font-size:11px;color:var(--text-muted)">actual</span></div>
-        <div class="gauge-pct" style="color:var(--status-critical)">78% <span style="font-size:10px;font-weight:400">of $15.0M target ⚠</span></div>
-      </div>
-    </div>
-
-    <!-- Atlas -->
-    <div style="margin-bottom:0; cursor:pointer;" data-tip-title="Atlas Energy Systems — Sensors" data-tip-body="New agreement — only 2 months in. 87% pace projects to full-year attainment of ~104%. On track.">
-      <div class="gauge-account">Atlas Energy Systems</div>
-      <div class="gauge-product">Sensor Assemblies · new agreement (2 of 12 mo)</div>
-      <div class="gauge-track">
-        <div class="gauge-fill" style="width:17%;background:var(--s2-actuals);"></div>
-      </div>
-      <div class="gauge-numbers">
-        <div class="gauge-actual">$4.8M <span style="font-size:11px;color:var(--text-muted)">actual</span></div>
-        <div class="gauge-pct" style="color:var(--text-secondary)">17% <span style="font-size:10px;font-weight:400">of $28.2M annual · on pace ↗</span></div>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<!-- Integration detail table -->
-<div class="panel full-col">
-  <div class="panel-label">Integration Detail</div>
-  <div class="panel-title">How SAP orders map back to Salesforce Manufacturing Cloud records</div>
-  <table style="width:100%;border-collapse:collapse;font-size:12px;">
-    <thead>
-      <tr style="border-bottom:2px solid var(--gridline);">
-        <th style="text-align:left;padding:8px 12px 8px 0;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.06em;font-size:10px;">SAP Order Channel</th>
-        <th style="text-align:left;padding:8px 12px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.06em;font-size:10px;">Match Logic</th>
-        <th style="text-align:left;padding:8px 12px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.06em;font-size:10px;">SF Record Updated</th>
-        <th style="text-align:left;padding:8px 12px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.06em;font-size:10px;">Frequency</th>
-        <th style="text-align:right;padding:8px 0 8px 12px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.06em;font-size:10px;">Status</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr style="border-bottom:1px solid var(--gridline);">
-        <td style="padding:10px 12px 10px 0;font-weight:600;">EDI (850/ORDERS)</td>
-        <td style="padding:10px 12px;color:var(--text-secondary);">Sold-to party + material # → Agreement line</td>
-        <td style="padding:10px 12px;color:var(--text-secondary);">Sales Agreement Actuals, Account Forecast</td>
-        <td style="padding:10px 12px;color:var(--text-secondary);">Real-time (event)</td>
-        <td style="padding:10px 0 10px 12px;text-align:right;"><span style="background:#d4f5ea;color:#0a6b49;padding:2px 7px;border-radius:99px;font-weight:700;font-size:10px;">Active</span></td>
-      </tr>
-      <tr style="border-bottom:1px solid var(--gridline);">
-        <td style="padding:10px 12px 10px 0;font-weight:600;">Customer Portal</td>
-        <td style="padding:10px 12px;color:var(--text-secondary);">Customer account ID + product family → Opportunity or Agreement</td>
-        <td style="padding:10px 12px;color:var(--text-secondary);">Sales Agreement Actuals, Opportunity Stage</td>
-        <td style="padding:10px 12px;color:var(--text-secondary);">Every 15 min (batch)</td>
-        <td style="padding:10px 0 10px 12px;text-align:right;"><span style="background:#d4f5ea;color:#0a6b49;padding:2px 7px;border-radius:99px;font-weight:700;font-size:10px;">Active</span></td>
-      </tr>
-      <tr style="border-bottom:1px solid var(--gridline);">
-        <td style="padding:10px 12px 10px 0;font-weight:600;">Direct Entry (SAP SD)</td>
-        <td style="padding:10px 12px;color:var(--text-secondary);">Sales doc → external reference → Agreement schedule</td>
-        <td style="padding:10px 12px;color:var(--text-secondary);">Sales Agreement Actuals, Revenue Schedule</td>
-        <td style="padding:10px 12px;color:var(--text-secondary);">Every 6 hr (scheduled)</td>
-        <td style="padding:10px 0 10px 12px;text-align:right;"><span style="background:#d4f5ea;color:#0a6b49;padding:2px 7px;border-radius:99px;font-weight:700;font-size:10px;">Active</span></td>
-      </tr>
-      <tr>
-        <td style="padding:10px 12px 10px 0;font-weight:600;">Distribution / DC</td>
-        <td style="padding:10px 12px;color:var(--text-secondary);">Aggregated by account + period → Account-Based Forecast</td>
-        <td style="padding:10px 12px;color:var(--text-secondary);">Account-Based Forecast (Actuals row)</td>
-        <td style="padding:10px 12px;color:var(--text-secondary);">Daily (end-of-day)</td>
-        <td style="padding:10px 0 10px 12px;text-align:right;"><span style="background:#fdf0d4;color:#7a5000;padding:2px 7px;border-radius:99px;font-weight:700;font-size:10px;">In review</span></td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-<!-- Tooltip -->
-<div class="tooltip" id="tooltip"></div>
+<div class="tw" id="tw"></div>
+<div class="tt" id="tt"></div>
 
 <script>
-  const tooltip = document.getElementById('tooltip');
+// ── Data ────────────────────────────────────────────────────
+const months = [
+  {m:'Jan', comm:12.4, act:11.8, pct:95},
+  {m:'Feb', comm:12.4, act:12.9, pct:104},
+  {m:'Mar', comm:13.8, act:14.6, pct:106},
+  {m:'Apr', comm:14.2, act:15.1, pct:106},
+  {m:'May', comm:14.2, act:13.4, pct:94},
+  {m:'Jun', comm:15.5, act:20.5, pct:132},
+];
+const accounts = [
+  {name:'Acme Industrial', prod:'Hydraulic Components · 12-mo', actual:24.3, target:21.3, pct:114, color:'#2E844A', cls:'b-green'},
+  {name:'Vertex Manufacturing', prod:'Precision Parts · 6-mo', actual:17.6, target:18.0, pct:98, color:'#0176D3', cls:'b-blue'},
+  {name:'Meridian Aerospace', prod:'Structural Fasteners · 18-mo', actual:11.7, target:15.0, pct:78, color:'#BA0517', cls:'b-red'},
+  {name:'Atlas Energy Systems', prod:'Sensor Assemblies · 2 of 12 mo', actual:4.8, target:28.2, pct:17, color:'#0176D3', cls:'b-blue'},
+];
 
-  document.querySelectorAll('[data-tip-title]').forEach(el => {
+const MAX = 15.5;
+
+// ── Build bar chart ──────────────────────────────────────────
+const bc = document.getElementById('barChart');
+months.forEach(d => {
+  const pctClass = d.pct >= 100 ? 'pct-over' : d.pct >= 90 ? 'pct-ok' : 'pct-risk';
+  const row = document.createElement('div');
+  row.className = 'bar-row';
+  row.dataset.t = d.m + ' Performance';
+  row.dataset.b = 'Commitment: $' + d.comm + 'M  |  Actual: $' + d.act + 'M  |  Attainment: ' + d.pct + '%';
+  row.innerHTML = `
+    <div class="bar-mon">${d.m}</div>
+    <div class="bar-group" style="flex:1;">
+      <div class="bslim bslim-comm" id="bc-comm-${d.m}" style="width:0;"></div>
+      <div class="bslim bslim-act" id="bc-act-${d.m}" style="width:0;${d.pct>=130?'background:#2E844A;':''}"></div>
+    </div>
+    <div class="bar-pct ${pctClass}">${d.pct}%${d.pct>=130?' ↑':''}</div>`;
+  bc.appendChild(row);
+});
+
+// ── Build attainment panel ───────────────────────────────────
+const ap = document.getElementById('attainmentPanel');
+accounts.forEach(a => {
+  const fillW = Math.min(a.pct, 100);
+  const div = document.createElement('div');
+  div.className = 'acct';
+  div.dataset.t = a.name + ' — Agreement Attainment';
+  div.dataset.b = 'Actual: $' + a.actual + 'M  |  Target: $' + a.target + 'M annual  |  Attainment: ' + a.pct + '%' + (a.pct < 85 ? '  ⚠ At risk — commercial review recommended.' : '');
+  div.innerHTML = `
+    <div class="acct-top"><div class="acct-name">${a.name}</div><span class="badge ${a.cls}" style="font-size:10px;">${a.pct}%</span></div>
+    <div class="acct-prd">${a.prod}</div>
+    <div class="acct-track"><div class="acct-fill" id="af-${a.name.replace(/ /g,'_')}" style="background:${a.color};width:0;"></div></div>
+    <div class="acct-nums">
+      <div class="acct-actual">$${a.actual}M <span style="font-size:11px;color:#A8A29D;">actual</span></div>
+      <div class="acct-pct" style="color:${a.color};">of $${a.target}M target</div>
+    </div>`;
+  ap.appendChild(div);
+});
+
+// ── Animate on load ──────────────────────────────────────────
+window.addEventListener('load', () => {
+  months.forEach((d, i) => {
+    setTimeout(() => {
+      const commW = (d.comm / MAX * 100).toFixed(1);
+      const actW  = (d.act  / MAX * 100).toFixed(1);
+      document.getElementById('bc-comm-' + d.m).style.width = commW + '%';
+      document.getElementById('bc-act-'  + d.m).style.width = actW  + '%';
+    }, 200 + i * 120);
+  });
+  accounts.forEach((a, i) => {
+    setTimeout(() => {
+      const fillW = Math.min(a.pct, 100);
+      document.getElementById('af-' + a.name.replace(/ /g,'_')).style.width = fillW + '%';
+    }, 400 + i * 150);
+  });
+});
+
+// ── Tooltip ──────────────────────────────────────────────────
+const tt = document.getElementById('tt');
+function attachTip(root) {
+  root.querySelectorAll('[data-t]').forEach(el => {
     el.addEventListener('mouseenter', () => {
-      tooltip.innerHTML = '<strong>' + el.dataset.tipTitle + '</strong><span>' + el.dataset.tipBody + '</span>';
-      tooltip.classList.add('visible');
+      tt.innerHTML = '<span class="tt-t">' + el.dataset.t + '</span><span class="tt-b">' + el.dataset.b + '</span>';
+      tt.classList.add('on');
     });
     el.addEventListener('mousemove', e => {
       let x = e.clientX + 14, y = e.clientY + 14;
-      if (x + 260 > window.innerWidth) x = e.clientX - 274;
+      if (x + 280 > window.innerWidth) x = e.clientX - 284;
       if (y + 90 > window.innerHeight) y = e.clientY - 90;
-      tooltip.style.left = x + 'px';
-      tooltip.style.top = y + 'px';
+      tt.style.left = x + 'px'; tt.style.top = y + 'px';
     });
-    el.addEventListener('mouseleave', () => tooltip.classList.remove('visible'));
+    el.addEventListener('mouseleave', () => tt.classList.remove('on'));
   });
+}
+attachTip(document);
 
-  // Month row hover tooltips
-  document.querySelectorAll('.month-row').forEach(row => {
-    row.addEventListener('mouseenter', () => {
-      const m = row.dataset.month, c = row.dataset.committed, a = row.dataset.actual, p = row.dataset.pct;
-      tooltip.innerHTML = '<strong>' + m + ' Performance</strong>' +
-        '<span>Agreement: $' + c + 'M committed<br>Actuals: $' + a + 'M invoiced<br>Attainment: ' + p + '%</span>';
-      tooltip.classList.add('visible');
-    });
-    row.addEventListener('mousemove', e => {
-      let x = e.clientX + 14, y = e.clientY + 14;
-      if (x + 200 > window.innerWidth) x = e.clientX - 214;
-      tooltip.style.left = x + 'px';
-      tooltip.style.top = y + 'px';
-    });
-    row.addEventListener('mouseleave', () => tooltip.classList.remove('visible'));
+// ── Toast ────────────────────────────────────────────────────
+function toast(title, msg, type = 's') {
+  const tw = document.getElementById('tw');
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.innerHTML = `<div class="toast-stripe ${type}"></div><div class="toast-bw"><div class="toast-t">${title}</div><div class="toast-m">${msg}</div></div><div class="toast-x" onclick="this.closest('.toast').remove()">×</div>`;
+  tw.appendChild(t);
+  requestAnimationFrame(() => requestAnimationFrame(() => t.classList.add('in')));
+  setTimeout(() => { t.classList.remove('in'); setTimeout(() => t.remove(), 350); }, 5000);
+}
+
+// ── Live feed ─────────────────────────────────────────────────
+const fw = document.getElementById('feedWrap');
+const seedFeed = [
+  {text:'<span class="fs">EDI in:</span> Order 4821 · $142K · Hydraulic Valves matched to agreement', color:'#2E844A'},
+  {text:'<span class="fs">Agreement attainment updated:</span> Acme Industrial → 107%', color:'#0176D3'},
+  {text:'<span class="fs">Portal order:</span> $89K via SAP Commerce · matched Vertex agreement', color:'#2E844A'},
+  {text:'<span class="fs">Exception flagged:</span> $34K order outside agreement scope → review queue', color:'#A55000'},
+];
+seedFeed.forEach(f => addFeed(f.text, f.color, '2–18 min ago'));
+
+const liveEvents = [
+  ['EDI in: SO-2026-4851 · $210K · matched to agreement line 6', '#2E844A'],
+  ['Agreement attainment recalculated · Acme +$210K this period', '#0176D3'],
+  ['Portal order: $67K submitted · Vertex Manufacturing', '#2E844A'],
+  ['SAP MM: Blanket PO refreshed based on updated run-rate', '#2E844A'],
+  ['Forecast gap narrowed: −$3.9M (was −$4.2M)', '#0176D3'],
+  ['Exception resolved: 2 unmatched orders reconciled manually', '#2E844A'],
+];
+let li = 0;
+setInterval(() => {
+  const [text, color] = liveEvents[li % liveEvents.length];
+  addFeed('<span class="fs">Just now:</span> ' + text, color, 'Just now');
+  li++;
+  while (fw.children.length > 7) fw.removeChild(fw.lastChild);
+  // Pulse the relevant channel
+  const chMap = {'EDI':'ch-edi','Portal':'ch-portal','SAP MM':'ch-edi','Forecast':'ch-dc','Exception':'ch-direct'};
+  Object.keys(chMap).forEach(k => { if (text.includes(k)) { const el = document.getElementById(chMap[k]); if(el){el.classList.add('pulse-in'); setTimeout(()=>el.classList.remove('pulse-in'),700);} }});
+}, 9000);
+
+function addFeed(html, color, time) {
+  const item = document.createElement('div');
+  item.className = 'feed-item';
+  item.innerHTML = `<div class="fd" style="background:${color};"></div><div><div class="ft">${html}</div><div class="ftm">${time}</div></div>`;
+  fw.insertBefore(item, fw.firstChild);
+}
+
+// ── Refresh actuals ───────────────────────────────────────────
+function refreshActuals() {
+  const btn = event.target;
+  btn.disabled = true; btn.textContent = '⟳ Pulling…';
+  // Pulse all channel sources
+  ['ch-edi','ch-portal','ch-direct','ch-dc'].forEach((id, i) => {
+    setTimeout(() => {
+      const el = document.getElementById(id);
+      if (el) { el.classList.add('pulse-in'); setTimeout(() => el.classList.remove('pulse-in'), 700); }
+    }, i * 350);
   });
+  setTimeout(() => {
+    btn.disabled = false; btn.textContent = '↺ Refresh Actuals';
+    document.getElementById('lastPull').textContent = 'Just now';
+    document.getElementById('lastPull2').textContent = 'Just now';
+    const rc = document.getElementById('recCount');
+    const n = parseInt(rc.textContent) + Math.floor(Math.random() * 12) + 3;
+    rc.textContent = n.toLocaleString() + ' order lines';
+    document.getElementById('orderCount').textContent = (1847 + Math.floor(Math.random()*20)+5).toLocaleString();
+    toast('Actuals Refreshed', '4 SAP channels pulled · 1,863 order lines updated', 's');
+    setTimeout(() => toast('Attainment Recalculated', 'Acme Industrial: 108% · Vertex: 99% · Meridian: 79%', 'i'), 900);
+    setTimeout(() => toast('Exception: 1 New Unmatched Order', '$41K order outside agreement scope — review required', 'w'), 1800);
+    addFeed('<span class="fs">Actuals refresh complete:</span> 1,863 lines updated from SAP', '#2E844A', 'Just now');
+  }, 2200);
+}
+
+// ── Simulate incoming order ───────────────────────────────────
+let simCount = 0;
+function simulateOrder() {
+  simCount++;
+  const accts = ['Acme Industrial','Vertex Manufacturing','Atlas Energy'];
+  const channels = ['EDI','Customer Portal','Direct Entry'];
+  const amts = ['$88K','$142K','$210K','$67K','$315K'];
+  const acct = accts[simCount % accts.length];
+  const ch = channels[simCount % channels.length];
+  const amt = amts[simCount % amts.length];
+  // Pulse that channel
+  const chIds = {'EDI':'ch-edi','Customer Portal':'ch-portal','Direct Entry':'ch-direct'};
+  const el = document.getElementById(chIds[ch]);
+  if (el) { el.classList.add('pulse-in'); setTimeout(() => el.classList.remove('pulse-in'), 700); }
+  toast('New Order Received via ' + ch, acct + ' · ' + amt + ' · Matched to Sales Agreement', 's');
+  addFeed('<span class="fs">Inbound via ' + ch + ':</span> ' + amt + ' · ' + acct + ' → matched to agreement', '#2E844A', 'Just now');
+  document.getElementById('orderCount').textContent = (parseInt(document.getElementById('orderCount').textContent.replace(',','')) + 1).toLocaleString();
+  while (fw.children.length > 7) fw.removeChild(fw.lastChild);
+}
 </script>
 </body>
 </html>
