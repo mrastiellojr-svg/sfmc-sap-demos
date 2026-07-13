@@ -377,6 +377,7 @@ body{font-family:Arial,sans-serif;background:#F3F2F2;color:#181818;font-size:13p
   <div class="an-t" data-page="forecasts" onclick="nav('forecasts')">Account Forecasts</div>
   <div class="an-t" data-page="sap" onclick="nav('sap')">SAP Integration</div>
   <div class="an-t" data-page="reports" onclick="nav('reports')">Reports</div>
+  <div class="an-t" data-page="agentops" onclick="nav('agentops')" style="border-bottom:2px solid #9747FF;color:#fff;font-weight:700;">⚡ Agentforce Operations</div>
 </div>
 
 <div id="main">
@@ -1372,8 +1373,8 @@ body{font-family:Arial,sans-serif;background:#F3F2F2;color:#181818;font-size:13p
 // ═══════════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════════
-const PAGES = ['home','accounts','account-record','agreements','agreement-record','opps','opp-record','orders','order-record','forecasts','sap','reports'];
-const NAV_MAP = {home:'home',accounts:'accounts','sales-agreements':'agreements',agreements:'agreements',opportunities:'opps',opps:'opps',orders:'orders','account-forecasts':'forecasts',forecasts:'forecasts','sap-integration':'sap',sap:'sap',reports:'reports'};
+const PAGES = ['home','accounts','account-record','agreements','agreement-record','opps','opp-record','orders','order-record','forecasts','sap','reports','agentops'];
+const NAV_MAP = {home:'home',accounts:'accounts','sales-agreements':'agreements',agreements:'agreements',opportunities:'opps',opps:'opps',orders:'orders','account-forecasts':'forecasts',forecasts:'forecasts','sap-integration':'sap',sap:'sap',reports:'reports',agentops:'agentops'};
 
 function nav(key) {
   const target = NAV_MAP[key] || key;
@@ -1908,6 +1909,372 @@ document.addEventListener('click', e => {
   const bell = document.querySelector('[onclick="toggleNotif()"]');
   if (bell) { const dot = document.createElement('span'); dot.style.cssText = 'position:absolute;top:8px;right:8px;width:8px;height:8px;background:#BA0517;border-radius:50%;border:2px solid #1B1B1B;'; dot.id='notif-dot'; bell.style.position='relative'; bell.appendChild(dot); }
 })();
+</script>
+
+<!-- ════════════════════════════════════════════════════════════
+     PAGE: AGENTFORCE OPERATIONS
+════════════════════════════════════════════════════════════ -->
+<div id="page-agentops" class="page">
+
+  <!-- HEADER -->
+  <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;gap:16px;flex-wrap:wrap;">
+    <div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+        <div style="width:32px;height:32px;background:linear-gradient(135deg,#9747FF,#6B2FD9);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">⚡</div>
+        <div style="font-size:20px;font-weight:700;">Agentforce Operations</div>
+        <span class="bdg" style="background:#F9F0FF;color:#9747FF;border:1px solid #D4A8F8;font-size:10px;font-weight:700;">AI-Native · Back-Office Automation</span>
+      </div>
+      <div style="font-size:13px;color:#706E6B;max-width:680px;line-height:1.6;">Turns daily manual coordination around suppliers, PO rescheduling, and inventory into automated, auditable agentic processes — so your team stops managing spreadsheets and starts managing exceptions.</div>
+    </div>
+    <div style="display:flex;gap:8px;flex-shrink:0;">
+      <button class="btn btn-neutral" onclick="openDrawer('About Agentforce Operations','<p style=\'margin-bottom:10px;\'>Agentforce Operations (formerly Regrello, acquired by Salesforce Oct 2025) is an AI-native solution that transforms back-office business processes for better speed, automation, and accuracy.</p><p style=\'margin-bottom:10px;\'>It orchestrates work end-to-end across multiple teams and systems — humans, specialized back-office agents, SAP, email, and Slack — all from a single digital process blueprint.</p><div style=\'margin-bottom:8px;\'><div style=\'font-size:11px;color:#706E6B;\'>Typical outcomes</div><div style=\'font-size:13px;font-weight:600;\'>Cycle times reduced 50–70%<br>Manual data entry slashed 80%<br>Full audit trail, zero spreadsheets</div></div><button class=\'btn btn-brand\' onclick=\'toast(\"Opening…\",\"Agentforce Operations product page launching\",\"i\")\'>Learn More</button>')">What is this?</button>
+      <button class="btn btn-brand" style="background:linear-gradient(135deg,#9747FF,#6B2FD9);border:none;" onclick="runProcessDemo()">▶ Run Live Demo</button>
+    </div>
+  </div>
+
+  <!-- CHALLENGE BANNER -->
+  <div style="background:#F9F0FF;border:1px solid #D4A8F8;border-radius:4px;padding:14px 16px;margin-bottom:16px;display:flex;gap:12px;align-items:flex-start;">
+    <div style="font-size:18px;flex-shrink:0;">🎯</div>
+    <div>
+      <div style="font-weight:700;color:#3E0075;font-size:13px;margin-bottom:4px;">Challenge 3 — Manual coordination around suppliers, PO rescheduling, and inventory</div>
+      <div style="font-size:12px;color:#3E3E3C;line-height:1.6;">The Osborn team is spending significant time each day on manual coordination: chasing suppliers for delivery updates via email, rescheduling POs in SAP when dates slip, and reconciling inventory positions in spreadsheets. This is consuming capacity that should be focused on exceptions and decisions — not data movement. Agentforce Operations automates these process loops end-to-end, from trigger to resolution, with a full audit trail and humans only where judgment is actually required.</div>
+    </div>
+  </div>
+
+  <!-- THREE PROCESS CARDS -->
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:16px;">
+
+    <!-- Process 1: Supplier OTD -->
+    <div class="card" style="margin-bottom:0;border-top:3px solid #BA0517;cursor:pointer;" onclick="openProcessDetail('supplier-otd')">
+      <div class="cb" style="padding:16px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <div style="width:28px;height:28px;background:#FDECEA;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">🚚</div>
+          <div>
+            <div style="font-size:13px;font-weight:700;">Supplier OTD Monitoring</div>
+            <div style="font-size:10px;color:#BA0517;font-weight:600;text-transform:uppercase;letter-spacing:.04em;">Currently in email / spreadsheets</div>
+          </div>
+        </div>
+        <div style="font-size:12px;color:#3E3E3C;line-height:1.6;margin-bottom:12px;">Agent monitors SAP delivery confirmations 24/7. When OTD drops below threshold, it automatically emails the supplier, logs the exception, and — if unresolved — escalates to the procurement manager with a draft rescheduling email ready to send.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px;">
+          <span style="font-size:10px;background:#FDECEA;color:#7B1C1C;padding:2px 7px;border-radius:3px;font-weight:600;">SAP MM ↔ Agent</span>
+          <span style="font-size:10px;background:#F3F2F2;color:#3E3E3C;padding:2px 7px;border-radius:3px;">Email loop</span>
+          <span style="font-size:10px;background:#F3F2F2;color:#3E3E3C;padding:2px 7px;border-radius:3px;">Auto-escalation</span>
+          <span style="font-size:10px;background:#EEF6EC;color:#055244;padding:2px 7px;border-radius:3px;font-weight:600;">24/7</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div id="proc1-status" style="display:flex;align-items:center;gap:5px;font-size:11px;color:#706E6B;"><div class="stat-dot" style="background:#DDDBDA;width:8px;height:8px;border-radius:50%;flex-shrink:0;"></div>Ready to run</div>
+          <span style="font-size:12px;color:#9747FF;font-weight:600;">View process →</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Process 2: PO Rescheduling -->
+    <div class="card" style="margin-bottom:0;border-top:3px solid #A55000;cursor:pointer;" onclick="openProcessDetail('po-reschedule')">
+      <div class="cb" style="padding:16px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <div style="width:28px;height:28px;background:#FEF7EC;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">📋</div>
+          <div>
+            <div style="font-size:13px;font-weight:700;">PO Rescheduling</div>
+            <div style="font-size:10px;color:#A55000;font-weight:600;text-transform:uppercase;letter-spacing:.04em;">Currently manual · daily effort</div>
+          </div>
+        </div>
+        <div style="font-size:12px;color:#3E3E3C;line-height:1.6;margin-bottom:12px;">When a supplier miss is confirmed, the agent calculates the downstream impact on open Sales Agreements, drafts the SAP PO change order, routes it for approval, and updates the affected agreement run-rate in Salesforce Manufacturing Cloud — all without a human touching SAP transaction ME22N.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px;">
+          <span style="font-size:10px;background:#FEF7EC;color:#A55000;padding:2px 7px;border-radius:3px;font-weight:600;">SAP ME22N ↔ Agent</span>
+          <span style="font-size:10px;background:#F3F2F2;color:#3E3E3C;padding:2px 7px;border-radius:3px;">Approval routing</span>
+          <span style="font-size:10px;background:#EBF5FB;color:#014486;padding:2px 7px;border-radius:3px;">Mfg Cloud update</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div id="proc2-status" style="display:flex;align-items:center;gap:5px;font-size:11px;color:#706E6B;"><div class="stat-dot" style="background:#DDDBDA;width:8px;height:8px;border-radius:50%;flex-shrink:0;"></div>Ready to run</div>
+          <span style="font-size:12px;color:#9747FF;font-weight:600;">View process →</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Process 3: Inventory Safety Stock -->
+    <div class="card" style="margin-bottom:0;border-top:3px solid #0176D3;cursor:pointer;" onclick="openProcessDetail('inventory-review')">
+      <div class="cb" style="padding:16px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <div style="width:28px;height:28px;background:#EBF5FB;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">📦</div>
+          <div>
+            <div style="font-size:13px;font-weight:700;">Inventory &amp; Safety Stock Review</div>
+            <div style="font-size:10px;color:#0176D3;font-weight:600;text-transform:uppercase;letter-spacing:.04em;">Currently weekly · spreadsheet-based</div>
+          </div>
+        </div>
+        <div style="font-size:12px;color:#3E3E3C;line-height:1.6;margin-bottom:12px;">When a Sales Agreement run-rate changes in Salesforce, the agent compares current safety stock levels in SAP against the revised PIR demand signal, identifies gaps, and either auto-adjusts safety stock within approved parameters or routes a recommendation to the planner for out-of-bounds cases.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px;">
+          <span style="font-size:10px;background:#EBF5FB;color:#014486;padding:2px 7px;border-radius:3px;font-weight:600;">SAP MRP ↔ Agent</span>
+          <span style="font-size:10px;background:#F3F2F2;color:#3E3E3C;padding:2px 7px;border-radius:3px;">Auto-adjust</span>
+          <span style="font-size:10px;background:#EEF6EC;color:#055244;padding:2px 7px;border-radius:3px;">PIR-triggered</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div id="proc3-status" style="display:flex;align-items:center;gap:5px;font-size:11px;color:#706E6B;"><div class="stat-dot" style="background:#DDDBDA;width:8px;height:8px;border-radius:50%;flex-shrink:0;"></div>Ready to run</div>
+          <span style="font-size:12px;color:#9747FF;font-weight:600;">View process →</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIVE PROCESS DASHBOARD -->
+  <div class="card" style="margin-bottom:14px;">
+    <div class="ch">
+      <div class="ch-t">Live Process Dashboard</div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="stat-dot pulse" id="ops-live-dot" style="background:#DDDBDA;width:9px;height:9px;border-radius:50%;"></div>
+        <span id="ops-live-label" style="font-size:11px;color:#706E6B;">No processes running</span>
+        <button class="btn btn-brand" style="height:28px;font-size:12px;padding:0 12px;background:linear-gradient(135deg,#9747FF,#6B2FD9);border:none;margin-left:8px;" onclick="runProcessDemo()">▶ Run All Processes</button>
+      </div>
+    </div>
+    <div class="cb" style="padding:0 16px 12px;">
+      <!-- Process 1 row -->
+      <div class="proc-row" id="prow-1" onclick="openProcessDetail('supplier-otd')">
+        <div class="proc-ico" style="background:#FDECEA;">🚚</div>
+        <div class="proc-info">
+          <div class="proc-name">Supplier OTD Monitoring — Hydraulic Valve Assembly</div>
+          <div class="proc-meta">Vendor: Apex Hydraulics · Material MAT-44821 · SA-2026-001 Osborn ($21.3M)</div>
+        </div>
+        <div class="proc-steps" id="psteps-1">
+          <div class="ps-chip ps-done" title="SAP delivery data pulled">SAP Pull</div>
+          <div class="ps-chip" id="pc1-2" title="OTD calculated against threshold">OTD Check</div>
+          <div class="ps-chip" id="pc1-3" title="Supplier notified via email">Notify Supplier</div>
+          <div class="ps-chip" id="pc1-4" title="Escalation routed to procurement">Escalate</div>
+          <div class="ps-chip" id="pc1-5" title="Resolution logged and agreement updated">Resolve</div>
+        </div>
+        <div id="prow-1-status" class="proc-badge" style="background:#F3F2F2;color:#706E6B;">Idle</div>
+      </div>
+      <!-- Process 2 row -->
+      <div class="proc-row" id="prow-2" onclick="openProcessDetail('po-reschedule')">
+        <div class="proc-ico" style="background:#FEF7EC;">📋</div>
+        <div class="proc-info">
+          <div class="proc-name">PO Rescheduling — Blanket PO 4500012844</div>
+          <div class="proc-meta">Supplier miss confirmed · 3 open PO lines · downstream impact on SA-2026-001 and SA-2026-002</div>
+        </div>
+        <div class="proc-steps" id="psteps-2">
+          <div class="ps-chip ps-done" title="Supplier miss detected in SAP">Detect Miss</div>
+          <div class="ps-chip" id="pc2-2" title="Downstream impact calculated">Impact Calc</div>
+          <div class="ps-chip" id="pc2-3" title="PO change order drafted in SAP ME22N">Draft PO Chg</div>
+          <div class="ps-chip" id="pc2-4" title="Approval routed to procurement manager">Approval</div>
+          <div class="ps-chip" id="pc2-5" title="SAP updated and Salesforce run-rate revised">Update SAP</div>
+        </div>
+        <div id="prow-2-status" class="proc-badge" style="background:#F3F2F2;color:#706E6B;">Idle</div>
+      </div>
+      <!-- Process 3 row -->
+      <div class="proc-row" id="prow-3" onclick="openProcessDetail('inventory-review')">
+        <div class="proc-ico" style="background:#EBF5FB;">📦</div>
+        <div class="proc-info">
+          <div class="proc-name">Safety Stock Recalculation — Hydraulic Components</div>
+          <div class="proc-meta">Triggered by PIR update · 4 materials · SA-2026-001 run-rate revised +14%</div>
+        </div>
+        <div class="proc-steps" id="psteps-3">
+          <div class="ps-chip ps-done" title="PIR change detected from Salesforce">PIR Trigger</div>
+          <div class="ps-chip" id="pc3-2" title="Current stock vs new demand compared">Stock vs. Demand</div>
+          <div class="ps-chip" id="pc3-3" title="Safety stock delta calculated">Delta Calc</div>
+          <div class="ps-chip" id="pc3-4" title="Auto-adjust within approved parameters">Auto-Adjust</div>
+          <div class="ps-chip" id="pc3-5" title="SAP MRP updated, planner notified">MRP Update</div>
+        </div>
+        <div id="prow-3-status" class="proc-badge" style="background:#F3F2F2;color:#706E6B;">Idle</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM ROW: Blueprint + Outcome metrics -->
+  <div class="two-col">
+    <div class="card">
+      <div class="ch"><div class="ch-t">Process Blueprint — PO Rescheduling</div><span style="font-size:11px;color:#9747FF;font-weight:600;">30+ pre-built templates</span></div>
+      <div class="cb" style="padding:0 16px 14px;">
+        <div style="font-size:12px;color:#706E6B;margin-bottom:12px;">Describe any process in natural language or upload a document — Agentforce Operations generates the blueprint automatically. No code required.</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:#F9F8F8;border-radius:4px;border-left:3px solid #BA0517;cursor:pointer;" onclick="openDrawer('Step 1 — Detect Supplier Miss','<p style=\'margin-bottom:10px;\'>Agent polls SAP delivery confirmations every 4 hours. When a confirmed delivery date is missed or OTD drops below 80%, the process triggers automatically — no human required to notice the problem.</p><div style=\'font-size:12px;color:#706E6B;\'>System: SAP MM · Frequency: every 4 hrs · Owner: Agent (auto)</div>')">
+            <div style="width:20px;height:20px;background:#BA0517;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;font-weight:700;flex-shrink:0;">1</div>
+            <div><div style="font-size:12px;font-weight:600;">Detect supplier miss</div><div style="font-size:11px;color:#706E6B;">Agent polls SAP MM every 4 hrs · auto-triggers</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:#F9F8F8;border-radius:4px;border-left:3px solid #A55000;cursor:pointer;" onclick="openDrawer('Step 2 — Calculate Downstream Impact','<p style=\'margin-bottom:10px;\'>Agent calculates which open Sales Agreements and production orders are affected by the slip. It maps the delayed material to every open commitment and ranks by revenue at risk.</p><div style=\'font-size:12px;color:#706E6B;\'>System: SAP + Salesforce Manufacturing Cloud · Owner: Agent (auto)</div>')">
+            <div style="width:20px;height:20px;background:#A55000;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;font-weight:700;flex-shrink:0;">2</div>
+            <div><div style="font-size:12px;font-weight:600;">Calculate downstream impact</div><div style="font-size:11px;color:#706E6B;">Maps slip to open agreements · ranks by revenue at risk</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:#F9F8F8;border-radius:4px;border-left:3px solid #DD7A01;cursor:pointer;" onclick="openDrawer('Step 3 — Draft PO Change Order','<p style=\'margin-bottom:10px;\'>Agent drafts the SAP ME22N PO change order with new delivery date, revised quantities, and updated blanket PO schedule. Attaches impact summary to the approval request.</p><div style=\'font-size:12px;color:#706E6B;\'>System: SAP ME22N · Owner: Agent (auto)</div>')">
+            <div style="width:20px;height:20px;background:#DD7A01;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;font-weight:700;flex-shrink:0;">3</div>
+            <div><div style="font-size:12px;font-weight:600;">Draft PO change order in SAP</div><div style="font-size:11px;color:#706E6B;">ME22N transaction · no human touching SAP</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:#F9F8F8;border-radius:4px;border-left:3px solid #0176D3;cursor:pointer;" onclick="openDrawer('Step 4 — Route for Approval','<p style=\'margin-bottom:10px;\'>Approval request delivered via Slack or email — wherever the procurement manager works. They approve with one click. No new logins, no navigating SAP.</p><div style=\'font-size:12px;color:#706E6B;\'>Channel: Slack / Email · Owner: Human (approval only)</div>')">
+            <div style="width:20px;height:20px;background:#0176D3;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;font-weight:700;flex-shrink:0;">4</div>
+            <div><div style="font-size:12px;font-weight:600;">Route for approval via Slack / email</div><div style="font-size:11px;color:#706E6B;">Human approves in one click · no SAP login needed</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:#F9F8F8;border-radius:4px;border-left:3px solid #2E844A;cursor:pointer;" onclick="openDrawer('Step 5 — Update SAP + Salesforce','<p style=\'margin-bottom:10px;\'>On approval, agent executes the PO change in SAP and writes the revised run-rate back to the affected Sales Agreement in Salesforce Manufacturing Cloud. The commercial team sees the impact in real time.</p><div style=\'font-size:12px;color:#706E6B;\'>System: SAP MM + Salesforce Mfg Cloud · Owner: Agent (auto)</div>')">
+            <div style="width:20px;height:20px;background:#2E844A;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;font-weight:700;flex-shrink:0;">5</div>
+            <div><div style="font-size:12px;font-weight:600;">Execute in SAP · update Salesforce</div><div style="font-size:11px;color:#706E6B;">PO confirmed · agreement run-rate revised · full audit trail</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="card" style="margin-bottom:12px;">
+        <div class="ch"><div class="ch-t">Expected Outcomes — Osborn</div></div>
+        <div class="cb" style="padding:0 16px 8px;">
+          <div class="kpi-row" style="grid-template-columns:1fr 1fr;">
+            <div class="kpi" style="cursor:pointer;" onclick="openDrawer('Cycle Time Reduction','<p>Manual PO rescheduling currently takes 2–3 days of back-and-forth email with suppliers and internal approvers. Agentforce Operations reduces this to under 4 hours — from miss detection to SAP update and Salesforce notification.</p>')"><div class="kpi-l">Cycle Time</div><div class="kpi-v" style="color:#2E844A;">50–70%</div><div class="kpi-s">faster than manual</div></div>
+            <div class="kpi" style="cursor:pointer;" onclick="openDrawer('Manual Data Entry Reduction','<p>Spreadsheet reconciliation, SAP transaction entry, and email status updates are the three biggest time consumers. Agentforce Operations eliminates all three for routine cases — agents do the data movement, humans handle only approvals and exceptions.</p>')"><div class="kpi-l">Manual Entry</div><div class="kpi-v" style="color:#2E844A;">80%</div><div class="kpi-s">reduction</div></div>
+            <div class="kpi" style="cursor:pointer;" onclick="openDrawer('24/7 Coverage','<p>The process manager never sleeps. Supplier delivery confirmations are checked every 4 hours including overnight and weekends. A miss that happens at 2 AM on Friday is caught and escalated before Monday morning, not after the next weekly review.</p>')"><div class="kpi-l">Coverage</div><div class="kpi-v">24/7</div><div class="kpi-s">no batch windows</div></div>
+            <div class="kpi" style="cursor:pointer;" onclick="openDrawer('Audit Trail','<p>Every agent action is logged against the digital process blueprint — what was done, when, by whom (human or agent), and what the outcome was. Replaces the email thread and spreadsheet as the system of record.</p>')"><div class="kpi-l">Audit Trail</div><div class="kpi-v">100%</div><div class="kpi-s">every action logged</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ch"><div class="ch-t">Where Humans Stay in the Loop</div></div>
+        <div class="cb" style="padding:0 16px 12px;">
+          <div style="font-size:12px;color:#706E6B;margin-bottom:10px;">Agentforce Operations is not "lights out" — it's designed so agents handle the routine and humans handle the judgment calls.</div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div style="display:flex;align-items:flex-start;gap:8px;font-size:12px;cursor:pointer;" onclick="openDrawer('Human Role: PO Approvals','<p style=\'margin-bottom:10px;\'>Every PO change over $10K requires a human approval. The agent delivers the request via Slack or email — one click to approve, one click to reject with a note that triggers a re-route. No SAP login required.</p>')"><div style="width:7px;height:7px;border-radius:50%;background:#9747FF;margin-top:4px;flex-shrink:0;"></div><div><strong>PO approvals</strong> — agent prepares, human approves via Slack/email</div></div>
+            <div style="display:flex;align-items:flex-start;gap:8px;font-size:12px;cursor:pointer;" onclick="openDrawer('Human Role: Out-of-Policy Exceptions','<p style=\'margin-bottom:10px;\'>If a safety stock adjustment is outside the approved ±15% band, the agent routes a recommendation to the planner with the supporting data. The planner decides — the agent executes whatever is approved.</p>')"><div style="width:7px;height:7px;border-radius:50%;background:#9747FF;margin-top:4px;flex-shrink:0;"></div><div><strong>Out-of-policy exceptions</strong> — agent flags, human decides</div></div>
+            <div style="display:flex;align-items:flex-start;gap:8px;font-size:12px;cursor:pointer;" onclick="openDrawer('Human Role: Supplier Escalations','<p style=\'margin-bottom:10px;\'>If a supplier does not respond within 48 hours of an automated OTD alert, the agent escalates to the procurement manager with a full timeline of automated attempts. The human picks up from there with full context, not a cold email thread.</p>')"><div style="width:7px;height:7px;border-radius:50%;background:#9747FF;margin-top:4px;flex-shrink:0;"></div><div><strong>Supplier escalations</strong> — agent exhausts automated attempts, human takes over with full context</div></div>
+            <div style="display:flex;align-items:flex-start;gap:8px;font-size:12px;cursor:pointer;" onclick="openDrawer('Human Role: Commercial Impact Decisions','<p style=\'margin-bottom:10px;\'>When a supply miss materially affects a customer commitment, the agent notifies the commercial team in Salesforce with the impacted agreement highlighted. The AE decides whether to proactively contact the customer — the agent provides all supporting data.</p>')"><div style="width:7px;height:7px;border-radius:50%;background:#9747FF;margin-top:4px;flex-shrink:0;"></div><div><strong>Customer commitment impact</strong> — agent surfaces risk in Salesforce, AE decides on customer outreach</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /page-agentops -->
+
+<style>
+/* ── Agentforce Operations specific styles ── */
+.proc-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #F3F2F2;cursor:pointer;transition:background .15s;}
+.proc-row:last-child{border-bottom:none;}
+.proc-row:hover{background:#F9F8F8;margin:0 -16px;padding:10px 16px;}
+.proc-ico{width:32px;height:32px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.proc-info{flex:1;min-width:0;}
+.proc-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.proc-meta{font-size:11px;color:#706E6B;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.proc-steps{display:flex;gap:4px;flex-shrink:0;}
+.ps-chip{font-size:10px;padding:2px 7px;border-radius:3px;background:#F3F2F2;color:#706E6B;font-weight:600;white-space:nowrap;transition:background .3s,color .3s;}
+.ps-chip.ps-done{background:#EEF6EC;color:#055244;}
+.ps-chip.ps-active{background:#9747FF;color:#fff;animation:chipPulse .8s ease-in-out infinite alternate;}
+.ps-chip.ps-complete{background:#2E844A;color:#fff;}
+.proc-badge{font-size:11px;padding:3px 8px;border-radius:3px;font-weight:600;flex-shrink:0;white-space:nowrap;}
+@keyframes chipPulse{from{opacity:.7;}to{opacity:1;}}
+</style>
+
+<script>
+// ── Agentforce Operations page logic ──
+
+function openProcessDetail(id) {
+  const details = {
+    'supplier-otd': {
+      title: 'Process Detail — Supplier OTD Monitoring',
+      body: '<div style="margin-bottom:10px;"><span class="bdg bdg-r">Hydraulic Valve Assembly · OTD 71%</span></div>' +
+        '<p style="margin-bottom:12px;">This process runs continuously in the background. Every 4 hours, the agent queries SAP MM for delivery confirmation data on all open POs. When Apex Hydraulics\' OTD dropped below the 80% threshold, the process triggered automatically — no human had to notice.</p>' +
+        '<div style="background:#F9F8F8;border-radius:4px;padding:12px;margin-bottom:12px;">' +
+        '<div style="font-size:11px;font-weight:700;color:#706E6B;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">What the agent does automatically</div>' +
+        '<div style="font-size:12px;line-height:1.8;color:#3E3E3C;">1. Pulls delivery data from SAP MM<br>2. Calculates OTD % for each supplier<br>3. Sends automated email to Apex Hydraulics requesting updated ETA<br>4. Logs exception against PO 4500012844<br>5. Starts 48-hour response timer<br>6. If no response → escalates to procurement manager with draft rescheduling email</div></div>' +
+        '<div style="background:#EEF6EC;border-radius:4px;padding:12px;margin-bottom:12px;border:1px solid #A3D9A5;">' +
+        '<div style="font-size:11px;font-weight:700;color:#055244;margin-bottom:4px;">What replaces the spreadsheet</div>' +
+        '<div style="font-size:12px;color:#3E3E3C;">The entire email chain, status spreadsheet, and weekly review meeting for supplier OTD is replaced by this single process. Every action is logged and visible in the dashboard with a full audit trail.</div></div>' +
+        '<button class="btn btn-success" onclick="runSingleProcess(1)">▶ Run This Process Now</button>'
+    },
+    'po-reschedule': {
+      title: 'Process Detail — PO Rescheduling',
+      body: '<div style="margin-bottom:10px;"><span class="bdg bdg-w">Blanket PO 4500012844 · 3 lines affected</span></div>' +
+        '<p style="margin-bottom:12px;">When the supplier miss is confirmed, this process kicks off automatically. The agent does everything a buyer would do in SAP — without anyone logging into ME22N.</p>' +
+        '<div style="background:#F9F8F8;border-radius:4px;padding:12px;margin-bottom:12px;">' +
+        '<div style="font-size:11px;font-weight:700;color:#706E6B;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">Automated steps</div>' +
+        '<div style="font-size:12px;line-height:1.8;color:#3E3E3C;">1. Detect supplier miss in SAP MM<br>2. Map affected materials to open Sales Agreements — SA-2026-001 (Osborn $21.3M) and SA-2026-002 (Vertex $18M)<br>3. Draft PO change order with new delivery date and revised quantities<br>4. Send approval request to procurement manager via Slack — one click to approve<br>5. On approval: execute ME22N change in SAP, write revised run-rate to Salesforce Manufacturing Cloud<br>6. Notify commercial team that SA-2026-001 has a supply timing risk</div></div>' +
+        '<div style="background:#EBF5FB;border-radius:4px;padding:12px;margin-bottom:12px;border:1px solid #A8D4F8;">' +
+        '<div style="font-size:11px;font-weight:700;color:#032D60;margin-bottom:4px;">Human time required</div>' +
+        '<div style="font-size:12px;color:#3E3E3C;">One Slack notification. One click to approve. That is the entire human involvement for a routine PO reschedule — down from 2–3 days of email coordination.</div></div>' +
+        '<button class="btn btn-success" onclick="runSingleProcess(2)">▶ Run This Process Now</button>'
+    },
+    'inventory-review': {
+      title: 'Process Detail — Safety Stock Recalculation',
+      body: '<div style="margin-bottom:10px;"><span class="bdg bdg-b">PIR-triggered · 4 materials</span></div>' +
+        '<p style="margin-bottom:12px;">Every time a Sales Agreement run-rate changes in Salesforce Manufacturing Cloud, a PIR update goes to SAP — and this process automatically checks whether current safety stock levels are still calibrated to the new demand signal.</p>' +
+        '<div style="background:#F9F8F8;border-radius:4px;padding:12px;margin-bottom:12px;">' +
+        '<div style="font-size:11px;font-weight:700;color:#706E6B;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">Automated steps</div>' +
+        '<div style="font-size:12px;line-height:1.8;color:#3E3E3C;">1. PIR update in SAP triggers process<br>2. Agent queries current stock levels for affected materials (MAT-44821, MAT-44822, MAT-44823, MAT-44830)<br>3. Calculates delta between old and new safety stock requirement based on revised run-rate<br>4. If delta within ±15% approved band: auto-adjust in SAP MRP, notify planner<br>5. If delta outside band: route recommendation to planner with supporting data for manual decision<br>6. Update MRP parameters and confirm back to Salesforce</div></div>' +
+        '<div style="background:#EEF6EC;border-radius:4px;padding:12px;margin-bottom:12px;border:1px solid #A3D9A5;">' +
+        '<div style="font-size:11px;font-weight:700;color:#055244;margin-bottom:4px;">Why this matters</div>' +
+        '<div style="font-size:12px;color:#3E3E3C;">The Osborn June run-rate outperformed by 14%. Without this process, safety stock for Q3 would remain calibrated to the old, lower run-rate — increasing stockout risk as ordering pace accelerates. The process recalibrated automatically the same day the agreement was updated.</div></div>' +
+        '<button class="btn btn-success" onclick="runSingleProcess(3)">▶ Run This Process Now</button>'
+    }
+  };
+  const d = details[id];
+  if (d) openDrawer(d.title, d.body);
+}
+
+function runSingleProcess(n) {
+  closeDrawer();
+  animateProcessRow(n);
+}
+
+function runProcessDemo() {
+  const dot = document.getElementById('ops-live-dot');
+  const lbl = document.getElementById('ops-live-label');
+  if (dot) { dot.style.background = '#9747FF'; dot.classList.add('pulse'); }
+  if (lbl) lbl.textContent = 'Processes running…';
+  toast('Agentforce Operations', '3 back-office processes starting…', 'i');
+  animateProcessRow(1, 0);
+  animateProcessRow(2, 1800);
+  animateProcessRow(3, 3600);
+  setTimeout(() => {
+    if (lbl) lbl.textContent = '3 processes complete · all systems updated';
+    if (dot) dot.style.background = '#2E844A';
+    toast('All Processes Complete', 'SAP updated · Salesforce run-rates revised · audit trail logged', 's');
+  }, 8000);
+}
+
+function animateProcessRow(n, delay) {
+  delay = delay || 0;
+  const chips = [null, // placeholder for 1-indexed
+    ['pc1-2','pc1-3','pc1-4','pc1-5'],
+    ['pc2-2','pc2-3','pc2-4','pc2-5'],
+    ['pc3-2','pc3-3','pc3-4','pc3-5']
+  ][n];
+  const badge = document.getElementById('prow-'+n+'-status');
+  const row = document.getElementById('prow-'+n);
+
+  const msgs = [null,
+    ['Checking OTD in SAP…', 'Notifying supplier…', 'Escalating to procurement…', 'Logging resolution…'],
+    ['Calculating impact…', 'Drafting PO change…', 'Awaiting approval…', 'Updating SAP + Salesforce…'],
+    ['Comparing stock vs. demand…', 'Calculating delta…', 'Adjusting safety stock…', 'Updating MRP parameters…']
+  ][n];
+
+  const finalBadgeText = [null, 'OTD Resolved', 'PO Rescheduled', 'Stock Updated'][n];
+  const finalBadgeColor = '#2E844A';
+
+  setTimeout(() => {
+    if (badge) { badge.style.background = '#F9F0FF'; badge.style.color = '#9747FF'; badge.textContent = 'Running'; }
+    if (row) row.style.background = '#FDFBFF';
+
+    chips.forEach((chipId, i) => {
+      setTimeout(() => {
+        const chip = document.getElementById(chipId);
+        if (!chip) return;
+        chip.classList.add('ps-active');
+        chip.textContent = (msgs[i] || chip.textContent);
+        if (i > 0) {
+          const prev = document.getElementById(chips[i-1]);
+          if (prev) { prev.classList.remove('ps-active'); prev.classList.add('ps-complete'); }
+        }
+        if (i === chips.length - 1) {
+          setTimeout(() => {
+            chip.classList.remove('ps-active');
+            chip.classList.add('ps-complete');
+            if (badge) { badge.style.background = '#EEF6EC'; badge.style.color = '#055244'; badge.textContent = finalBadgeText; }
+            if (row) row.style.background = '';
+          }, 1200);
+        }
+      }, i * 1200);
+    });
+  }, delay);
+}
+
+// Register agentops page in PAGES array and NAV_MAP
+// (appended after existing JS so both arrays get the new entry)
+if (typeof PAGES !== 'undefined') {
+  if (!PAGES.includes('agentops')) PAGES.push('agentops');
+}
+if (typeof NAV_MAP !== 'undefined') {
+  NAV_MAP['agentops'] = 'agentops';
+}
 </script>
 </body>
 </html>

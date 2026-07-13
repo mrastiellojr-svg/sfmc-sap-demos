@@ -1,0 +1,709 @@
+
+<!-- ══ APP LAUNCHER ══ -->
+<div id="app-launcher">
+  <div style="padding:16px 20px 10px;border-bottom:1px solid #DDDBDA;display:flex;align-items:center;justify-content:space-between;">
+    <div style="font-size:14px;font-weight:700;color:#181818;">App Launcher</div>
+    <button style="background:none;border:none;cursor:pointer;font-size:20px;color:#706E6B;line-height:1;" onclick="closeAppLauncher()">×</button>
+  </div>
+  <div style="padding:12px 20px;">
+    <input type="text" style="width:100%;border:1px solid #DDDBDA;border-radius:4px;padding:8px 10px;font-size:13px;" placeholder="Search apps and items…"/>
+  </div>
+  <div style="padding:0 8px 16px;">
+    <div style="padding:4px 12px 6px;font-size:11px;font-weight:700;color:#706E6B;text-transform:uppercase;letter-spacing:.06em;">All Apps</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;">
+      <div class="al-tile" onclick="closeAppLauncher();nav('home')"><div style="font-size:24px;margin-bottom:4px;">🏭</div><div style="font-size:12px;font-weight:700;">Agentforce Manufacturing</div></div>
+      <div class="al-tile" onclick="closeAppLauncher();toast('Opening…','Sales Cloud launching','i')"><div style="font-size:24px;margin-bottom:4px;">💼</div><div style="font-size:12px;font-weight:700;">Sales Cloud</div></div>
+      <div class="al-tile" onclick="closeAppLauncher();toast('Opening…','Service Cloud launching','i')"><div style="font-size:24px;margin-bottom:4px;">🎧</div><div style="font-size:12px;font-weight:700;">Service Cloud</div></div>
+      <div class="al-tile" onclick="closeAppLauncher();nav('sap')"><div style="font-size:24px;margin-bottom:4px;">🔗</div><div style="font-size:12px;font-weight:700;">SAP Integration</div></div>
+      <div class="al-tile" onclick="closeAppLauncher();nav('reports')"><div style="font-size:24px;margin-bottom:4px;">📊</div><div style="font-size:12px;font-weight:700;">Reports</div></div>
+      <div class="al-tile" onclick="closeAppLauncher();toast('Opening…','Agentforce Console launching','i')"><div style="font-size:24px;margin-bottom:4px;">🤖</div><div style="font-size:12px;font-weight:700;">Agentforce</div></div>
+    </div>
+  </div>
+</div>
+<div id="al-overlay" onclick="closeAppLauncher()"></div>
+
+<!-- ══ OPP RECORD ══ -->
+<div id="page-opp-record" class="page">
+  <div class="rh">
+    <div class="rh-bc"><a onclick="nav('opps')">Opportunities</a> / <span id="orec-name">Opp Name</span></div>
+    <div class="rh-top">
+      <div class="rh-ico" style="background:#2E844A;">$</div>
+      <div class="rh-meta"><div class="rh-otype">Opportunity</div><div class="rh-name" id="orec-fullname">Opportunity</div></div>
+      <div class="rh-acts">
+        <button class="btn btn-neutral" onclick="openDrawer('Log Activity','<div style=\'margin-bottom:12px;\'><div style=\'font-size:11px;color:#706E6B;margin-bottom:3px;\'>Activity Type</div><select style=\'width:100%;border:1px solid #DDDBDA;border-radius:3px;padding:6px 8px;font-size:13px;\'><option>Call</option><option>Email</option><option>Meeting</option></select></div><div style=\'margin-bottom:12px;\'><div style=\'font-size:11px;color:#706E6B;margin-bottom:3px;\'>Notes</div><textarea style=\'width:100%;border:1px solid #DDDBDA;border-radius:3px;padding:8px;font-size:13px;height:80px;resize:none;\'></textarea></div><button class=\'btn btn-brand\' onclick=\'toast(\"Activity Saved\",\"Activity logged successfully\",\"s\");closeDrawer()\'>Save</button>')">Log Activity</button>
+        <button class="btn btn-brand" onclick="toast('Moving to Next Stage','Opportunity stage advanced','s')">Mark Stage Complete</button>
+      </div>
+    </div>
+    <div class="hp">
+      <div class="hf"><div class="hf-l">Account Name</div><div class="hf-v lnk" id="orec-acct" onclick="openAccount('osborn')">Osborn Industries</div></div>
+      <div class="hf"><div class="hf-l">Amount</div><div class="hf-v" id="orec-amt">$2.4M</div></div>
+      <div class="hf"><div class="hf-l">Close Date</div><div class="hf-v" id="orec-close">Sep 30, 2026</div></div>
+      <div class="hf"><div class="hf-l">Probability</div><div class="hf-v" id="orec-prob">65%</div></div>
+      <div class="hf"><div class="hf-l">SAP Demand Signal</div><div class="hf-v"><span class="bdg bdg-w" id="orec-sap-badge">Queued — IBP</span></div></div>
+    </div>
+    <div class="path">
+      <div class="path-step done" onclick="toast('Stage Info','Qualification complete ✓','i')"><div class="path-n">Qualification</div></div>
+      <div class="path-step done" onclick="toast('Stage Info','Needs Analysis complete ✓','i')"><div class="path-n">Needs Analysis</div></div>
+      <div class="path-step done" onclick="toast('Stage Info','Proposal sent ✓','i')"><div class="path-n">Proposal</div></div>
+      <div class="path-step current" onclick="openDrawer('Proposal/Price Quote Details','<p style=\'margin-bottom:12px;\'>SOW sent Jul 5. Awaiting sign-off from Osborn procurement.</p><button class=\'btn btn-brand\' onclick=\'toast(\"Nudge Sent\",\"Follow-up email queued\",\"s\")\'>Send Follow-up</button>')"><div class="path-n">Proposal/Price Quote</div></div>
+      <div class="path-step" onclick="openDrawer('Negotiation/Review','<p>No activity yet. Advance from Proposal stage first.</p>')"><div class="path-n">Negotiation/Review</div></div>
+      <div class="path-step" onclick="openDrawer('Closed Won','<p>Final stage — mark as Closed Won when contract is signed.</p>')"><div class="path-n">Closed Won</div></div>
+    </div>
+    <div class="tabs">
+      <div class="tab active" onclick="showOppTab('details',this)">Details</div>
+      <div class="tab" onclick="showOppTab('activity',this)">Activity</div>
+      <div class="tab" onclick="showOppTab('contacts',this)">Contacts</div>
+    </div>
+  </div>
+  <div id="opp-tab-details" class="tab-panel active">
+    <div class="two-col">
+      <div class="card">
+        <div class="ch"><div class="ch-t">Opportunity Information</div></div>
+        <div class="cb">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div><div style="font-size:11px;color:#706E6B;margin-bottom:2px;">Opportunity Name</div><div id="orec-detail-name" style="font-weight:600;">Q3 Expansion — Precision Parts</div></div>
+            <div><div style="font-size:11px;color:#706E6B;margin-bottom:2px;">Owner</div><div>M. Rastiello</div></div>
+            <div><div style="font-size:11px;color:#706E6B;margin-bottom:2px;">Type</div><div>Expansion</div></div>
+            <div><div style="font-size:11px;color:#706E6B;margin-bottom:2px;">Lead Source</div><div>Existing Customer</div></div>
+            <div><div style="font-size:11px;color:#706E6B;margin-bottom:2px;">Expected Revenue</div><div id="orec-detail-amt">$1.56M</div></div>
+            <div><div style="font-size:11px;color:#706E6B;margin-bottom:2px;">SAP IBP Signal Sent</div><div><span class="bdg bdg-w">Queued next sync</span></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ch"><div class="ch-t">Agentforce Insights</div></div>
+        <div class="cb">
+          <div style="padding:10px;background:#EBF5FB;border-radius:4px;margin-bottom:10px;border-left:3px solid #0176D3;font-size:13px;">
+            <div style="font-weight:700;margin-bottom:3px;">🤖 This opportunity is contributing to SAP IBP demand</div>
+            <div style="color:#3E3E3C;">At 65% probability, $1.56M expected revenue (risk-weighted) has been included in the next SAP IBP sync as lower-confidence capacity signal.</div>
+          </div>
+          <div style="padding:10px;background:#EEF6EC;border-radius:4px;font-size:13px;border-left:3px solid #2E844A;">
+            <div style="font-weight:700;margin-bottom:3px;">🤖 Close velocity on track</div>
+            <div style="color:#3E3E3C;">Similar opportunities in this segment closed in 28 days avg. You are on day 19 — on pace for Sep 30 close date.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="opp-tab-activity" class="tab-panel">
+    <div class="card"><div class="cb" style="padding:0 16px 8px;">
+      <div class="feed-item"><div class="fd" style="background:#0176D3;"></div><div><div class="ft"><span class="fs">Proposal sent:</span> SOW and pricing deck emailed to Osborn procurement</div><div class="ftm">Jul 5, 2026 · M. Rastiello</div></div></div>
+      <div class="feed-item"><div class="fd" style="background:#0176D3;"></div><div><div class="ft"><span class="fs">Call:</span> Discovery call with VP Procurement — budget confirmed, green light for Q3</div><div class="ftm">Jun 28, 2026 · M. Rastiello</div></div></div>
+    </div></div>
+  </div>
+  <div id="opp-tab-contacts" class="tab-panel">
+    <div class="card"><div class="cb" style="padding:0 16px 8px;"><table class="dt"><thead><tr><th>Name</th><th>Title</th><th>Role</th><th>Email</th></tr></thead><tbody>
+      <tr onclick="toast('Contact Details','Opening contact record','i')"><td class="lnk">James Osborn</td><td>VP Procurement</td><td>Decision Maker</td><td>j.osborn@osbornindustries.com</td></tr>
+      <tr onclick="toast('Contact Details','Opening contact record','i')"><td class="lnk">Sarah Chen</td><td>Dir. Supply Chain</td><td>Influencer</td><td>s.chen@osbornindustries.com</td></tr>
+    </tbody></table></div></div>
+  </div>
+</div>
+
+<!-- ══ ORDER RECORD ══ -->
+<div id="page-order-record" class="page">
+  <div class="rh">
+    <div class="rh-bc"><a onclick="nav('orders')">Orders</a> / <span id="ordrec-num">SO-2026-4821</span></div>
+    <div class="rh-top">
+      <div class="rh-ico" style="background:#0176D3;">📦</div>
+      <div class="rh-meta"><div class="rh-otype">Order</div><div class="rh-name" id="ordrec-name">SO-2026-4821</div></div>
+      <div class="rh-acts">
+        <button class="btn btn-neutral" onclick="toast('Opening SAP…','VA03 transaction launching in S/4HANA','i')">View in SAP</button>
+        <button class="btn btn-brand" onclick="openDrawer('Matched Agreement','<p style=\'margin-bottom:8px;\'>This order has been automatically matched to:</p><div style=\'font-weight:700;margin-bottom:4px;\'>SA-2026-001 — Osborn Industries (Hydraulic Components)</div><div style=\'font-size:12px;color:#706E6B;margin-bottom:12px;\'>Line: Hydraulic Valve Assembly · $142,000</div><button class=\'btn btn-brand\' onclick=\'openAgreement(\"SA-2026-001\");closeDrawer()\'>Open Agreement</button>')">View Agreement</button>
+      </div>
+    </div>
+    <div class="hp">
+      <div class="hf"><div class="hf-l">Account</div><div class="hf-v lnk" onclick="openAccount('osborn')">Osborn Industries</div></div>
+      <div class="hf"><div class="hf-l">Order Amount</div><div class="hf-v" id="ordrec-amt">$142,000</div></div>
+      <div class="hf"><div class="hf-l">Status</div><div class="hf-v"><span class="bdg bdg-g" id="ordrec-status">Fulfilled</span></div></div>
+      <div class="hf"><div class="hf-l">Channel</div><div class="hf-v"><span class="bdg bdg-b" id="ordrec-channel">EDI</span></div></div>
+      <div class="hf"><div class="hf-l">SAP Doc #</div><div class="hf-v lnk" id="ordrec-sap" onclick="toast('Opening SAP…','VA03 launching for this order','i')">SD-0040012821</div></div>
+    </div>
+    <div class="tabs">
+      <div class="tab active" onclick="showOrdTab('details',this)">Order Details</div>
+      <div class="tab" onclick="showOrdTab('lines',this)">Lines <span class="tc">3</span></div>
+      <div class="tab" onclick="showOrdTab('saplog',this)">SAP Log</div>
+    </div>
+  </div>
+  <div id="ord-tab-details" class="tab-panel active">
+    <div class="two-col">
+      <div class="card"><div class="ch"><div class="ch-t">Order Information</div></div><div class="cb">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div><div style="font-size:11px;color:#706E6B;margin-bottom:2px;">Order Date</div><div id="ordrec-date">Jul 8, 2026</div></div>
+          <div><div style="font-size:11px;color:#706E6B;margin-bottom:2px;">Expected Ship Date</div><div>Jul 14, 2026</div></div>
+          <div><div style="font-size:11px;color:#706E6B;margin-bottom:2px;">Ship-to Address</div><div>14 Industrial Pkwy, Detroit, MI</div></div>
+          <div><div style="font-size:11px;color:#706E6B;margin-bottom:2px;">Payment Terms</div><div>Net 30</div></div>
+          <div><div style="font-size:11px;color:#706E6B;margin-bottom:2px;">Matched Agreement</div><div class="lnk" onclick="openAgreement('SA-2026-001')">SA-2026-001</div></div>
+          <div><div style="font-size:11px;color:#706E6B;margin-bottom:2px;">SAP Sales Org</div><div>1000 / 10 / NA01</div></div>
+        </div>
+      </div></div>
+      <div class="card"><div class="ch"><div class="ch-t">Integration Status</div></div><div class="cb">
+        <div style="padding:10px;background:#EEF6EC;border-radius:4px;margin-bottom:8px;border-left:3px solid #2E844A;font-size:13px;">
+          <div style="font-weight:700;margin-bottom:3px;">✅ Order matched to agreement line</div>
+          <div style="color:#3E3E3C;">Auto-matched via sold-to party + material number. Revenue recognized against SA-2026-001 — Hydraulic Valve Assembly line.</div>
+        </div>
+        <div style="padding:10px;background:#EEF6EC;border-radius:4px;border-left:3px solid #2E844A;font-size:13px;">
+          <div style="font-weight:700;margin-bottom:3px;">✅ Actuals updated</div>
+          <div style="color:#3E3E3C;">Agreement YTD actuals refreshed. Attainment updated to 114%.</div>
+        </div>
+      </div></div>
+    </div>
+  </div>
+  <div id="ord-tab-lines" class="tab-panel">
+    <div class="card"><div class="cb" style="padding:0 16px 8px;"><table class="dt"><thead><tr><th>Line</th><th>Material</th><th>Qty</th><th>Unit Price</th><th>Amount</th><th>Status</th></tr></thead><tbody>
+      <tr onclick="openDrawer('Line 1 Detail','<div style=\'margin-bottom:8px;\'><div style=\'font-size:11px;color:#706E6B;\'>Material</div><div style=\'font-weight:700;\'>Hydraulic Valve Assembly — MAT-44821</div></div><div style=\'margin-bottom:8px;\'><div style=\'font-size:11px;color:#706E6B;\'>SAP Fulfillment Status</div><div style=\'font-weight:700;color:#2E844A;\'>Delivered</div></div><button class=\'btn btn-neutral\' onclick=\'toast(\"Opening SAP…\",\"ME23N launching\",\"i\")\'>View in SAP</button>')"><td>10</td><td class="lnk">Hydraulic Valve Assembly</td><td>80</td><td>$1,450</td><td>$116,000</td><td><span class="bdg bdg-g">Delivered</span></td></tr>
+      <tr onclick="openDrawer('Line 2 Detail','<div style=\'margin-bottom:8px;\'><div style=\'font-size:11px;color:#706E6B;\'>Material</div><div style=\'font-weight:700;\'>Pressure Regulator Kit</div></div><div style=\'margin-bottom:8px;\'><div style=\'font-size:11px;color:#706E6B;\'>Status</div><div style=\'font-weight:700;color:#2E844A;\'>Delivered</div></div>')"><td>20</td><td class="lnk">Pressure Regulator Kit</td><td>20</td><td>$890</td><td>$17,800</td><td><span class="bdg bdg-g">Delivered</span></td></tr>
+      <tr onclick="openDrawer('Line 3 Detail','<div style=\'margin-bottom:8px;\'><div style=\'font-size:11px;color:#706E6B;\'>Material</div><div style=\'font-weight:700;\'>Hydraulic Cylinder Seal Kit</div></div><div style=\'margin-bottom:8px;\'><div style=\'font-size:11px;color:#706E6B;\'>Status</div><div style=\'font-weight:700;color:#2E844A;\'>Delivered</div></div>')"><td>30</td><td class="lnk">Hydraulic Cylinder Seal Kit</td><td>39</td><td>$210</td><td>$8,190</td><td><span class="bdg bdg-g">Delivered</span></td></tr>
+    </tbody></table></div></div>
+  </div>
+  <div id="ord-tab-saplog" class="tab-panel">
+    <div class="card"><div class="cb" style="padding:0 16px 8px;"><table class="log-table"><thead><tr><th>Time</th><th>Event</th><th>Status</th></tr></thead><tbody>
+      <tr><td>Jul 8 10:14 AM</td><td>EDI ORDERS.05 received from partner OSBN-01</td><td><span class="bdg bdg-g">Received</span></td></tr>
+      <tr><td>Jul 8 10:14 AM</td><td>SAP Sales Order created: SD-0040012821</td><td><span class="bdg bdg-g">Created</span></td></tr>
+      <tr><td>Jul 8 10:15 AM</td><td>MID Server sync: order written to Salesforce Manufacturing Cloud</td><td><span class="bdg bdg-g">Synced</span></td></tr>
+      <tr><td>Jul 8 10:15 AM</td><td>Agreement match: SA-2026-001 Line 10 — Hydraulic Valve Assembly</td><td><span class="bdg bdg-g">Matched</span></td></tr>
+      <tr><td>Jul 8 3:00 PM</td><td>Fulfillment confirmed: delivery complete, actuals updated</td><td><span class="bdg bdg-g">Fulfilled</span></td></tr>
+    </tbody></table></div></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════
+const PAGES = ['home','accounts','account-record','agreements','agreement-record','opps','opp-record','orders','order-record','forecasts','sap','reports','agentops'];
+const NAV_MAP = {home:'home',accounts:'accounts','sales-agreements':'agreements',agreements:'agreements',opportunities:'opps',opps:'opps',orders:'orders','account-forecasts':'forecasts',forecasts:'forecasts','sap-integration':'sap',sap:'sap',reports:'reports',agentops:'agentops'};
+
+function nav(key) {
+  const target = NAV_MAP[key] || key;
+  PAGES.forEach(p => {
+    const el = document.getElementById('page-'+p);
+    if (el) el.classList.remove('active');
+  });
+  const page = document.getElementById('page-'+target);
+  if (page) page.classList.add('active');
+
+  // update nav tabs
+  document.querySelectorAll('.an-item').forEach(t => t.classList.remove('an-active'));
+  const tabMap = {home:'tab-home',accounts:'tab-accounts',agreements:'tab-agreements',opps:'tab-opps',orders:'tab-orders',forecasts:'tab-forecasts',sap:'tab-sap',reports:'tab-reports'};
+  if (tabMap[target]) {
+    const tab = document.getElementById(tabMap[target]);
+    if (tab) tab.classList.add('an-active');
+  }
+
+  // trigger bar/gauge animations on first view
+  if (target === 'forecasts') {
+    setTimeout(() => { animateBarsIn('fc-bars'); animateGauges(); startLiveFeed(); }, 100);
+  }
+  if (target === 'agreement-record') {
+    setTimeout(() => animateBarsIn('actuals-bars'), 100);
+  }
+
+  closeAllDropdowns();
+  window.scrollTo(0,0);
+}
+
+// ═══════════════════════════════════════
+// RECORD OPENERS
+// ═══════════════════════════════════════
+const ACCOUNTS = {
+  osborn: {name:'Osborn Industries', type:'Manufacturing / Hydraulic Systems', phone:'(313) 555-0142', website:'osbornindustries.com', owner:'M. Rastiello', rating:'Premium', health:'Strong'},
+  vertex: {name:'Vertex Manufacturing', type:'Precision Parts / CNC', phone:'(419) 555-0388', website:'vertexmfg.com', owner:'K. Patel', rating:'Standard', health:'Stable'},
+  meridian: {name:'Meridian Aerospace', type:'Aerospace / Structural', phone:'(206) 555-0217', website:'meridianaero.com', owner:'M. Rastiello', rating:'Standard', health:'At Risk'},
+  atlas: {name:'Atlas Energy Systems', type:'Energy / Sensors', phone:'(713) 555-0494', website:'atlasenergy.com', owner:'J. Torres', rating:'Premium', health:'Growing'}
+};
+
+function openAccount(id) {
+  const a = ACCOUNTS[id] || ACCOUNTS.osborn;
+  document.getElementById('acct-name').textContent = a.name;
+  document.getElementById('acct-type').textContent = a.type;
+  document.getElementById('acct-phone').textContent = a.phone;
+  document.getElementById('acct-website').textContent = a.website;
+  document.getElementById('acct-owner').textContent = a.owner;
+  document.getElementById('acct-rating').textContent = a.rating;
+  document.getElementById('acct-health').textContent = a.health;
+  document.getElementById('acct-health').className = 'bdg ' + (a.health==='Strong'||a.health==='Growing'?'bdg-g':a.health==='At Risk'?'bdg-r':'bdg-b');
+  nav('account-record');
+}
+
+const AGREEMENTS = {
+  'SA-2026-001': {name:'SA-2026-001', account:'Osborn Industries', accId:'osborn', status:'Active', rev:'$21.3M', period:'Jan 2026 – Dec 2026', sap:'Synced'},
+  'SA-2026-002': {name:'SA-2026-002', account:'Vertex Manufacturing', accId:'vertex', status:'Active', rev:'$18.0M', period:'Jan 2026 – Jun 2026', sap:'Synced'},
+  'SA-2026-003': {name:'SA-2026-003', account:'Meridian Aerospace', accId:'meridian', status:'Active', rev:'$15.0M', period:'Jan 2026 – Dec 2026', sap:'Synced'},
+  'SA-2026-004': {name:'SA-2026-004', account:'Atlas Energy Systems', accId:'atlas', status:'In Review', rev:'$28.2M', period:'Jul 2026 – Jun 2027', sap:'Pending'}
+};
+
+function openAgreement(id) {
+  const a = AGREEMENTS[id] || AGREEMENTS['SA-2026-001'];
+  document.getElementById('agr-header-name').textContent = a.name;
+  document.getElementById('agr-acct-link').textContent = a.account;
+  document.getElementById('agr-acct-link').onclick = function(){ openAccount(a.accId); };
+  document.getElementById('agr-status').textContent = a.status;
+  document.getElementById('agr-status').className = 'bdg ' + (a.status==='Active'?'bdg-g':a.status==='In Review'?'bdg-w':'bdg-b');
+  document.getElementById('agr-rev').textContent = a.rev;
+  document.getElementById('agr-period').textContent = a.period;
+  document.getElementById('agr-sap-badge').textContent = 'SAP: ' + a.sap;
+  document.getElementById('agr-sap-badge').className = 'bdg ' + (a.sap==='Synced'?'bdg-g':'bdg-w');
+  showAgrTab('signals', null);
+  nav('agreement-record');
+}
+
+const OPPS = {
+  'opp-001': {name:'Q3 Expansion — Precision Parts', acct:'Osborn Industries', accId:'osborn', amt:'$2.4M', expRev:'$1.56M', close:'Sep 30, 2026', prob:'65%', stage:'Proposal/Price Quote', sapBadge:'Queued — IBP'},
+  'opp-002': {name:'Atlas Energy — Sensor Upgrade', acct:'Atlas Energy Systems', accId:'atlas', amt:'$1.8M', expRev:'$1.53M', close:'Aug 15, 2026', prob:'85%', stage:'Negotiation', sapBadge:'Sent — IBP'},
+  'opp-003': {name:'Meridian — Fastener Renewal', acct:'Meridian Aerospace', accId:'meridian', amt:'$4.1M', expRev:'$4.1M', close:'Closed Won', prob:'100%', stage:'Closed Won', sapBadge:'Converted to Agreement'},
+  'opp-004': {name:'Meridian — Renewal Expansion', acct:'Meridian Aerospace', accId:'meridian', amt:'$5.4M', expRev:'$2.16M', close:'Nov 30, 2026', prob:'40%', stage:'Qualification', sapBadge:'Queued — IBP'},
+  'opp-005': {name:'Atlas Energy — Phase 2 Sensors', acct:'Atlas Energy Systems', accId:'atlas', amt:'$3.2M', expRev:'$640K', close:'Oct 31, 2026', prob:'20%', stage:'Prospecting', sapBadge:'Not yet sent'},
+  'opp-006': {name:'Vertex — Automation Upgrade', acct:'Vertex Manufacturing', accId:'vertex', amt:'$1.1M', expRev:'$110K', close:'Dec 31, 2026', prob:'10%', stage:'Prospecting', sapBadge:'Not yet sent'},
+  'opp-007': {name:'Osborn — Hydraulics Q4 Upsell', acct:'Osborn Industries', accId:'osborn', amt:'$980K', expRev:'$343K', close:'Oct 15, 2026', prob:'35%', stage:'Qualification', sapBadge:'Queued — IBP'},
+  'opp-008': {name:'Atlas — Turbine Sensor Suite', acct:'Atlas Energy Systems', accId:'atlas', amt:'$1.6M', expRev:'$960K', close:'Sep 15, 2026', prob:'60%', stage:'Proposal', sapBadge:'Sent — IBP'}
+};
+
+function openOpp(id) {
+  const o = OPPS[id] || OPPS['opp-001'];
+  document.getElementById('orec-name').textContent = o.name;
+  document.getElementById('orec-fullname').textContent = o.name;
+  document.getElementById('orec-acct').textContent = o.acct;
+  document.getElementById('orec-acct').onclick = function(){ openAccount(o.accId); };
+  document.getElementById('orec-amt').textContent = o.amt;
+  document.getElementById('orec-close').textContent = o.close;
+  document.getElementById('orec-prob').textContent = o.prob;
+  document.getElementById('orec-sap-badge').textContent = o.sapBadge;
+  document.getElementById('orec-detail-name').textContent = o.name;
+  document.getElementById('orec-detail-amt').textContent = o.expRev;
+  showOppTab('details', null);
+  nav('opp-record');
+}
+
+const ORDERS = {
+  'SO-2026-4821': {num:'SO-2026-4821', acct:'Osborn Industries', accId:'osborn', amt:'$142,000', status:'Fulfilled', channel:'EDI', sap:'SD-0040012821', date:'Jul 8, 2026'},
+  'SO-2026-4820': {num:'SO-2026-4820', acct:'Osborn Industries', accId:'osborn', amt:'$89,000', status:'Shipped', channel:'Portal', sap:'SD-0040012820', date:'Jul 5, 2026'},
+  'SO-2026-4812': {num:'SO-2026-4812', acct:'Osborn Industries', accId:'osborn', amt:'$315,000', status:'Fulfilled', channel:'Direct', sap:'SD-0040012812', date:'Jul 1, 2026'},
+  'SO-2026-4800': {num:'SO-2026-4800', acct:'Vertex Manufacturing', accId:'vertex', amt:'$210,000', status:'Fulfilled', channel:'EDI', sap:'SD-0040012800', date:'Jun 28, 2026'},
+  'SO-2026-4799': {num:'SO-2026-4799', acct:'Meridian Aerospace', accId:'meridian', amt:'$67,000', status:'In Progress', channel:'Portal', sap:'SD-0040012799', date:'Jun 25, 2026'}
+};
+
+function openOrder(id) {
+  const o = ORDERS[id] || ORDERS['SO-2026-4821'];
+  document.getElementById('ordrec-num').textContent = o.num;
+  document.getElementById('ordrec-name').textContent = o.num;
+  document.getElementById('ordrec-amt').textContent = o.amt;
+  document.getElementById('ordrec-status').textContent = o.status;
+  document.getElementById('ordrec-status').className = 'bdg ' + (o.status==='Fulfilled'||o.status==='Shipped'?'bdg-g':'bdg-w');
+  document.getElementById('ordrec-channel').textContent = o.channel;
+  document.getElementById('ordrec-channel').className = 'bdg ' + (o.channel==='EDI'?'bdg-b':o.channel==='Portal'?'bdg-g':'bdg-w');
+  document.getElementById('ordrec-sap').textContent = o.sap;
+  document.getElementById('ordrec-date').textContent = o.date;
+  showOrdTab('details', null);
+  nav('order-record');
+}
+
+// ═══════════════════════════════════════
+// DRAWER
+// ═══════════════════════════════════════
+function openDrawer(title, html) {
+  document.getElementById('drawer-title').textContent = title;
+  document.getElementById('drawer-body').innerHTML = html || '';
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('drawer-overlay').classList.add('show');
+  closeAllDropdowns();
+}
+function closeDrawer() {
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('drawer-overlay').classList.remove('show');
+}
+
+// ═══════════════════════════════════════
+// MODAL
+// ═══════════════════════════════════════
+function openModal(title, bodyHtml, footHtml) {
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-body').innerHTML = bodyHtml || '';
+  document.getElementById('modal-foot').innerHTML = footHtml || '<button class="btn btn-brand" onclick="closeModal()">Close</button>';
+  document.getElementById('modal-overlay').style.display = 'flex';
+}
+function closeModal() {
+  document.getElementById('modal-overlay').style.display = 'none';
+}
+function openReportModal(title, bodyHtml) {
+  openModal(title, bodyHtml);
+}
+function openNewRecordModal(type) {
+  let fields = '';
+  if (type === 'Opportunity') {
+    fields = '<div style="margin-bottom:10px;"><div style="font-size:11px;color:#706E6B;margin-bottom:3px;">Opportunity Name *</div><input style="width:100%;border:1px solid #DDDBDA;border-radius:3px;padding:7px 9px;font-size:13px;" placeholder="e.g. Osborn — Q4 Expansion"/></div><div style="margin-bottom:10px;"><div style="font-size:11px;color:#706E6B;margin-bottom:3px;">Account Name</div><input style="width:100%;border:1px solid #DDDBDA;border-radius:3px;padding:7px 9px;font-size:13px;" value="Osborn Industries"/></div><div style="margin-bottom:10px;"><div style="font-size:11px;color:#706E6B;margin-bottom:3px;">Amount</div><input style="width:100%;border:1px solid #DDDBDA;border-radius:3px;padding:7px 9px;font-size:13px;" placeholder="$0"/></div><div style="margin-bottom:10px;"><div style="font-size:11px;color:#706E6B;margin-bottom:3px;">Close Date</div><input type="date" style="width:100%;border:1px solid #DDDBDA;border-radius:3px;padding:7px 9px;font-size:13px;"/></div>';
+  } else if (type === 'Agreement Line') {
+    fields = '<div style="margin-bottom:10px;"><div style="font-size:11px;color:#706E6B;margin-bottom:3px;">Product *</div><input style="width:100%;border:1px solid #DDDBDA;border-radius:3px;padding:7px 9px;font-size:13px;" placeholder="Search products…"/></div><div style="margin-bottom:10px;"><div style="font-size:11px;color:#706E6B;margin-bottom:3px;">Monthly Qty</div><input type="number" style="width:100%;border:1px solid #DDDBDA;border-radius:3px;padding:7px 9px;font-size:13px;"/></div><div style="margin-bottom:10px;"><div style="font-size:11px;color:#706E6B;margin-bottom:3px;">Unit Price</div><input style="width:100%;border:1px solid #DDDBDA;border-radius:3px;padding:7px 9px;font-size:13px;" placeholder="$0.00"/></div>';
+  } else {
+    fields = '<div style="margin-bottom:10px;"><div style="font-size:11px;color:#706E6B;margin-bottom:3px;">' + type + ' Name *</div><input style="width:100%;border:1px solid #DDDBDA;border-radius:3px;padding:7px 9px;font-size:13px;"/></div>';
+  }
+  openModal('New ' + type, '<div style="font-size:12px;color:#706E6B;margin-bottom:14px;">Required fields are marked with *</div>' + fields,
+    '<button class="btn btn-neutral" style="margin-right:8px;" onclick="closeModal()">Cancel</button><button class="btn btn-brand" onclick="toast(\'Saved\',\'' + type + ' created successfully\',\'s\');closeModal()">Save</button>');
+}
+
+// ═══════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════
+function toast(title, msg, type) {
+  const wrap = document.getElementById('toast-wrap');
+  const t = document.createElement('div');
+  const icon = type==='s'?'✅':type==='w'?'⚠️':type==='e'?'❌':'ℹ️';
+  t.className = 'toast';
+  t.innerHTML = '<span style="font-size:16px;line-height:1;">' + icon + '</span><div><div class="toast-t">' + title + '</div><div class="toast-m">' + msg + '</div></div><button onclick="this.parentElement.remove()" style="background:none;border:none;cursor:pointer;font-size:18px;color:#706E6B;line-height:1;margin-left:auto;padding:0 4px;">×</button>';
+  wrap.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateX(110%)'; setTimeout(() => t.remove(), 400); }, 3600);
+}
+
+// ═══════════════════════════════════════
+// DROPDOWNS / PANELS
+// ═══════════════════════════════════════
+function toggleNotif() {
+  const p = document.getElementById('notif-panel');
+  const isOpen = p.classList.contains('open');
+  closeAllDropdowns();
+  if (!isOpen) p.classList.add('open');
+}
+function toggleProfile() {
+  const m = document.getElementById('profile-menu');
+  const isOpen = m.classList.contains('open');
+  closeAllDropdowns();
+  if (!isOpen) m.classList.add('open');
+}
+function closeProfile() { document.getElementById('profile-menu').classList.remove('open'); }
+function openSetup() { closeAllDropdowns(); toast('Setup', 'Salesforce Setup console opening…', 'i'); }
+function openSearch() { toast('Search', 'Global search active — try "Osborn" or "SA-2026"', 'i'); }
+function openAppLauncher() {
+  document.getElementById('app-launcher').classList.add('open');
+  document.getElementById('al-overlay').style.display = 'block';
+}
+function closeAppLauncher() {
+  document.getElementById('app-launcher').classList.remove('open');
+  document.getElementById('al-overlay').style.display = 'none';
+}
+function closeAllDropdowns() {
+  document.getElementById('notif-panel').classList.remove('open');
+  document.getElementById('profile-menu').classList.remove('open');
+}
+
+// ═══════════════════════════════════════
+// TAB SWITCHING
+// ═══════════════════════════════════════
+function showAgrTab(tab, el) {
+  ['signals','lines','orders','actuals','saplog','activity'].forEach(t => {
+    const p = document.getElementById('agr-tab-'+t);
+    if (p) p.classList.remove('active');
+  });
+  const target = document.getElementById('agr-tab-'+tab);
+  if (target) target.classList.add('active');
+  if (el) {
+    el.closest('.tabs').querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+  }
+  if (tab === 'actuals') setTimeout(() => animateBarsIn('actuals-bars'), 100);
+}
+function showFcTab(tab, el) {
+  ['main','channels','lines','fclog','fcactivity'].forEach(t => {
+    const p = document.getElementById('fc-tab-'+t);
+    if (p) p.classList.remove('active');
+  });
+  const target = document.getElementById('fc-tab-'+tab);
+  if (target) target.classList.add('active');
+  if (el) {
+    el.closest('.tabs').querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+  }
+  if (tab === 'main') setTimeout(() => { animateBarsIn('fc-bars'); animateGauges(); }, 100);
+  if (tab === 'channels') setTimeout(() => startLiveFeed(), 200);
+}
+function showOppTab(tab, el) {
+  ['details','activity','contacts'].forEach(t => {
+    const p = document.getElementById('opp-tab-'+t);
+    if (p) p.classList.remove('active');
+  });
+  const target = document.getElementById('opp-tab-'+tab);
+  if (target) target.classList.add('active');
+  if (el) { el.closest('.tabs').querySelectorAll('.tab').forEach(t => t.classList.remove('active')); el.classList.add('active'); }
+}
+function showOrdTab(tab, el) {
+  ['details','lines','saplog'].forEach(t => {
+    const p = document.getElementById('ord-tab-'+t);
+    if (p) p.classList.remove('active');
+  });
+  const target = document.getElementById('ord-tab-'+tab);
+  if (target) target.classList.add('active');
+  if (el) { el.closest('.tabs').querySelectorAll('.tab').forEach(t => t.classList.remove('active')); el.classList.add('active'); }
+}
+
+// ═══════════════════════════════════════
+// ANIMATIONS
+// ═══════════════════════════════════════
+let barsAnimated = {};
+function animateBarsIn(containerId) {
+  if (barsAnimated[containerId]) return;
+  barsAnimated[containerId] = true;
+  const rows = document.querySelectorAll('#'+containerId+' .bar-row');
+  rows.forEach((row, i) => {
+    setTimeout(() => {
+      const bars = row.querySelectorAll('.bbar');
+      bars.forEach(b => {
+        const w = b.dataset.w;
+        b.style.transition = 'width 0.7s cubic-bezier(.4,0,.2,1)';
+        b.style.width = w + '%';
+      });
+    }, i * 80);
+  });
+}
+
+let gaugesAnimated = false;
+function animateGauges() {
+  if (gaugesAnimated) return;
+  gaugesAnimated = true;
+  const fills = [{id:'g1',w:100},{id:'g2',w:98},{id:'g3',w:78},{id:'g4',w:17}];
+  fills.forEach((f,i) => {
+    setTimeout(() => {
+      const el = document.getElementById(f.id);
+      if (el) { el.style.transition = 'width 1s cubic-bezier(.4,0,.2,1)'; el.style.width = f.w + '%'; }
+    }, i * 120);
+  });
+}
+
+// ═══════════════════════════════════════
+// LIVE FEED
+// ═══════════════════════════════════════
+const FEED_TEMPLATES = [
+  {ch:'EDI', accts:['Osborn Industries','Vertex Manufacturing'], min:85000, max:310000},
+  {ch:'Portal', accts:['Osborn Industries','Meridian Aerospace','Atlas Energy Systems'], min:42000, max:190000},
+  {ch:'Direct', accts:['Vertex Manufacturing','Atlas Energy Systems'], min:60000, max:250000},
+  {ch:'DC/Distribution', accts:['Meridian Aerospace','Osborn Industries'], min:30000, max:95000}
+];
+const CH_COLORS = {EDI:'#0176D3',Portal:'#2E844A',Direct:'#706E6B','DC/Distribution':'#A55000'};
+let feedRunning = false;
+let feedCount = 1847;
+
+function startLiveFeed() {
+  if (feedRunning) return;
+  feedRunning = true;
+  addFeedItem(); // immediate first one
+  setInterval(addFeedItem, 3800);
+}
+
+function addFeedItem() {
+  const feed = document.getElementById('live-feed');
+  if (!feed || !feed.offsetParent) return; // only if visible
+  const tmpl = FEED_TEMPLATES[Math.floor(Math.random() * FEED_TEMPLATES.length)];
+  const acct = tmpl.accts[Math.floor(Math.random() * tmpl.accts.length)];
+  const amt = Math.round((Math.random() * (tmpl.max - tmpl.min) + tmpl.min) / 1000) * 1000;
+  const fmtAmt = '$' + (amt >= 1000000 ? (amt/1000000).toFixed(1)+'M' : (amt/1000).toFixed(0)+'K');
+  const ordNum = 'SO-2026-' + (4900 + Math.floor(Math.random() * 99));
+  const color = CH_COLORS[tmpl.ch] || '#0176D3';
+
+  const item = document.createElement('div');
+  item.className = 'feed-item';
+  item.innerHTML = '<div class="fd" style="background:'+color+';"></div><div><div class="ft"><span class="fs">'+tmpl.ch+':</span> '+ordNum+' · '+acct+' · <strong>'+fmtAmt+'</strong> → matched to agreement</div><div class="ftm">just now · auto-sync</div></div>';
+  feed.insertBefore(item, feed.firstChild);
+
+  feedCount++;
+  const fc = document.getElementById('feed-count');
+  if (fc) fc.textContent = feedCount.toLocaleString();
+
+  // pulse the relevant channel card
+  const chMap = {EDI:'ch-edi', Portal:'ch-portal', Direct:'ch-direct', 'DC/Distribution':'ch-dc'};
+  const chEl = document.getElementById(chMap[tmpl.ch]);
+  if (chEl) { chEl.classList.add('pulse-once'); setTimeout(() => chEl.classList.remove('pulse-once'), 600); }
+
+  // remove old items to prevent overflow
+  while (feed.children.length > 12) feed.removeChild(feed.lastChild);
+
+  // bump YTD actuals
+  updateKpi();
+}
+
+function updateKpi() {
+  const el = document.getElementById('kpi-ytd');
+  if (el) {
+    const cur = parseFloat(el.textContent.replace('$','').replace('M',''));
+    el.textContent = '$' + (cur + 0.1).toFixed(1) + 'M';
+  }
+}
+
+// ═══════════════════════════════════════
+// SAP SYNC
+// ═══════════════════════════════════════
+function doSapSync() {
+  const btn = event && event.target ? event.target : null;
+  if (btn) { btn.disabled = true; btn.textContent = 'Syncing…'; }
+  const bar = document.getElementById('sync-prog-inner');
+  const pct = document.getElementById('sync-pct');
+  if (bar) { bar.style.width = '0'; setTimeout(()=>{ bar.style.width='100%'; }, 50); }
+
+  let progress = 0;
+  const interval = setInterval(() => {
+    progress += Math.random() * 22 + 8;
+    if (progress >= 100) { progress = 100; clearInterval(interval); }
+    if (pct) pct.textContent = Math.round(progress) + '%';
+    if (progress >= 100) {
+      toast('SAP Sync Complete', '$184.6M demand package sent · 1,284 records updated', 's');
+      if (btn) { btn.disabled = false; btn.textContent = 'Run Sync Now'; }
+
+      // update log
+      const tbody = document.querySelector('#sap-log-table tbody');
+      if (tbody) {
+        const row = document.createElement('tr');
+        const now = new Date(); const h = now.getHours(); const m = now.getMinutes().toString().padStart(2,'0'); const ampm = h>=12?'PM':'AM'; const hr = ((h%12)||12);
+        row.innerHTML = '<td>Today '+hr+':'+m+' '+ampm+'</td><td>→ Outbound</td><td>Demand Package</td><td>1,284</td><td><span class="bdg bdg-g">Success</span></td><td>$184.6M sent (manual)</td>';
+        row.style.background = '#EEF6EC';
+        tbody.insertBefore(row, tbody.firstChild);
+        setTimeout(() => row.style.background = '', 2000);
+      }
+    }
+  }, 220);
+}
+
+function doRefreshActuals() {
+  const btn = document.getElementById('refresh-btn');
+  if (btn) { btn.disabled = true; btn.textContent = '↺ Refreshing…'; }
+  toast('Pulling Actuals', 'Connecting to SAP S/4HANA…', 'i');
+  setTimeout(() => {
+    toast('Actuals Refreshed', '1,847 orders synced · attainment updated', 's');
+    if (btn) { btn.disabled = false; btn.textContent = '↺ Refresh Actuals'; }
+    const pl = document.getElementById('last-pull');
+    if (pl) { const now = new Date(); pl.textContent = 'Today ' + ((now.getHours()%12)||12) + ':' + now.getMinutes().toString().padStart(2,'0') + ' ' + (now.getHours()>=12?'PM':'AM'); }
+    const ytd = document.getElementById('ytd-actual');
+    if (ytd) ytd.textContent = '$89.1M';
+  }, 2200);
+}
+
+// ═══════════════════════════════════════
+// ORDER SIMULATION
+// ═══════════════════════════════════════
+function simulateInboundOrder() {
+  const channels = ['EDI','Customer Portal','Direct Entry','DC/Distribution'];
+  const ch = channels[Math.floor(Math.random() * channels.length)];
+  const amt = (Math.random() * 280 + 40).toFixed(0);
+  const ordNum = 'SO-2026-' + (4900 + Math.floor(Math.random() * 99));
+  toast('Inbound Order Received', ordNum + ' · ' + ch + ' · $' + amt + 'K → matching to agreement…', 'i');
+  setTimeout(() => {
+    toast('Order Matched', ordNum + ' matched to SA-2026-001 · actuals updated', 's');
+    addLiveFeedEntry(ch, 'Osborn Industries', amt * 1000, ordNum);
+  }, 1600);
+}
+
+function simulateChannelOrder(ch) {
+  const amt = (Math.random() * 250 + 50).toFixed(0);
+  const ordNum = 'SO-2026-' + (4900 + Math.floor(Math.random() * 99));
+  toast('Simulating ' + ch + ' Order', ordNum + ' · $' + amt + 'K entering SAP…', 'i');
+  setTimeout(() => {
+    toast('Order Synced', ordNum + ' matched to agreement · actuals updated', 's');
+    addLiveFeedEntry(ch, 'Osborn Industries', amt * 1000, ordNum);
+  }, 1800);
+}
+
+function addLiveFeedEntry(ch, acct, amt, ordNum) {
+  const feed = document.getElementById('live-feed');
+  if (!feed) return;
+  const fmtAmt = '$' + (amt >= 1000000 ? (amt/1000000).toFixed(1)+'M' : (amt/1000).toFixed(0)+'K');
+  const color = CH_COLORS[ch] || '#0176D3';
+  const item = document.createElement('div');
+  item.className = 'feed-item';
+  item.innerHTML = '<div class="fd" style="background:'+color+';"></div><div><div class="ft"><span class="fs">'+ch+':</span> '+ordNum+' · '+acct+' · <strong>'+fmtAmt+'</strong> → matched</div><div class="ftm">just now · simulated</div></div>';
+  feed.insertBefore(item, feed.firstChild);
+}
+
+// ═══════════════════════════════════════
+// PATH CLICK
+// ═══════════════════════════════════════
+function pathClick(step) {
+  const msgs = {
+    Draft: 'Agreement was created as a draft on Jan 3, 2026. Initial terms set by M. Rastiello.',
+    'In Review': 'Sent to Osborn procurement for review Jan 10. Legal approved Jan 14.',
+    Approved: 'Countersigned by VP Procurement Jan 18. Effective Jan 1.',
+    Active: 'Agreement is currently active. Run-rate data is being sent to SAP every 6 hours.',
+    Renewed: 'Renewal has not been initiated. Agreement expires Dec 31, 2026.',
+    Expired: 'Agreement has not expired yet.'
+  };
+  openDrawer(step + ' — Agreement Stage', '<p style="margin-bottom:12px;">' + (msgs[step]||'No details available.') + '</p>' + (step==='Active'?'<button class="btn btn-success" onclick="doSapSync()">Send to SAP Now</button>':''));
+}
+
+// ═══════════════════════════════════════
+// TASKS
+// ═══════════════════════════════════════
+function toggleTask(el) {
+  const item = el.closest('.task-item');
+  if (item.classList.contains('done')) {
+    item.classList.remove('done');
+    el.textContent = '☐';
+    toast('Task Reopened', 'Task marked incomplete', 'i');
+  } else {
+    item.classList.add('done');
+    el.textContent = '☑';
+    toast('Task Complete', 'Well done!', 's');
+  }
+}
+
+// ═══════════════════════════════════════
+// INLINE EDIT
+// ═══════════════════════════════════════
+function makeEditable(el, field) {
+  const orig = el.textContent.trim();
+  const input = document.createElement('input');
+  input.style.cssText = 'border:1px solid #0176D3;border-radius:3px;padding:3px 6px;font-size:inherit;font-family:inherit;width:100%;box-sizing:border-box;';
+  input.value = orig;
+  el.textContent = '';
+  el.appendChild(input);
+  input.focus();
+  input.select();
+  function save() {
+    const val = input.value.trim() || orig;
+    el.textContent = val;
+    toast('Saved', field + ' updated to "' + val + '"', 's');
+  }
+  input.addEventListener('blur', save);
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') { save(); input.blur(); } if (e.key === 'Escape') { el.textContent = orig; } });
+}
+
+// ═══════════════════════════════════════
+// TOOLTIP
+// ═══════════════════════════════════════
+const tt = document.getElementById('tt');
+document.querySelectorAll('[data-tip]').forEach(el => {
+  el.addEventListener('mouseenter', e => {
+    tt.textContent = el.dataset.tip;
+    tt.style.display = 'block';
+    tt.style.left = (e.clientX + 10) + 'px';
+    tt.style.top = (e.clientY - 28) + 'px';
+  });
+  el.addEventListener('mousemove', e => {
+    tt.style.left = (e.clientX + 10) + 'px';
+    tt.style.top = (e.clientY - 28) + 'px';
+  });
+  el.addEventListener('mouseleave', () => { tt.style.display = 'none'; });
+});
+
+// ═══════════════════════════════════════
+// GLOBAL CLICK DISMISS
+// ═══════════════════════════════════════
+document.addEventListener('click', e => {
+  if (!e.target.closest('#notif-panel') && !e.target.closest('[onclick*="toggleNotif"]')) {
+    document.getElementById('notif-panel').classList.remove('open');
+  }
+  if (!e.target.closest('#profile-menu') && !e.target.closest('[onclick*="toggleProfile"]')) {
+    document.getElementById('profile-menu').classList.remove('open');
+  }
+});
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+(function init() {
+  nav('home');
+  // Seed bar animations when agreement record first shown
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      const p = document.getElementById('page-forecasts');
+      if (p && p.classList.contains('active')) { animateBarsIn('fc-bars'); animateGauges(); }
+    }
+  });
+  // Unread badge on bell
+  const bell = document.querySelector('[onclick="toggleNotif()"]');
+  if (bell) { const dot = document.createElement('span'); dot.style.cssText = 'position:absolute;top:8px;right:8px;width:8px;height:8px;background:#BA0517;border-radius:50%;border:2px solid #1B1B1B;'; dot.id='notif-dot'; bell.style.position='relative'; bell.appendChild(dot); }
+})();
+</script>
