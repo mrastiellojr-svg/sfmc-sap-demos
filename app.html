@@ -1006,6 +1006,16 @@ body{font-family:Arial,sans-serif;background:#F3F2F2;color:#181818;font-size:13p
     </div>
   </div>
 
+  <!-- CHALLENGE 2 BANNER -->
+  <div style="background:#EEF6EC;border:1px solid #A3D9A5;border-radius:4px;padding:14px 16px;margin-bottom:16px;display:flex;gap:12px;align-items:flex-start;">
+    <div style="font-size:18px;flex-shrink:0;">🎯</div>
+    <div style="flex:1;">
+      <div style="font-weight:700;color:#055244;font-size:13px;margin-bottom:4px;">Challenge 2 — Better visibility into account run rates so the team has a more reliable input to inform raw material planning decisions</div>
+      <div style="font-size:12px;color:#3E3E3C;line-height:1.6;">Finished goods forecasting was retired at Osborn after two outside reviews. The focus shifted to raw material planning and smarter safety stock — but both require a reliable, commercial-grade demand input the business did not have. This page shows how Sales Agreement run-rates become that input: contractually committed, updated in real time from SAP actuals, and visible to procurement and planning the moment Osborn's orders come in — without anyone pulling a report or moving data.</div>
+    </div>
+    <button class="btn btn-success" style="flex-shrink:0;white-space:nowrap;" onclick="doRefreshActuals()">↺ Pull Latest Actuals</button>
+  </div>
+
   <!-- MAIN TAB -->
   <div id="fc-tab-main" class="tab-panel active">
     <div class="card" style="margin-bottom:12px;">
@@ -1106,6 +1116,16 @@ body{font-family:Arial,sans-serif;background:#F3F2F2;color:#181818;font-size:13p
      PAGE: SAP INTEGRATION
 ════════════════════════════════════════════════════════════ -->
 <div id="page-sap" class="page">
+  <!-- CHALLENGE 1 BANNER -->
+  <div style="background:#EBF5FB;border:1px solid #A8D4F8;border-radius:4px;padding:14px 16px;margin-bottom:16px;display:flex;gap:12px;align-items:flex-start;">
+    <div style="font-size:18px;flex-shrink:0;">🎯</div>
+    <div style="flex:1;">
+      <div style="font-weight:700;color:#014486;font-size:13px;margin-bottom:4px;">Challenge 1 — A real-time connection to SAP so what is happening on the commercial side is immediately visible to procurement and planning</div>
+      <div style="font-size:12px;color:#3E3E3C;line-height:1.6;">Production and procurement data at Osborn was reviewed weekly through finance — by the time commercial run-rate changes reached procurement, the supplier PO window had already closed. This page shows the live SAP connection that eliminates that lag: Sales Agreement run-rates push to SAP PP-MP-DEM as active PIRs the moment they change, and order actuals flow back from SAP continuously across 4 channels. No batch export, no manual data movement, no waiting for the Thursday review.</div>
+    </div>
+    <button class="btn btn-brand" style="flex-shrink:0;white-space:nowrap;" onclick="doSapSync()">⇅ Run Live Sync</button>
+  </div>
+
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
     <div><div style="font-size:18px;font-weight:700;">SAP Integration</div><div style="font-size:12px;color:#706E6B;">S/4HANA Connection · ECC 6.0 · MID Server</div></div>
     <div style="display:flex;gap:8px;"><button class="btn btn-neutral" onclick="openDrawer('Integration Settings','<div style=\'margin-bottom:10px;\'><div style=\'font-size:11px;color:#706E6B;margin-bottom:3px;\'>Sync Frequency</div><select style=\'width:100%;border:1px solid #DDDBDA;border-radius:3px;padding:6px 8px;font-size:13px;\'><option>Every 6 hours</option><option>Every 12 hours</option><option>Daily</option></select></div><button class=\'btn btn-brand\' style=\'margin-top:10px;\' onclick=\'toast(\"Settings Saved\",\"Schedule updated\",\"s\");closeDrawer()\'>Save</button>')">Settings</button><button class="btn btn-success" onclick="doSapSync()">Run Full Sync</button></div>

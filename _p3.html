@@ -1,0 +1,422 @@
+
+  <!-- AGREEMENT LINES TAB -->
+  <div id="agr-tab-lines" class="tab-panel">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:12px;"><button class="btn btn-brand" onclick="openNewRecordModal('Agreement Line')">+ Add Line</button></div>
+    <div class="card">
+      <div class="cb" style="padding:0 16px 8px;">
+        <table class="dt">
+          <thead><tr><th>Product</th><th>Qty/Month</th><th>Unit Price</th><th>Monthly Rev.</th><th>YTD Actual</th><th>Attainment</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr onclick="openDrawer('Hydraulic Valve Assembly — Line Detail','<div style=\'margin-bottom:10px;\'><span class=\'bdg bdg-g\'>On Track</span></div><div style=\'display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;\'><div><div style=\'font-size:11px;color:#706E6B;\'>Product</div><div style=\'font-weight:700;\'>Hydraulic Valve Assembly</div></div><div><div style=\'font-size:11px;color:#706E6B;\'>SAP Material #</div><div style=\'font-weight:700;\'>MAT-44821</div></div><div><div style=\'font-size:11px;color:#706E6B;\'>Qty/Month</div><div style=\'font-weight:700;\'>240 units</div></div><div><div style=\'font-size:11px;color:#706E6B;\'>Unit Price</div><div style=\'font-weight:700;\'>$1,450</div></div><div><div style=\'font-size:11px;color:#706E6B;\'>Monthly Rev.</div><div style=\'font-weight:700;\'>$348K</div></div><div><div style=\'font-size:11px;color:#706E6B;\'>YTD Actual</div><div style=\'font-weight:700;\'>$2.1M</div></div></div><button class=\'btn btn-neutral\' onclick=\'toast(\"Opening SAP…\",\"Material MAT-44821 opening in MM60\",\"i\")\'>View in SAP MM</button>')"><td class="lnk">Hydraulic Valve Assembly</td><td>240</td><td>$1,450</td><td>$348K</td><td>$2.1M</td><td><span class="bdg bdg-g">108%</span></td><td><span class="bdg bdg-g">On Track</span></td></tr>
+            <tr onclick="openDrawer('Pressure Regulator Kit — Line Detail','<div style=\'margin-bottom:10px;\'><span class=\'bdg bdg-g\'>On Track</span></div><div style=\'display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;\'><div><div style=\'font-size:11px;color:#706E6B;\'>Product</div><div style=\'font-weight:700;\'>Pressure Regulator Kit</div></div><div><div style=\'font-size:11px;color:#706E6B;\'>SAP Material #</div><div style=\'font-weight:700;\'>MAT-44822</div></div><div><div style=\'font-size:11px;color:#706E6B;\'>Qty/Month</div><div style=\'font-weight:700;\'>180 units</div></div><div><div style=\'font-size:11px;color:#706E6B;\'>Unit Price</div><div style=\'font-weight:700;\'>$890</div></div></div><button class=\'btn btn-neutral\' onclick=\'toast(\"Opening SAP…\",\"Material MAT-44822 opening in MM60\",\"i\")\'>View in SAP MM</button>')"><td class="lnk">Pressure Regulator Kit</td><td>180</td><td>$890</td><td>$160K</td><td>$960K</td><td><span class="bdg bdg-g">100%</span></td><td><span class="bdg bdg-g">On Track</span></td></tr>
+            <tr onclick="openDrawer('Actuator Subassembly — Line Detail','<div style=\'margin-bottom:10px;\'><span class=\'bdg bdg-w\'>Watch</span></div><div style=\'display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;\'><div><div style=\'font-size:11px;color:#706E6B;\'>Product</div><div style=\'font-weight:700;\'>Actuator Subassembly</div></div><div><div style=\'font-size:11px;color:#706E6B;\'>Attainment</div><div style=\'font-weight:700;color:#A55000;\'>88%</div></div></div><p style=\'font-size:12px;color:#3E3E3C;margin-bottom:12px;\'>Slightly below target. No action required yet but monitor Q3 ordering pace.</p><button class=\'btn btn-neutral\' onclick=\'toast(\"Opening SAP…\",\"Material opening in MM60\",\"i\")\'>View in SAP MM</button>')"><td class="lnk">Actuator Subassembly</td><td>95</td><td>$2,100</td><td>$200K</td><td>$1.05M</td><td><span class="bdg bdg-w">88%</span></td><td><span class="bdg bdg-w">Watch</span></td></tr>
+            <tr onclick="openDrawer('Hydraulic Cylinder Seal Kit','<div style=\'margin-bottom:10px;\'><span class=\'bdg bdg-g\'>On Track</span></div>')"><td class="lnk">Hydraulic Cylinder Seal Kit</td><td>500</td><td>$210</td><td>$105K</td><td>$630K</td><td><span class="bdg bdg-g">100%</span></td><td><span class="bdg bdg-g">On Track</span></td></tr>
+            <tr onclick="openDrawer('Control Module — Industrial Series','<div style=\'margin-bottom:10px;\'><span class=\'bdg bdg-g\'>On Track</span></div>')"><td class="lnk">Control Module — Industrial Series</td><td>60</td><td>$4,800</td><td>$288K</td><td>$1.73M</td><td><span class="bdg bdg-g">100%</span></td><td><span class="bdg bdg-g">On Track</span></td></tr>
+            <tr onclick="openDrawer('Pump Housing Assembly','<div style=\'margin-bottom:10px;\'><span class=\'bdg bdg-r\'>At Risk</span></div><p style=\'margin-bottom:10px;\'>This line is significantly below target. Supply constraint from vendor delayed Q1/Q2 deliveries.</p><button class=\'btn btn-destructive\' onclick=\'toast(\"Alert Sent\",\"Escalation sent to supply chain team\",\"w\")\'>Escalate to Supply Chain</button>')"><td class="lnk">Pump Housing Assembly</td><td>40</td><td>$6,200</td><td>$248K</td><td>$890K</td><td><span class="bdg bdg-r">60%</span></td><td><span class="bdg bdg-r">At Risk</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ORDERS TAB -->
+  <div id="agr-tab-orders" class="tab-panel">
+    <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center;">
+      <button class="btn btn-brand" onclick="simulateInboundOrder()">+ Simulate Inbound Order</button>
+      <div style="font-size:12px;color:#706E6B;margin-left:auto;">38 orders · $56.4M total</div>
+    </div>
+    <div class="card">
+      <div class="cb" style="padding:0 16px 8px;" id="orders-table-wrap">
+        <table class="dt" id="orders-dt">
+          <thead><tr><th>Order #</th><th>Date</th><th>Channel</th><th>Amount</th><th>Status</th><th>SAP Doc #</th><th></th></tr></thead>
+          <tbody id="orders-tbody">
+            <tr onclick="openOrder('SO-2026-4821')"><td class="lnk">SO-2026-4821</td><td>Jul 8, 2026</td><td><span class="bdg bdg-b">EDI</span></td><td>$142,000</td><td><span class="bdg bdg-g">Fulfilled</span></td><td class="lnk" onclick="event.stopPropagation();toast('Opening SAP…','SD Doc 0040012821 launching in VA03','i')">SD-0040012821</td><td><button class="btn btn-neutral" style="height:26px;font-size:11px;padding:0 8px;" onclick="event.stopPropagation();toast('Opening SAP…','Transaction VA03 launching','i')">View SAP</button></td></tr>
+            <tr onclick="openOrder('SO-2026-4820')"><td class="lnk">SO-2026-4820</td><td>Jul 5, 2026</td><td><span class="bdg bdg-g">Portal</span></td><td>$89,000</td><td><span class="bdg bdg-g">Shipped</span></td><td class="lnk" onclick="event.stopPropagation();toast('Opening SAP…','SD Doc 0040012820 launching','i')">SD-0040012820</td><td><button class="btn btn-neutral" style="height:26px;font-size:11px;padding:0 8px;" onclick="event.stopPropagation();toast('Opening SAP…','Transaction VA03 launching','i')">View SAP</button></td></tr>
+            <tr onclick="openOrder('SO-2026-4812')"><td class="lnk">SO-2026-4812</td><td>Jul 1, 2026</td><td><span class="bdg bdg-w">Direct</span></td><td>$315,000</td><td><span class="bdg bdg-g">Fulfilled</span></td><td class="lnk" onclick="event.stopPropagation();toast('Opening SAP…','Launching VA03','i')">SD-0040012812</td><td><button class="btn btn-neutral" style="height:26px;font-size:11px;padding:0 8px;" onclick="event.stopPropagation();toast('Opening SAP…','Transaction VA03 launching','i')">View SAP</button></td></tr>
+            <tr onclick="openOrder('SO-2026-4800')"><td class="lnk">SO-2026-4800</td><td>Jun 28, 2026</td><td><span class="bdg bdg-b">EDI</span></td><td>$210,000</td><td><span class="bdg bdg-g">Fulfilled</span></td><td class="lnk" onclick="event.stopPropagation();toast('Opening SAP…','Launching VA03','i')">SD-0040012800</td><td><button class="btn btn-neutral" style="height:26px;font-size:11px;padding:0 8px;" onclick="event.stopPropagation();toast('Opening SAP…','Transaction VA03 launching','i')">View SAP</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTUALS & FORECAST TAB -->
+  <div id="agr-tab-actuals" class="tab-panel">
+    <div class="two-col">
+      <div class="card">
+        <div class="ch"><div class="ch-t">Monthly Actuals vs. Commitment</div><button class="btn btn-neutral" style="height:26px;font-size:12px;padding:0 10px;" onclick="toast('Recalculating…','Forecast model refreshed with latest actuals','i')">Recalculate</button></div>
+        <div class="cb" id="actuals-bars">
+          <div class="bar-row" onclick="openDrawer('January Performance','<div style=\'margin-bottom:8px;\'><div style=\'font-size:11px;color:#706E6B;\'>Commitment</div><div style=\'font-size:18px;font-weight:700;\'>$12.4M</div></div><div style=\'margin-bottom:8px;\'><div style=\'font-size:11px;color:#706E6B;\'>Actual</div><div style=\'font-size:18px;font-weight:700;\'>$11.8M</div></div><div><div style=\'font-size:11px;color:#706E6B;\'>Attainment</div><div style=\'font-size:18px;font-weight:700;color:#706E6B;\'>95%</div></div>')" data-comm="82" data-act="78" data-pct="95"><div class="bar-mon">Jan</div><div class="bar-grp"><div class="bbar" style="background:#0176D3;opacity:.3;width:0;" data-w="82"></div><div class="bbar" style="background:#2E844A;width:0;" data-w="78"></div></div><div class="bar-pct pct-n">95%</div></div>
+          <div class="bar-row" onclick="openDrawer('February Performance','<div style=\'margin-bottom:8px;\'><div style=\'font-size:11px;color:#706E6B;\'>Actual</div><div style=\'font-size:18px;font-weight:700;\'>$12.9M</div></div><div><div style=\'font-size:11px;color:#706E6B;\'>Attainment</div><div style=\'font-size:18px;font-weight:700;color:#2E844A;\'>104%</div></div>')" data-comm="82" data-act="85" data-pct="104"><div class="bar-mon">Feb</div><div class="bar-grp"><div class="bbar" style="background:#0176D3;opacity:.3;width:0;" data-w="82"></div><div class="bbar" style="background:#2E844A;width:0;" data-w="85"></div></div><div class="bar-pct pct-g">104%</div></div>
+          <div class="bar-row" onclick="openDrawer('March Performance','<div style=\'margin-bottom:8px;\'><div style=\'font-size:11px;color:#706E6B;\'>Actual</div><div style=\'font-size:18px;font-weight:700;\'>$14.6M</div></div><div><div style=\'font-size:11px;color:#706E6B;\'>Attainment</div><div style=\'font-size:18px;font-weight:700;color:#2E844A;\'>106%</div></div>')" data-comm="91" data-act="96" data-pct="106"><div class="bar-mon">Mar</div><div class="bar-grp"><div class="bbar" style="background:#0176D3;opacity:.3;width:0;" data-w="91"></div><div class="bbar" style="background:#2E844A;width:0;" data-w="96"></div></div><div class="bar-pct pct-g">106%</div></div>
+          <div class="bar-row" onclick="openDrawer('April Performance','<div style=\'margin-bottom:8px;\'><div style=\'font-size:11px;color:#706E6B;\'>Actual</div><div style=\'font-size:18px;font-weight:700;\'>$15.1M</div></div><div><div style=\'font-size:11px;color:#706E6B;\'>Attainment</div><div style=\'font-size:18px;font-weight:700;color:#2E844A;\'>106%</div></div>')" data-comm="94" data-act="100" data-pct="106"><div class="bar-mon">Apr</div><div class="bar-grp"><div class="bbar" style="background:#0176D3;opacity:.3;width:0;" data-w="94"></div><div class="bbar" style="background:#2E844A;width:0;" data-w="100"></div></div><div class="bar-pct pct-g">106%</div></div>
+          <div class="bar-row" onclick="openDrawer('May Performance','<div style=\'margin-bottom:8px;\'><div style=\'font-size:11px;color:#706E6B;\'>Actual</div><div style=\'font-size:18px;font-weight:700;\'>$13.4M</div></div><div><div style=\'font-size:11px;color:#706E6B;\'>Attainment</div><div style=\'font-size:18px;font-weight:700;color:#BA0517;\'>94% — below target</div></div>')" data-comm="94" data-act="88" data-pct="94"><div class="bar-mon">May</div><div class="bar-grp"><div class="bbar" style="background:#0176D3;opacity:.3;width:0;" data-w="94"></div><div class="bbar" style="background:#2E844A;width:0;" data-w="88"></div></div><div class="bar-pct pct-r">94%</div></div>
+          <div class="bar-row" onclick="openDrawer('June Performance','<div style=\'margin-bottom:8px;\'><div style=\'font-size:11px;color:#706E6B;\'>Actual</div><div style=\'font-size:18px;font-weight:700;\'>$20.5M</div></div><div><div style=\'font-size:11px;color:#706E6B;\'>Attainment</div><div style=\'font-size:18px;font-weight:700;color:#2E844A;\'>132% — strong outperformance</div></div><p style=\'margin-top:10px;font-size:12px;color:#3E3E3C;\'>Seasonal pull-forward likely. Consider revising H2 run-rate.</p>')" data-comm="100" data-act="100" data-pct="132"><div class="bar-mon">Jun</div><div class="bar-grp"><div class="bbar" style="background:#0176D3;opacity:.3;width:0;" data-w="100"></div><div class="bbar" style="background:#2E844A;width:0;" data-w="100"></div></div><div class="bar-pct pct-g">132% ↑</div></div>
+          <div style="display:flex;justify-content:space-between;padding:4px 0 0 52px;margin-top:4px;border-top:1px solid #F3F2F2;"><span style="font-size:10px;color:#A8A29D;">$0</span><span style="font-size:10px;color:#A8A29D;">$5M</span><span style="font-size:10px;color:#A8A29D;">$10M</span><span style="font-size:10px;color:#A8A29D;">$15M+</span></div>
+          <div style="display:flex;gap:14px;margin-top:10px;padding-top:10px;border-top:1px solid #F3F2F2;">
+            <div style="display:flex;align-items:center;gap:5px;font-size:12px;"><div style="width:14px;height:7px;border-radius:2px;background:#0176D3;opacity:.3;"></div>Commitment</div>
+            <div style="display:flex;align-items:center;gap:5px;font-size:12px;"><div style="width:14px;height:7px;border-radius:2px;background:#2E844A;"></div>Actuals</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ch"><div class="ch-t">H2 2026 Forecast</div></div>
+        <div class="cb" style="padding:0 16px 8px;">
+          <table class="dt" style="font-size:12px;">
+            <thead><tr><th>Month</th><th>Commitment</th><th>Forecast</th><th>Variance</th></tr></thead>
+            <tbody>
+              <tr onclick="openDrawer('July Forecast Detail','<p>July forecast of $16.2M is $700K above commitment based on June outperformance trend.</p>')"><td>Jul 2026</td><td>$15.5M</td><td style="color:#2E844A;font-weight:700;">$16.2M</td><td class="sf-green">+$700K</td></tr>
+              <tr onclick="openDrawer('August Forecast Detail','<p>August on track with seasonal pattern.</p>')"><td>Aug 2026</td><td>$15.5M</td><td>$15.5M</td><td style="color:#706E6B;">—</td></tr>
+              <tr onclick="openDrawer('September Forecast Detail','<p>Q3 close typically strong — forecast elevated.</p>')"><td>Sep 2026</td><td>$16.2M</td><td style="color:#2E844A;font-weight:700;">$17.1M</td><td class="sf-green">+$900K</td></tr>
+              <tr onclick="openDrawer('October Forecast Detail','<p>Q4 typically lower volume. Forecast aligned to commitment.</p>')"><td>Oct 2026</td><td>$14.8M</td><td>$14.8M</td><td style="color:#706E6B;">—</td></tr>
+              <tr onclick="openDrawer('November Forecast Detail','<p>November slightly below due to holiday schedule.</p>')"><td>Nov 2026</td><td>$14.8M</td><td style="color:#BA0517;font-weight:700;">$13.9M</td><td class="sf-red">−$900K</td></tr>
+              <tr onclick="openDrawer('December Forecast Detail','<p>December year-end push typically recovers shortfall.</p>')"><td>Dec 2026</td><td>$16.2M</td><td style="color:#2E844A;font-weight:700;">$17.4M</td><td class="sf-green">+$1.2M</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SAP LOG TAB -->
+  <div id="agr-tab-saplog" class="tab-panel">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:12px;gap:8px;">
+      <button class="btn btn-neutral" onclick="openDrawer('Integration Settings','<div style=\'margin-bottom:10px;\'><div style=\'font-size:11px;color:#706E6B;margin-bottom:3px;\'>Sync Frequency</div><select style=\'width:100%;border:1px solid #DDDBDA;border-radius:3px;padding:6px 8px;font-size:13px;\'><option>Every 6 hours</option><option>Every 12 hours</option><option>Daily</option></select></div><button class=\'btn btn-brand\' onclick=\'toast(\"Settings Saved\",\"Integration schedule updated\",\"s\");closeDrawer()\' style=\'margin-top:10px;\'>Save</button>')">Settings</button>
+      <button class="btn btn-success" onclick="doSapSync()">Run Sync Now</button>
+    </div>
+    <div class="card">
+      <div class="cb" style="padding:0 16px 8px;">
+        <table class="log-table" id="sap-log-table">
+          <thead><tr><th>Timestamp</th><th>Direction</th><th>Type</th><th>Records</th><th>Status</th><th>Message</th></tr></thead>
+          <tbody>
+            <tr onclick="openDrawer('Sync Detail','Demand package sent successfully. 3 signal types, 187 POs refreshed in SAP MM.')"><td>Today 10:14 AM</td><td>→ Outbound</td><td>Demand Package</td><td>1,284</td><td><span class="bdg bdg-g">Success</span></td><td>$184.6M demand signal sent</td></tr>
+            <tr onclick="openDrawer('Sync Detail','Order actuals received from SAP. 38 lines matched to agreement.')"><td>Today 9:52 AM</td><td>← Inbound</td><td>Order Actuals</td><td>38</td><td><span class="bdg bdg-g">Success</span></td><td>Order actuals updated</td></tr>
+            <tr onclick="openDrawer('Sync Detail','Opportunity pipeline loaded to SAP IBP for capacity planning.')"><td>Today 2:00 AM</td><td>→ Outbound</td><td>IBP Demand</td><td>14</td><td><span class="bdg bdg-g">Success</span></td><td>IBP plan refreshed</td></tr>
+            <tr onclick="openDrawer('Sync Detail','3 orders could not be matched to agreement lines. Requires manual review.')"><td>Jul 9 4:14 PM</td><td>← Inbound</td><td>Order Actuals</td><td>41</td><td><span class="bdg bdg-w">Warning</span></td><td>3 unmatched orders → exception queue</td></tr>
+            <tr onclick="openDrawer('Sync Detail','Full demand package successful.')"><td>Jul 9 10:14 AM</td><td>→ Outbound</td><td>Demand Package</td><td>1,271</td><td><span class="bdg bdg-g">Success</span></td><td>Scheduled sync complete</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTIVITY TAB -->
+  <div id="agr-tab-activity" class="tab-panel">
+    <div style="display:flex;gap:8px;margin-bottom:16px;">
+      <button class="btn btn-neutral" onclick="openNewRecordModal('Call')">Log a Call</button>
+      <button class="btn btn-neutral" onclick="openNewRecordModal('Task')">New Task</button>
+      <button class="btn btn-neutral" onclick="openNewRecordModal('Email')">Send Email</button>
+    </div>
+    <div class="card">
+      <div class="cb" style="padding:0 16px 8px;">
+        <div class="feed-item"><div class="fd" style="background:#2E844A;"></div><div><div class="ft"><span class="fs">SAP Sync:</span> Demand package sent to SAP S/4HANA — $184.6M, 3 signal tiers</div><div class="ftm">Today 10:14 AM · Automated</div></div></div>
+        <div class="feed-item"><div class="fd" style="background:#0176D3;"></div><div><div class="ft"><span class="fs">Call logged:</span> Reviewed Q3 attainment with Osborn procurement team — on track</div><div class="ftm">Today 9:00 AM · M. Rastiello</div></div></div>
+        <div class="feed-item"><div class="fd" style="background:#2E844A;"></div><div><div class="ft"><span class="fs">Agreement Updated:</span> Q3 run-rate revised +5% following June outperformance</div><div class="ftm">Jul 8, 2026 · M. Rastiello</div></div></div>
+        <div class="feed-item"><div class="fd" style="background:#0176D3;"></div><div><div class="ft"><span class="fs">Email sent:</span> H2 forecast summary shared with VP of Supply Chain</div><div class="ftm">Jul 7, 2026 · M. Rastiello</div></div></div>
+        <div class="feed-item"><div class="fd" style="background:#A55000;"></div><div><div class="ft"><span class="fs">Alert:</span> May attainment at 94% — below 95% threshold · Agentforce notified team</div><div class="ftm">Jun 1, 2026 · Automated</div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     PAGE: OPPORTUNITIES (Kanban)
+════════════════════════════════════════════════════════════ -->
+<div id="page-opps" class="page">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+    <div><div style="font-size:18px;font-weight:700;">Opportunities</div><div style="font-size:12px;color:#706E6B;">My Open Opportunities · Kanban View</div></div>
+    <div style="display:flex;gap:8px;"><button class="btn btn-neutral">List View</button><button class="btn btn-brand" onclick="openNewRecordModal('Opportunity')">+ New</button></div>
+  </div>
+  <div class="kanban">
+    <div class="kanban-col">
+      <div class="kanban-col-h">Prospecting <span class="kanban-ct">2</span></div>
+      <div class="k-card" onclick="openOpp('opp-005')"><div class="k-card-n">Atlas Energy — Phase 2 Sensors</div><div class="k-card-a">Atlas Energy Systems</div><div class="k-card-v">$3.2M</div><div class="k-card-foot"><span class="bdg bdg-gr" style="font-size:10px;">20%</span><span style="font-size:10px;color:#A8A29D;">Oct 31</span></div></div>
+      <div class="k-card" onclick="openOpp('opp-006')"><div class="k-card-n">Vertex — Automation Upgrade</div><div class="k-card-a">Vertex Manufacturing</div><div class="k-card-v">$1.1M</div><div class="k-card-foot"><span class="bdg bdg-gr" style="font-size:10px;">10%</span><span style="font-size:10px;color:#A8A29D;">Dec 31</span></div></div>
+    </div>
+    <div class="kanban-col">
+      <div class="kanban-col-h">Qualification <span class="kanban-ct">2</span></div>
+      <div class="k-card" onclick="openOpp('opp-004')"><div class="k-card-n">Meridian — Renewal Expansion</div><div class="k-card-a">Meridian Aerospace</div><div class="k-card-v">$5.4M</div><div class="k-card-foot"><span class="bdg bdg-b" style="font-size:10px;">40%</span><span style="font-size:10px;color:#A8A29D;">Nov 30</span></div></div>
+      <div class="k-card" onclick="openOpp('opp-007')"><div class="k-card-n">Osborn — Hydraulics Q4 Upsell</div><div class="k-card-a">Osborn Industries</div><div class="k-card-v">$980K</div><div class="k-card-foot"><span class="bdg bdg-b" style="font-size:10px;">35%</span><span style="font-size:10px;color:#A8A29D;">Oct 15</span></div></div>
+    </div>
+    <div class="kanban-col">
+      <div class="kanban-col-h">Proposal <span class="kanban-ct">2</span></div>
+      <div class="k-card" onclick="openOpp('opp-001')"><div class="k-card-n">Q3 Expansion — Precision Parts</div><div class="k-card-a">Osborn Industries</div><div class="k-card-v">$2.4M</div><div class="k-card-foot"><span class="bdg bdg-w" style="font-size:10px;">65%</span><span style="font-size:10px;color:#A8A29D;">Sep 30</span></div></div>
+      <div class="k-card" onclick="openOpp('opp-008')"><div class="k-card-n">Atlas — Turbine Sensor Suite</div><div class="k-card-a">Atlas Energy Systems</div><div class="k-card-v">$1.6M</div><div class="k-card-foot"><span class="bdg bdg-w" style="font-size:10px;">60%</span><span style="font-size:10px;color:#A8A29D;">Sep 15</span></div></div>
+    </div>
+    <div class="kanban-col">
+      <div class="kanban-col-h">Negotiation / Close <span class="kanban-ct">2</span></div>
+      <div class="k-card" onclick="openOpp('opp-002')"><div class="k-card-n">Atlas Energy — Sensor Upgrade</div><div class="k-card-a">Atlas Energy Systems</div><div class="k-card-v">$1.8M</div><div class="k-card-foot"><span class="bdg bdg-g" style="font-size:10px;">85%</span><span style="font-size:10px;color:#A8A29D;">Aug 15</span></div></div>
+      <div class="k-card" onclick="openOpp('opp-003')"><div class="k-card-n">Meridian — Fastener Renewal</div><div class="k-card-a">Meridian Aerospace</div><div class="k-card-v">$4.1M</div><div class="k-card-foot"><span class="bdg bdg-g" style="font-size:10px;">Closed Won</span><span style="font-size:10px;color:#2E844A;font-weight:700;">✓</span></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     PAGE: ORDERS LIST
+════════════════════════════════════════════════════════════ -->
+<div id="page-orders" class="page">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+    <div><div style="font-size:18px;font-weight:700;">Orders</div><div style="font-size:12px;color:#706E6B;">All Open Orders · 8 records</div></div>
+    <div style="display:flex;gap:8px;"><button class="btn btn-neutral" onclick="simulateInboundOrder()">Simulate Inbound</button><button class="btn btn-brand" onclick="openNewRecordModal('Order')">+ New</button></div>
+  </div>
+  <div class="card">
+    <div class="cb" style="padding:0 16px 8px;">
+      <table class="dt">
+        <thead><tr><th><span class="dt-check"></span></th><th>Order #</th><th>Account</th><th>Date</th><th>Amount</th><th>Status</th><th>Channel</th><th>SAP Doc #</th></tr></thead>
+        <tbody>
+          <tr onclick="openOrder('SO-2026-4821')"><td><span class="dt-check"></span></td><td class="lnk">SO-2026-4821</td><td class="lnk" onclick="openAccount('osborn');event.stopPropagation()">Osborn Industries</td><td>Jul 8</td><td>$142,000</td><td><span class="bdg bdg-g">Fulfilled</span></td><td><span class="bdg bdg-b">EDI</span></td><td class="lnk" onclick="event.stopPropagation();toast('Opening SAP…','VA03 launching','i')">SD-0040012821</td></tr>
+          <tr onclick="openOrder('SO-2026-4820')"><td><span class="dt-check"></span></td><td class="lnk">SO-2026-4820</td><td class="lnk" onclick="openAccount('osborn');event.stopPropagation()">Osborn Industries</td><td>Jul 5</td><td>$89,000</td><td><span class="bdg bdg-g">Shipped</span></td><td><span class="bdg bdg-g">Portal</span></td><td class="lnk" onclick="event.stopPropagation();toast('Opening SAP…','VA03 launching','i')">SD-0040012820</td></tr>
+          <tr onclick="openOrder('SO-2026-4812')"><td><span class="dt-check"></span></td><td class="lnk">SO-2026-4812</td><td class="lnk" onclick="openAccount('osborn');event.stopPropagation()">Osborn Industries</td><td>Jul 1</td><td>$315,000</td><td><span class="bdg bdg-g">Fulfilled</span></td><td><span class="bdg bdg-w">Direct</span></td><td class="lnk" onclick="event.stopPropagation();toast('Opening SAP…','VA03 launching','i')">SD-0040012812</td></tr>
+          <tr onclick="openOrder('SO-2026-4800')"><td><span class="dt-check"></span></td><td class="lnk">SO-2026-4800</td><td class="lnk" onclick="openAccount('vertex');event.stopPropagation()">Vertex Manufacturing</td><td>Jun 28</td><td>$210,000</td><td><span class="bdg bdg-g">Fulfilled</span></td><td><span class="bdg bdg-b">EDI</span></td><td class="lnk" onclick="event.stopPropagation();toast('Opening SAP…','VA03 launching','i')">SD-0040012800</td></tr>
+          <tr onclick="openOrder('SO-2026-4799')"><td><span class="dt-check"></span></td><td class="lnk">SO-2026-4799</td><td class="lnk" onclick="openAccount('meridian');event.stopPropagation()">Meridian Aerospace</td><td>Jun 25</td><td>$67,000</td><td><span class="bdg bdg-w">In Progress</span></td><td><span class="bdg bdg-g">Portal</span></td><td class="lnk" onclick="event.stopPropagation();toast('Opening SAP…','VA03 launching','i')">SD-0040012799</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     PAGE: ACCOUNT FORECASTS (Vignette 2)
+════════════════════════════════════════════════════════════ -->
+<div id="page-forecasts" class="page">
+  <div class="rh">
+    <div class="rh-bc"><a onclick="nav('forecasts')">Account Forecasts</a> / Osborn Industries — FY2026</div>
+    <div class="rh-top">
+      <div class="rh-ico" style="background:#2E844A;font-size:22px;">📊</div>
+      <div class="rh-meta"><div class="rh-otype">Account-Based Forecast</div><div class="rh-name">Osborn Industries — FY2026 Performance vs. Commitment</div></div>
+      <div class="rh-acts">
+        <button class="btn btn-neutral" onclick="simulateInboundOrder()">+ Simulate Order</button>
+        <button class="btn btn-brand" id="refresh-btn" onclick="doRefreshActuals()">↺ Refresh Actuals</button>
+      </div>
+    </div>
+    <div class="hp">
+      <div class="hf"><div class="hf-l">Account</div><div class="hf-v lnk" onclick="openAccount('osborn')">Osborn Industries</div></div>
+      <div class="hf"><div class="hf-l">YTD Actuals</div><div class="hf-v" id="ytd-actual">$88.3M</div></div>
+      <div class="hf"><div class="hf-l">Agreement Attainment</div><div class="hf-v"><span class="bdg bdg-g">107% ↑</span></div></div>
+      <div class="hf"><div class="hf-l">Accounts at Risk</div><div class="hf-v"><span class="bdg bdg-r">2 at risk</span></div></div>
+      <div class="hf"><div class="hf-l">Last SAP Pull</div><div class="hf-v" id="last-pull">Today 11:47 AM</div></div>
+    </div>
+    <div class="tabs">
+      <div class="tab active" onclick="showFcTab('main',this)">Actuals vs. Commitment</div>
+      <div class="tab" onclick="showFcTab('channels',this)">Order Channels <span class="tc">4</span></div>
+      <div class="tab" onclick="showFcTab('lines',this)">Agreement Lines</div>
+      <div class="tab" onclick="showFcTab('fclog',this)">SAP Integration Log</div>
+      <div class="tab" onclick="showFcTab('fcactivity',this)">Activity</div>
+    </div>
+  </div>
+
+  <!-- CHALLENGE 2 BANNER -->
+  <div style="background:#EEF6EC;border:1px solid #A3D9A5;border-radius:4px;padding:14px 16px;margin-bottom:16px;display:flex;gap:12px;align-items:flex-start;">
+    <div style="font-size:18px;flex-shrink:0;">🎯</div>
+    <div style="flex:1;">
+      <div style="font-weight:700;color:#055244;font-size:13px;margin-bottom:4px;">Challenge 2 — Better visibility into account run rates so the team has a more reliable input to inform raw material planning decisions</div>
+      <div style="font-size:12px;color:#3E3E3C;line-height:1.6;">Finished goods forecasting was retired at Osborn after two outside reviews. The focus shifted to raw material planning and smarter safety stock — but both require a reliable, commercial-grade demand input the business did not have. This page shows how Sales Agreement run-rates become that input: contractually committed, updated in real time from SAP actuals, and visible to procurement and planning the moment Osborn's orders come in — without anyone pulling a report or moving data.</div>
+    </div>
+    <button class="btn btn-success" style="flex-shrink:0;white-space:nowrap;" onclick="doRefreshActuals()">↺ Pull Latest Actuals</button>
+  </div>
+
+  <!-- MAIN TAB -->
+  <div id="fc-tab-main" class="tab-panel active">
+    <div class="card" style="margin-bottom:12px;">
+      <div class="kpi-row">
+        <div class="kpi"><div class="kpi-l">YTD Revenue (Actual)</div><div class="kpi-v" id="kpi-ytd">$88.3M</div><div class="kpi-s" style="color:#2E844A;font-weight:600;">↑ 7.4% vs agreement</div></div>
+        <div class="kpi"><div class="kpi-l">Agreement Attainment</div><div class="kpi-v">107%</div><div class="kpi-s">vs. $82.5M committed</div></div>
+        <div class="kpi"><div class="kpi-l">Forecast Gap</div><div class="kpi-v" style="color:#A55000;">−$4.2M</div><div class="kpi-s" style="color:#A55000;font-weight:600;">2 accounts below target</div></div>
+        <div class="kpi"><div class="kpi-l">Orders Synced (30d)</div><div class="kpi-v" id="kpi-orders">1,847</div><div class="kpi-s">Across 4 SAP channels</div></div>
+      </div>
+    </div>
+    <div class="two-col">
+      <div class="card">
+        <div class="ch"><div class="ch-t">Monthly Actuals vs. Commitment</div></div>
+        <div class="cb" id="fc-bars">
+          <div class="bar-row" onclick="openDrawer('January Actuals','<p>Jan: $11.8M actual vs $12.4M commitment — 95% attainment. Slight shortfall due to EDI processing delay in first week.</p>')" data-comm="82" data-act="78" data-pct="95"><div class="bar-mon">Jan</div><div class="bar-grp"><div class="bbar" style="background:#0176D3;opacity:.3;width:0;" data-w="82"></div><div class="bbar" style="background:#2E844A;width:0;" data-w="78"></div></div><div class="bar-pct pct-n">95%</div></div>
+          <div class="bar-row" onclick="openDrawer('February Actuals','<p>Feb: $12.9M actual vs $12.4M — 104% attainment. Strong customer portal orders drove outperformance.</p>')" data-comm="82" data-act="85" data-pct="104"><div class="bar-mon">Feb</div><div class="bar-grp"><div class="bbar" style="background:#0176D3;opacity:.3;width:0;" data-w="82"></div><div class="bbar" style="background:#2E844A;width:0;" data-w="85"></div></div><div class="bar-pct pct-g">104%</div></div>
+          <div class="bar-row" onclick="openDrawer('March Actuals','<p>Mar: $14.6M actual vs $13.8M — 106%.</p>')" data-comm="91" data-act="96" data-pct="106"><div class="bar-mon">Mar</div><div class="bar-grp"><div class="bbar" style="background:#0176D3;opacity:.3;width:0;" data-w="91"></div><div class="bbar" style="background:#2E844A;width:0;" data-w="96"></div></div><div class="bar-pct pct-g">106%</div></div>
+          <div class="bar-row" onclick="openDrawer('April Actuals','<p>Apr: $15.1M vs $14.2M — 106%.</p>')" data-comm="94" data-act="100" data-pct="106"><div class="bar-mon">Apr</div><div class="bar-grp"><div class="bbar" style="background:#0176D3;opacity:.3;width:0;" data-w="94"></div><div class="bbar" style="background:#2E844A;width:0;" data-w="100"></div></div><div class="bar-pct pct-g">106%</div></div>
+          <div class="bar-row" onclick="openDrawer('May Actuals','<p>May: $13.4M vs $14.2M — 94%. Slight shortfall.</p>')" data-comm="94" data-act="88" data-pct="94"><div class="bar-mon">May</div><div class="bar-grp"><div class="bbar" style="background:#0176D3;opacity:.3;width:0;" data-w="94"></div><div class="bbar" style="background:#2E844A;width:0;" data-w="88"></div></div><div class="bar-pct pct-r">94%</div></div>
+          <div class="bar-row" onclick="openDrawer('June Actuals','<p>Jun: $20.5M vs $15.5M — 132%! Strong seasonal pull-forward. Agentforce flagged this for H2 forecast revision.</p><button class=\'btn btn-brand\' style=\'margin-top:10px;\' onclick=\'toast(\"Forecast Updated\",\"H2 run-rate revised +8%\",\"s\")\'>Revise H2 Forecast</button>')" data-comm="100" data-act="100" data-pct="132"><div class="bar-mon">Jun</div><div class="bar-grp"><div class="bbar" style="background:#0176D3;opacity:.3;width:0;" data-w="100"></div><div class="bbar" style="background:#2E844A;width:0;" data-w="100"></div></div><div class="bar-pct pct-g">132% ↑</div></div>
+          <div style="display:flex;justify-content:space-between;padding:4px 0 0 52px;margin-top:4px;border-top:1px solid #F3F2F2;"><span style="font-size:10px;color:#A8A29D;">$0</span><span style="font-size:10px;color:#A8A29D;">$5M</span><span style="font-size:10px;color:#A8A29D;">$10M</span><span style="font-size:10px;color:#A8A29D;">$15M+</span></div>
+          <div style="display:flex;gap:14px;margin-top:10px;padding-top:10px;border-top:1px solid #F3F2F2;">
+            <div style="display:flex;align-items:center;gap:5px;font-size:12px;"><div style="width:14px;height:7px;border-radius:2px;background:#0176D3;opacity:.3;"></div>Commitment</div>
+            <div style="display:flex;align-items:center;gap:5px;font-size:12px;"><div style="width:14px;height:7px;border-radius:2px;background:#2E844A;"></div>Actuals (SAP)</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ch"><div class="ch-t">Attainment by Account</div><a class="ch-lnk" onclick="nav('accounts')">View All →</a></div>
+        <div class="cb" id="gauge-panel">
+          <div class="gauge" onclick="openAccount('osborn')"><div class="gauge-top"><div class="gauge-name">Osborn Industries</div><span class="bdg bdg-g">114%</span></div><div class="gauge-sub">Hydraulic Components · 12-mo agreement</div><div class="gauge-track"><div class="gauge-fill" id="g1" style="background:#2E844A;width:0;"></div></div><div class="gauge-nums"><div class="gauge-actual">$24.3M <span style="font-size:11px;color:#A8A29D;">actual</span></div><div class="gauge-target" style="color:#2E844A;font-weight:700;">of $21.3M target</div></div></div>
+          <div class="gauge" onclick="openAccount('vertex')"><div class="gauge-top"><div class="gauge-name">Vertex Manufacturing</div><span class="bdg bdg-b">98%</span></div><div class="gauge-sub">Precision Parts · 6-mo agreement</div><div class="gauge-track"><div class="gauge-fill" id="g2" style="background:#0176D3;width:0;"></div></div><div class="gauge-nums"><div class="gauge-actual">$17.6M <span style="font-size:11px;color:#A8A29D;">actual</span></div><div class="gauge-target">of $18.0M target</div></div></div>
+          <div class="gauge" onclick="openAccount('meridian')" style="cursor:pointer;"><div class="gauge-top"><div class="gauge-name">Meridian Aerospace</div><span class="bdg bdg-r">78% ⚠</span></div><div class="gauge-sub">Structural Fasteners · 18-mo agreement</div><div class="gauge-track"><div class="gauge-fill" id="g3" style="background:#BA0517;width:0;"></div></div><div class="gauge-nums"><div class="gauge-actual">$11.7M <span style="font-size:11px;color:#A8A29D;">actual</span></div><div class="gauge-target" style="color:#BA0517;font-weight:700;">of $15.0M — AT RISK</div></div></div>
+          <div class="gauge" onclick="openAccount('atlas')"><div class="gauge-top"><div class="gauge-name">Atlas Energy Systems</div><span class="bdg bdg-b">17%</span></div><div class="gauge-sub">Sensor Assemblies · new agreement (2 of 12 mo)</div><div class="gauge-track"><div class="gauge-fill" id="g4" style="background:#0176D3;width:0;"></div></div><div class="gauge-nums"><div class="gauge-actual">$4.8M <span style="font-size:11px;color:#A8A29D;">actual</span></div><div class="gauge-target">of $28.2M annual · on pace ↗</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHANNELS TAB -->
+  <div id="fc-tab-channels" class="tab-panel">
+    <div class="card" style="margin-bottom:16px;">
+      <div class="ch"><div class="ch-t">SAP Order Channels → Salesforce Manufacturing Cloud</div><span style="font-size:11px;color:#706E6B;"><span class="stat-dot pulse" style="background:#2E844A;display:inline-block;margin-right:4px;"></span>Live sync active</span></div>
+      <div class="cb">
+        <div class="ch-flow">
+          <div class="ch-src" id="ch-edi" onclick="openDrawer('SAP EDI Channel — Detail','<p style=\'margin-bottom:12px;\'>Inbound EDI 850 and ORDERS.05 messages from distributors and trading partners. Auto-matched to Sales Agreement line items by sold-to party + material number.</p><div style=\'margin-bottom:8px;\'><div style=\'font-size:11px;color:#706E6B;\'>YTD Volume</div><div style=\'font-size:20px;font-weight:700;\'>$34.1M</div></div><div style=\'margin-bottom:8px;\'><div style=\'font-size:11px;color:#706E6B;\'>Match Rate</div><div style=\'font-size:16px;font-weight:700;color:#2E844A;\'>97.4%</div></div><div style=\'margin-bottom:12px;\'><div style=\'font-size:11px;color:#706E6B;\'>Frequency</div><div style=\'font-size:13px;font-weight:600;\'>Real-time (event-driven)</div></div><div style=\'margin-bottom:12px;\'><div style=\'font-size:11px;color:#706E6B;\'>Recent Orders</div><div style=\'font-size:13px;\'>SO-2026-4821 · $142K · Jul 8</div><div style=\'font-size:13px;\'>SO-2026-4800 · $210K · Jun 28</div></div><button class=\'btn btn-success\' onclick=\'simulateChannelOrder(\"EDI\")\'>Simulate EDI Order</button>')">
+            <div class="ch-src-n">EDI</div><div class="ch-src-v">$34.1M</div><div class="ch-src-s">Distributors / partners</div>
+          </div>
+          <div class="ch-arr"><div class="ch-arr-l">synced</div><div style="display:flex;align-items:center;"><div class="ch-arr-line"></div><div class="ch-arr-head"></div></div></div>
+          <div class="ch-src" id="ch-portal" onclick="openDrawer('Customer Portal — Detail','<p style=\'margin-bottom:12px;\'>Self-service orders placed through SAP Commerce or Ariba. Written back with order date, product, quantity — matched to open agreement or opportunity.</p><div style=\'margin-bottom:8px;\'><div style=\'font-size:11px;color:#706E6B;\'>YTD Volume</div><div style=\'font-size:20px;font-weight:700;\'>$21.7M</div></div><div style=\'margin-bottom:12px;\'><div style=\'font-size:11px;color:#706E6B;\'>Frequency</div><div style=\'font-size:13px;font-weight:600;\'>Every 15 minutes</div></div><button class=\'btn btn-success\' onclick=\'simulateChannelOrder(\"Portal\")\'>Simulate Portal Order</button>')">
+            <div class="ch-src-n">Customer Portal</div><div class="ch-src-v">$21.7M</div><div class="ch-src-s">SAP Commerce / Ariba</div>
+          </div>
+          <div class="ch-arr"><div class="ch-arr-l">synced</div><div style="display:flex;align-items:center;"><div class="ch-arr-line"></div><div class="ch-arr-head"></div></div></div>
+          <div class="ch-src" id="ch-direct" onclick="openDrawer('Direct Sales Entry — Detail','<p style=\'margin-bottom:12px;\'>Inside sales and CSR-entered orders in SAP SD. Cross-referenced against the active Sales Agreement. Orders outside scope surface as exceptions.</p><div style=\'margin-bottom:8px;\'><div style=\'font-size:11px;color:#706E6B;\'>YTD Volume</div><div style=\'font-size:20px;font-weight:700;\'>$18.6M</div></div><div style=\'margin-bottom:12px;\'><div style=\'font-size:11px;color:#706E6B;\'>Frequency</div><div style=\'font-size:13px;font-weight:600;\'>Every 6 hours</div></div><button class=\'btn btn-success\' onclick=\'simulateChannelOrder(\"Direct\")\'>Simulate Direct Order</button>')">
+            <div class="ch-src-n">Direct Entry</div><div class="ch-src-v">$18.6M</div><div class="ch-src-s">Inside sales / CSR</div>
+          </div>
+          <div class="ch-arr"><div class="ch-arr-l">synced</div><div style="display:flex;align-items:center;"><div class="ch-arr-line"></div><div class="ch-arr-head"></div></div></div>
+          <div class="ch-src" id="ch-dc" onclick="openDrawer('Distribution / DC — Detail','<p style=\'margin-bottom:12px;\'>Regional DC replenishment and field service orders. Aggregated to account level before write-back to avoid line-item noise.</p><div style=\'margin-bottom:8px;\'><div style=\'font-size:11px;color:#706E6B;\'>YTD Volume</div><div style=\'font-size:20px;font-weight:700;\'>$13.9M</div></div><div style=\'margin-bottom:12px;\'><div style=\'font-size:11px;color:#706E6B;\'>Frequency</div><div style=\'font-size:13px;font-weight:600;\'>Daily (end of day)</div></div><button class=\'btn btn-success\' onclick=\'simulateChannelOrder(\"DC\")\'>Simulate DC Order</button>')">
+            <div class="ch-src-n">Distribution</div><div class="ch-src-v">$13.9M</div><div class="ch-src-s">DC / field service</div>
+          </div>
+          <div class="ch-arr"><div class="ch-arr-l">all channels</div><div style="display:flex;align-items:center;"><div class="ch-arr-line"></div><div class="ch-arr-head"></div></div></div>
+          <div class="ch-dest"><div class="ch-dest-n">Mfg Cloud</div><div class="ch-dest-s">Agreement Actuals<br>Account Forecast<br>Attainment Tracking</div></div>
+        </div>
+        <div style="margin-top:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <button class="btn btn-success" onclick="simulateInboundOrder()">+ Simulate Inbound Order</button>
+          <div style="font-size:12px;color:#706E6B;margin-left:auto;">All channels active · <span id="feed-count">1,847</span> orders synced in 30 days</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ch"><div class="ch-t">Live Order Feed</div><span style="font-size:11px;color:#706E6B;"><span class="stat-dot pulse" style="background:#2E844A;display:inline-block;margin-right:3px;"></span>Live</span></div>
+      <div class="cb" id="live-feed" style="padding:0 16px 8px;"></div>
+    </div>
+  </div>
+
+  <!-- FC LOG TAB -->
+  <div id="fc-tab-fclog" class="tab-panel">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:12px;"><button class="btn btn-brand" onclick="doRefreshActuals()">↺ Pull Actuals from SAP</button></div>
+    <div class="card"><div class="cb" style="padding:0 16px 8px;"><table class="log-table"><thead><tr><th>Timestamp</th><th>Channel</th><th>Direction</th><th>Records</th><th>Status</th></tr></thead><tbody>
+      <tr onclick="openDrawer('EDI Sync Detail','38 EDI orders received from SAP. All matched to agreement lines.')"><td>Today 11:47 AM</td><td>EDI</td><td>← Inbound</td><td>38</td><td><span class="bdg bdg-g">Success</span></td></tr>
+      <tr onclick="openDrawer('Portal Sync Detail','22 portal orders synced. 1 exception.')"><td>Today 11:30 AM</td><td>Portal</td><td>← Inbound</td><td>22</td><td><span class="bdg bdg-w">1 Exception</span></td></tr>
+      <tr onclick="openDrawer('Direct Entry Sync','41 direct orders processed.')"><td>Today 10:14 AM</td><td>Direct</td><td>← Inbound</td><td>41</td><td><span class="bdg bdg-g">Success</span></td></tr>
+      <tr onclick="openDrawer('DC Sync Detail','DC aggregates updated for all accounts.')"><td>Today 6:00 AM</td><td>DC/Distribution</td><td>← Inbound</td><td>18</td><td><span class="bdg bdg-g">Success</span></td></tr>
+    </tbody></table></div></div>
+  </div>
+
+  <!-- FC ACTIVITY TAB -->
+  <div id="fc-tab-fcactivity" class="tab-panel">
+    <div class="card"><div class="cb" style="padding:0 16px 8px;">
+      <div class="feed-item"><div class="fd" style="background:#2E844A;"></div><div><div class="ft"><span class="fs">Actuals refreshed:</span> 1,847 order lines synced from all SAP channels</div><div class="ftm">Today 11:47 AM</div></div></div>
+      <div class="feed-item"><div class="fd" style="background:#A55000;"></div><div><div class="ft"><span class="fs">Agentforce Alert:</span> Meridian Aerospace at 78% attainment — commercial review recommended</div><div class="ftm">Today 9:00 AM</div></div></div>
+      <div class="feed-item"><div class="fd" style="background:#0176D3;"></div><div><div class="ft"><span class="fs">Forecast updated:</span> June outperformance applied to H2 projection — +$1.9M</div><div class="ftm">Jul 8, 2026</div></div></div>
+    </div></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     PAGE: SAP INTEGRATION
+════════════════════════════════════════════════════════════ -->
+<div id="page-sap" class="page">
+  <!-- CHALLENGE 1 BANNER -->
+  <div style="background:#EBF5FB;border:1px solid #A8D4F8;border-radius:4px;padding:14px 16px;margin-bottom:16px;display:flex;gap:12px;align-items:flex-start;">
+    <div style="font-size:18px;flex-shrink:0;">🎯</div>
+    <div style="flex:1;">
+      <div style="font-weight:700;color:#014486;font-size:13px;margin-bottom:4px;">Challenge 1 — A real-time connection to SAP so what is happening on the commercial side is immediately visible to procurement and planning</div>
+      <div style="font-size:12px;color:#3E3E3C;line-height:1.6;">Production and procurement data at Osborn was reviewed weekly through finance — by the time commercial run-rate changes reached procurement, the supplier PO window had already closed. This page shows the live SAP connection that eliminates that lag: Sales Agreement run-rates push to SAP PP-MP-DEM as active PIRs the moment they change, and order actuals flow back from SAP continuously across 4 channels. No batch export, no manual data movement, no waiting for the Thursday review.</div>
+    </div>
+    <button class="btn btn-brand" style="flex-shrink:0;white-space:nowrap;" onclick="doSapSync()">⇅ Run Live Sync</button>
+  </div>
+
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+    <div><div style="font-size:18px;font-weight:700;">SAP Integration</div><div style="font-size:12px;color:#706E6B;">S/4HANA Connection · ECC 6.0 · MID Server</div></div>
+    <div style="display:flex;gap:8px;"><button class="btn btn-neutral" onclick="openDrawer('Integration Settings','<div style=\'margin-bottom:10px;\'><div style=\'font-size:11px;color:#706E6B;margin-bottom:3px;\'>Sync Frequency</div><select style=\'width:100%;border:1px solid #DDDBDA;border-radius:3px;padding:6px 8px;font-size:13px;\'><option>Every 6 hours</option><option>Every 12 hours</option><option>Daily</option></select></div><button class=\'btn btn-brand\' style=\'margin-top:10px;\' onclick=\'toast(\"Settings Saved\",\"Schedule updated\",\"s\");closeDrawer()\'>Save</button>')">Settings</button><button class="btn btn-success" onclick="doSapSync()">Run Full Sync</button></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:16px;">
+    <div class="card" style="margin-bottom:0;cursor:pointer;" onclick="openDrawer('Demand Signal Sync','<p style=\'margin-bottom:10px;\'>Outbound demand signals (agreements, orders, opportunities) are sent to SAP on a 6-hour cadence. Last sync was successful.</p><button class=\'btn btn-success\' onclick=\'doSapSync()\'>Sync Now</button>')">
+      <div class="cb" style="text-align:center;padding:20px 16px;"><div style="font-size:28px;margin-bottom:8px;">📤</div><div style="font-size:13px;font-weight:700;margin-bottom:4px;">Demand Signal Sync</div><div class="stat-dot pulse" style="background:#2E844A;display:inline-block;margin-right:4px;"></div><span class="bdg bdg-g">Active</span><div style="font-size:11px;color:#706E6B;margin-top:6px;">Last: Today 10:14 AM</div></div>
+    </div>
+    <div class="card" style="margin-bottom:0;cursor:pointer;" onclick="openDrawer('Order Actuals Inbound','<p style=\'margin-bottom:10px;\'>SAP order actuals from EDI, Portal, Direct, and DC channels are pulled every 15–360 minutes. 1,847 lines synced in 30 days.</p><button class=\'btn btn-brand\' onclick=\'doRefreshActuals()\'>Pull Now</button>')">
+      <div class="cb" style="text-align:center;padding:20px 16px;"><div style="font-size:28px;margin-bottom:8px;">📥</div><div style="font-size:13px;font-weight:700;margin-bottom:4px;">Order Actuals Inbound</div><div class="stat-dot pulse" style="background:#2E844A;display:inline-block;margin-right:4px;"></div><span class="bdg bdg-g">Active</span><div style="font-size:11px;color:#706E6B;margin-top:6px;">Last: Today 11:47 AM</div></div>
+    </div>
+    <div class="card" style="margin-bottom:0;cursor:pointer;" onclick="openDrawer('Master Data Sync','<p style=\'margin-bottom:10px;\'>Customer master and material master data synchronized between Salesforce and SAP. Ensures account and product data stays aligned.</p>')">
+      <div class="cb" style="text-align:center;padding:20px 16px;"><div style="font-size:28px;margin-bottom:8px;">🔄</div><div style="font-size:13px;font-weight:700;margin-bottom:4px;">Master Data Sync</div><div class="stat-dot pulse" style="background:#2E844A;display:inline-block;margin-right:4px;"></div><span class="bdg bdg-g">Synced</span><div style="font-size:11px;color:#706E6B;margin-top:6px;">Last: Today 2:00 AM</div></div>
+    </div>
+    <div class="card" style="margin-bottom:0;cursor:pointer;" onclick="openDrawer('Exception Queue','<p style=\'margin-bottom:12px;\'>3 orders could not be automatically matched to agreement lines. Manual review required.</p><div style=\'padding:10px;background:#FEF7EC;border:1px solid #F5D08A;border-radius:4px;margin-bottom:8px;\'><div style=\'font-weight:700;margin-bottom:3px;\'>Order SD-0040012835 · $41K</div><div style=\'font-size:12px;color:#3E3E3C;\'>Sold-to party not found in active agreements</div><div style=\'margin-top:6px;display:flex;gap:6px;\'><button class=\'btn btn-brand\' style=\'height:26px;font-size:11px;\' onclick=\'toast(\"Resolved\",\"Order mapped to SA-2026-001\",\"s\")\'>Resolve</button><button class=\'btn btn-neutral\' style=\'height:26px;font-size:11px;\'>Ignore</button></div></div><div style=\'padding:10px;background:#FEF7EC;border:1px solid #F5D08A;border-radius:4px;margin-bottom:8px;\'><div style=\'font-weight:700;margin-bottom:3px;\'>Order SD-0040012829 · $28K</div><div style=\'font-size:12px;color:#3E3E3C;\'>Product not in agreement scope</div><div style=\'margin-top:6px;display:flex;gap:6px;\'><button class=\'btn btn-brand\' style=\'height:26px;font-size:11px;\' onclick=\'toast(\"Resolved\",\"Order mapped manually\",\"s\")\'>Resolve</button><button class=\'btn btn-neutral\' style=\'height:26px;font-size:11px;\'>Ignore</button></div></div>')">
+      <div class="cb" style="text-align:center;padding:20px 16px;"><div style="font-size:28px;margin-bottom:8px;">⚠️</div><div style="font-size:13px;font-weight:700;margin-bottom:4px;">Exception Queue</div><span class="bdg bdg-w">3 Items</span><div style="font-size:11px;color:#706E6B;margin-top:6px;">Requires review</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ch"><div class="ch-t">Recent Sync Log</div></div>
+    <div class="cb" style="padding:0 16px 8px;"><table class="log-table"><thead><tr><th>Timestamp</th><th>Direction</th><th>Type</th><th>Records</th><th>Status</th><th>Message</th></tr></thead><tbody>
+      <tr onclick="openDrawer('Sync Log Detail','Demand package sent successfully. 3 signal types, all processed by SAP S/4HANA.')"><td>Today 10:14 AM</td><td>→ Out</td><td>Demand Package</td><td>1,284</td><td><span class="bdg bdg-g">Success</span></td><td>$184.6M sent to SAP</td></tr>
+      <tr onclick="openDrawer('Sync Log Detail','Order actuals received from all 4 channels.')"><td>Today 11:47 AM</td><td>← In</td><td>Order Actuals</td><td>119</td><td><span class="bdg bdg-g">Success</span></td><td>All channels updated</td></tr>
+      <tr onclick="openDrawer('Exception Detail','3 orders could not be matched. See exception queue.')"><td>Today 11:30 AM</td><td>← In</td><td>Portal Orders</td><td>23</td><td><span class="bdg bdg-w">Warning</span></td><td>1 unmatched → exception queue</td></tr>
+    </tbody></table></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     PAGE: REPORTS
+════════════════════════════════════════════════════════════ -->
+<div id="page-reports" class="page">
+  <div style="font-size:18px;font-weight:700;margin-bottom:16px;">Reports &amp; Dashboards</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;">
+    <div class="card" style="cursor:pointer;" onclick="openReportModal('YTD Attainment by Account','<table class=\'dt\' style=\'font-size:12px;\'><thead><tr><th>Account</th><th>Commitment</th><th>Actual</th><th>Attainment</th></tr></thead><tbody><tr><td>Osborn Industries</td><td>$21.3M</td><td>$24.3M</td><td style=\'color:#2E844A;font-weight:700;\'>114%</td></tr><tr><td>Vertex Mfg</td><td>$18.0M</td><td>$17.6M</td><td style=\'color:#706E6B;font-weight:700;\'>98%</td></tr><tr><td>Meridian Aerospace</td><td>$15.0M</td><td>$11.7M</td><td style=\'color:#BA0517;font-weight:700;\'>78%</td></tr><tr><td>Atlas Energy</td><td>$28.2M</td><td>$4.8M</td><td style=\'color:#0176D3;font-weight:700;\'>17% (2mo)</td></tr></tbody></table>')">
+      <div class="cb" style="text-align:center;padding:24px 16px;"><div style="font-size:32px;margin-bottom:10px;">📊</div><div style="font-size:14px;font-weight:700;margin-bottom:4px;">YTD Attainment by Account</div><div style="font-size:12px;color:#706E6B;">Agreement performance summary</div></div>
+    </div>
+    <div class="card" style="cursor:pointer;" onclick="openReportModal('Demand Signal Trend','<div style=\'margin-bottom:10px;font-size:13px;color:#3E3E3C;\'>Demand signal composition over the past 6 months. Agreement run-rate has grown 8% YoY.</div><table class=\'dt\' style=\'font-size:12px;\'><thead><tr><th>Month</th><th>Agreements</th><th>Orders</th><th>Opps</th><th>Total</th></tr></thead><tbody><tr><td>Jan</td><td>$68M</td><td>$48M</td><td>$49M</td><td>$165M</td></tr><tr><td>Mar</td><td>$72M</td><td>$52M</td><td>$51M</td><td>$175M</td></tr><tr><td>Jun</td><td>$74.8M</td><td>$56.4M</td><td>$53.4M</td><td>$184.6M</td></tr></tbody></table>')">
+      <div class="cb" style="text-align:center;padding:24px 16px;"><div style="font-size:32px;margin-bottom:10px;">📈</div><div style="font-size:14px;font-weight:700;margin-bottom:4px;">Demand Signal Trend</div><div style="font-size:12px;color:#706E6B;">6-month pipeline composition</div></div>
+    </div>
+    <div class="card" style="cursor:pointer;" onclick="openReportModal('SAP Sync Health','<table class=\'dt\' style=\'font-size:12px;\'><thead><tr><th>Integration</th><th>Records (30d)</th><th>Match Rate</th><th>Status</th></tr></thead><tbody><tr><td>EDI</td><td>847</td><td>97.4%</td><td><span class=\'bdg bdg-g\'>Healthy</span></td></tr><tr><td>Portal</td><td>412</td><td>98.1%</td><td><span class=\'bdg bdg-g\'>Healthy</span></td></tr><tr><td>Direct</td><td>389</td><td>96.8%</td><td><span class=\'bdg bdg-g\'>Healthy</span></td></tr><tr><td>DC/Dist.</td><td>199</td><td>100%</td><td><span class=\'bdg bdg-g\'>Healthy</span></td></tr></tbody></table>')">
+      <div class="cb" style="text-align:center;padding:24px 16px;"><div style="font-size:32px;margin-bottom:10px;">🔗</div><div style="font-size:14px;font-weight:700;margin-bottom:4px;">SAP Sync Health</div><div style="font-size:12px;color:#706E6B;">Integration performance metrics</div></div>
+    </div>
+    <div class="card" style="cursor:pointer;" onclick="openReportModal('Pipeline by Stage','<table class=\'dt\' style=\'font-size:12px;\'><thead><tr><th>Stage</th><th>Count</th><th>Amount</th><th>Avg %</th></tr></thead><tbody><tr><td>Prospecting</td><td>2</td><td>$4.3M</td><td>15%</td></tr><tr><td>Qualification</td><td>2</td><td>$6.4M</td><td>38%</td></tr><tr><td>Proposal</td><td>2</td><td>$4.0M</td><td>63%</td></tr><tr><td>Negotiation</td><td>1</td><td>$1.8M</td><td>85%</td></tr></tbody></table>')">
+      <div class="cb" style="text-align:center;padding:24px 16px;"><div style="font-size:32px;margin-bottom:10px;">🎯</div><div style="font-size:14px;font-weight:700;margin-bottom:4px;">Pipeline by Stage</div><div style="font-size:12px;color:#706E6B;">Opportunity funnel analysis</div></div>
+    </div>
+    <div class="card" style="cursor:pointer;" onclick="openReportModal('Agentforce Insights Summary','<div style=\'margin-bottom:12px;\'>AI-generated insights from the past 30 days.</div><div style=\'padding:10px;background:#EBF5FB;border-radius:4px;margin-bottom:8px;\'><div style=\'font-weight:700;margin-bottom:3px;\'>Meridian Aerospace at risk</div><div style=\'font-size:12px;color:#3E3E3C;\'>78% attainment · recommend commercial review</div></div><div style=\'padding:10px;background:#EEF6EC;border-radius:4px;margin-bottom:8px;\'><div style=\'font-weight:700;margin-bottom:3px;\'>June outperformance — Osborn Industries</div><div style=\'font-size:12px;color:#3E3E3C;\'>132% attainment · H2 forecast may be understated</div></div><div style=\'padding:10px;background:#EBF5FB;border-radius:4px;\'><div style=\'font-weight:700;margin-bottom:3px;\'>Demand signal ready for SAP</div><div style=\'font-size:12px;color:#3E3E3C;\'>$184.6M queued · send now for maximum lead time</div></div>')">
+      <div class="cb" style="text-align:center;padding:24px 16px;"><div style="font-size:32px;margin-bottom:10px;">🤖</div><div style="font-size:14px;font-weight:700;margin-bottom:4px;">Agentforce Insights</div><div style="font-size:12px;color:#706E6B;">AI-generated recommendations</div></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<!-- ══ DRAWER ══ -->
+<div id="drawer-overlay" onclick="closeDrawer()"></div>
+<div id="drawer">
+  <div id="drawer-head">
+    <div id="drawer-title"></div>
+    <button id="drawer-close" onclick="closeDrawer()">×</button>
+  </div>
+  <div id="drawer-body"></div>
+</div>
+
+<!-- ══ MODAL ══ -->
+<div id="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div id="modal">
+    <div id="modal-head"><div id="modal-title"></div><button id="modal-close" onclick="closeModal()">×</button></div>
+    <div id="modal-body"></div>
+    <div id="modal-foot"></div>
+  </div>
+</div>
+
+<!-- ══ NOTIF PANEL ══ -->
+<div id="notif-panel">
+  <div class="np-head"><div class="np-head-t">Notifications</div><a class="ch-lnk" onclick="document.querySelectorAll('.notif-item').forEach(n=>n.classList.remove('unread'));toast('Done','All notifications marked as read','s')">Mark all read</a></div>
+  <div class="notif-item unread" onclick="openAgreement('SA-2026-001');toggleNotif()"><div class="notif-row"><div class="notif-icon" style="background:#EEF6EC;">✅</div><div><div class="notif-text"><strong>SAP Sync Complete</strong> — Demand package sent: $184.6M across 3 signal tiers</div><div class="notif-time">Today 10:14 AM</div></div></div></div>
+  <div class="notif-item unread" onclick="nav('orders');toggleNotif()"><div class="notif-row"><div class="notif-icon" style="background:#EBF5FB;">📦</div><div><div class="notif-text"><strong>New EDI Order</strong> — SO-2026-4821 received · $142K · Osborn Industries</div><div class="notif-time">Today 10:02 AM</div></div></div></div>
+  <div class="notif-item unread" onclick="openAccount('meridian');toggleNotif()"><div class="notif-row"><div class="notif-icon" style="background:#FDECEA;">⚠️</div><div><div class="notif-text"><strong>Agentforce Alert</strong> — Meridian Aerospace at 78% attainment · review recommended</div><div class="notif-time">Today 9:00 AM</div></div></div></div>
+  <div class="notif-item" onclick="nav('sap');toggleNotif()"><div class="notif-row"><div class="notif-icon" style="background:#FEF7EC;">🔔</div><div><div class="notif-text"><strong>Exception Queue</strong> — 3 unmatched SAP orders require manual resolution</div><div class="notif-time">Jul 9, 4:30 PM</div></div></div></div>
+  <div class="notif-item" onclick="openAgreement('SA-2026-003');toggleNotif()"><div class="notif-row"><div class="notif-icon" style="background:#EBF5FB;">📄</div><div><div class="notif-text"><strong>Agreement Renewal</strong> — SA-2026-003 (Meridian) expires Dec 31 · start renewal process</div><div class="notif-time">Jul 8, 2:00 PM</div></div></div></div>
+</div>
+
+<!-- ══ PROFILE MENU ══ -->
+<div id="profile-menu">
+  <div class="pm-head"><div class="pm-name">Michael Rastiello</div><div class="pm-role">Manufacturing AE · Osborn Segment</div></div>
+  <div class="pm-item" onclick="closeProfile();toast('Opening…','My Profile page loading','i')">My Profile</div>
+  <div class="pm-item" onclick="closeProfile();openSetup()">Settings &amp; Setup</div>
+  <div class="pm-item sep" onclick="closeProfile();toast('Logged out','Redirecting to login…','i')">Log Out</div>
+</div>
+
+<!-- ══ TOASTS ══ -->
+<div id="toast-wrap"></div>
+<!-- ══ TOOLTIP ══ -->
+<div id="tt"></div>
